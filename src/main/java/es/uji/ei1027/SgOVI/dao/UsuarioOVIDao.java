@@ -20,10 +20,12 @@ public class UsuarioOVIDao {
 
     public static final String GET_USUARIO_BY_ID = "SELECT * FROM UsuarioOVI WHERE id_usuario = ?";
     public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM UsuarioOVI WHERE email = ?";
-    public static final String ADD_USUARIO = "INSERT INTO UsuarioOVI (nombre, email, telefono, consentimiento_lopd) VALUES (?, ?, ?, ?)";
+    public static final String GET_USUARIO_BY_DNI = "SELECT * FROM UsuarioOVI WHERE dni = ?";
+    public static final String ADD_USUARIO = "INSERT INTO UsuarioOVI (nombre, email, telefono, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida_independiente, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_USUARIO = "DELETE FROM UsuarioOVI WHERE id_usuario = ?";
-    public static final String UPDATE_USUARIO = "UPDATE UsuarioOVI SET nombre = ?, email = ?, telefono = ?, consentimiento_lopd = ? WHERE id_usuario = ?";
+    public static final String UPDATE_USUARIO = "UPDATE UsuarioOVI SET nombre = ?, email = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida_independiente = ?, estado = ? WHERE id_usuario = ?";
     public static final String GET_USUARIOS = "SELECT * FROM UsuarioOVI";
+    public static final String GET_USUARIOS_ACTIVOS = "SELECT * FROM UsuarioOVI WHERE estado = true";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -48,12 +50,25 @@ public class UsuarioOVIDao {
         }
     }
 
+    public UsuarioOVI getUsuarioByDni(String dni) {
+        try {
+            return jdbcTemplate.queryForObject(GET_USUARIO_BY_DNI, new UsuarioOVIRowMapper(), dni);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontró el usuario con dni: " + dni);
+            return null;
+        }
+    }
+
     public void addUsuario(UsuarioOVI usuario) {
-        jdbcTemplate.update(ADD_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), usuario.isConsentimientoLOPD());
+        jdbcTemplate.update(ADD_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
+                usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
+                usuario.getProyectoVidaIndependiente(), usuario.isEstado());
     }
 
     public void updateUsuario(UsuarioOVI usuario) {
-        jdbcTemplate.update(UPDATE_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), usuario.isConsentimientoLOPD(), usuario.getIdUsuario());
+        jdbcTemplate.update(UPDATE_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
+                usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
+                usuario.getProyectoVidaIndependiente(), usuario.isEstado(), usuario.getIdUsuario());
     }
 
     public void deleteUsuario(int id) {
@@ -65,6 +80,15 @@ public class UsuarioOVIDao {
             return jdbcTemplate.query(GET_USUARIOS, new UsuarioOVIRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron usuarios.");
+            return new ArrayList<>();
+        }
+    }
+
+    public List<UsuarioOVI> getUsuariosActivos() {
+        try {
+            return jdbcTemplate.query(GET_USUARIOS_ACTIVOS, new UsuarioOVIRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron usuarios activos.");
             return new ArrayList<>();
         }
     }

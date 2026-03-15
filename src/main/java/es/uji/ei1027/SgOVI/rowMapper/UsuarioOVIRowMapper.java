@@ -17,6 +17,10 @@ public class UsuarioOVIRowMapper implements RowMapper<UsuarioOVI> {
         usuarioOVI.setTelefono(rs.getString("telefono"));
         usuarioOVI.setFechaRegistro(rs.getDate("fecha_registro").toLocalDate());
         usuarioOVI.setConsentimientoLOPD(rs.getBoolean("consentimiento_lopd"));
+        usuarioOVI.setDni(rs.getString("dni"));
+        usuarioOVI.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
+        usuarioOVI.setProyectoVidaIndependiente(rs.getString("proyecto_vida_independiente"));
+        usuarioOVI.setEstado(rs.getBoolean("estado"));
         return usuarioOVI;
     }
 }
