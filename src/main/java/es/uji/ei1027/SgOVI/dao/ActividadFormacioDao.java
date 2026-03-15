@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 @Repository
 public class ActividadFormacioDao {
     private JdbcTemplate jdbcTemplate;
-    private final Logger logger = Logger.getLogger(ActividadFormacionDao.class.getName());
+    private final Logger logger = Logger.getLogger(ActividadFormacioDao.class.getName());
 
     public static final String GET_ACTIVIDAD_BY_ID = "SELECT * FROM ActividadFormacion WHERE id_activitat = ?";
     public static final String GET_ACTIVIDADES_BY_FORMADOR = "SELECT * FROM ActividadFormacion WHERE id_formador = ?";
