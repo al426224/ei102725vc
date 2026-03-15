@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class UsuarioOVI {
 
-    private int idUsuario;
+    private String idUsuario;
     private String nombre;
     private String email;
     private String telefono;
@@ -16,14 +16,14 @@ public class UsuarioOVI {
     private String dni;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaNacimiento;
-    private String proyectoVidaIndependiente;
-    private boolean estado;
+    private String proyectoVida;
+    private String estado;
 
     public UsuarioOVI() {}
 
-    public UsuarioOVI(int idUsuario, String nombre, String email, String telefono, 
+    public UsuarioOVI(String idUsuario, String nombre, String email, String telefono, 
                       LocalDate fechaRegistro, boolean consentimientoLOPD, String dni,
-                      LocalDate fechaNacimiento, String proyectoVidaIndependiente, boolean estado) {
+                      LocalDate fechaNacimiento, String proyectoVida, String estado) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.email = email;
@@ -32,15 +32,15 @@ public class UsuarioOVI {
         this.consentimientoLOPD = consentimientoLOPD;
         this.dni = dni;
         this.fechaNacimiento = fechaNacimiento;
-        this.proyectoVidaIndependiente = proyectoVidaIndependiente;
+        this.proyectoVida = proyectoVida;
         this.estado = estado;
     }
 
-    public int getIdUsuario() {
+    public String getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(String idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -100,26 +100,26 @@ public class UsuarioOVI {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public String getProyectoVidaIndependiente() {
-        return proyectoVidaIndependiente;
+    public String getProyectoVida() {
+        return proyectoVida;
     }
 
-    public void setProyectoVidaIndependiente(String proyectoVidaIndependiente) {
-        this.proyectoVidaIndependiente = proyectoVidaIndependiente;
+    public void setProyectoVida(String proyectoVida) {
+        this.proyectoVida = proyectoVida;
     }
 
-    public boolean isEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(boolean estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
     @Override
     public String toString() {
         return "UsuarioOVI{" +
-                "idUsuario=" + idUsuario +
+                "idUsuario='" + idUsuario + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", telefono='" + telefono + '\'' +
@@ -127,8 +127,8 @@ public class UsuarioOVI {
                 ", consentimientoLOPD=" + consentimientoLOPD +
                 ", dni='" + dni + '\'' +
                 ", fechaNacimiento=" + fechaNacimiento +
-                ", proyectoVidaIndependiente='" + proyectoVidaIndependiente + '\'' +
-                ", estado=" + estado +
+                ", proyectoVida='" + proyectoVida + '\'' +
+                ", estado='" + estado + '\'' +
                 '}';
     }
 }

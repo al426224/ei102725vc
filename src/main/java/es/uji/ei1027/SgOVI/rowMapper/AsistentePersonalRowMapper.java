@@ -10,13 +10,14 @@ public class AsistentePersonalRowMapper implements RowMapper<AsistentePersonal> 
 
     @Override
     public AsistentePersonal mapRow(ResultSet rs, int rowNum) throws SQLException {
-        AsistentePersonal assistent = new AsistentePersonal();
-        assistent.setIdAssistent(rs.getInt("id_assistent"));
-        assistent.setNombre(rs.getString("nombre"));
-        assistent.setEmail(rs.getString("email"));
-        assistent.setTipoAsistente(rs.getString("tipo_asistente"));
-        assistent.setEstadoValidacion(rs.getString("estado_validacion"));
-        assistent.setFormacionPrevia(rs.getString("formacion_previa"));
-        return assistent;
+        AsistentePersonal asistent = new AsistentePersonal();
+        asistent.setIdAsistente(rs.getString("id_asistente"));
+        asistent.setNombre(rs.getString("nombre"));
+        asistent.setEmail(rs.getString("email"));
+        asistent.setTipoAsistente(rs.getString("tipo_asistente"));
+        asistent.setEstadoValidacion(rs.getString("estado_validacion"));
+        asistent.setFormacionPrevia(rs.getString("formacion_previa"));
+        asistent.setDisponibilidad(rs.getString("disponibilidad"));
+        return asistent;
     }
 }

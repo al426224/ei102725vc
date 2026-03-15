@@ -2,31 +2,33 @@ package es.uji.ei1027.SgOVI.model;
 
 public class AsistentePersonal {
 
-    private int idAssistent;
+    private String idAsistente;
     private String nombre;
     private String email;
     private String tipoAsistente;
     private String estadoValidacion;
     private String formacionPrevia;
+    private String disponibilidad;
 
     public AsistentePersonal() {}
 
-    public AsistentePersonal(int idAssistent, String nombre, String email, String tipoAsistente, 
-                           String estadoValidacion, String formacionPrevia) {
-        this.idAssistent = idAssistent;
+    public AsistentePersonal(String idAsistente, String nombre, String email, String tipoAsistente, 
+                           String estadoValidacion, String formacionPrevia, String disponibilidad) {
+        this.idAsistente = idAsistente;
         this.nombre = nombre;
         this.email = email;
         this.tipoAsistente = tipoAsistente;
         this.estadoValidacion = estadoValidacion;
         this.formacionPrevia = formacionPrevia;
+        this.disponibilidad = disponibilidad;
     }
 
-    public int getIdAssistent() {
-        return idAssistent;
+    public String getIdAsistente() {
+        return idAsistente;
     }
 
-    public void setIdAssistent(int idAssistent) {
-        this.idAssistent = idAssistent;
+    public void setIdAsistente(String idAsistente) {
+        this.idAsistente = idAsistente;
     }
 
     public String getNombre() {
@@ -69,15 +71,24 @@ public class AsistentePersonal {
         this.formacionPrevia = formacionPrevia;
     }
 
+    public String getDisponibilidad() {
+        return disponibilidad;
+    }
+
+    public void setDisponibilidad(String disponibilidad) {
+        this.disponibilidad = disponibilidad;
+    }
+
     @Override
     public String toString() {
         return "AsistentePersonal{" +
-                "idAssistent=" + idAssistent +
+                "idAsistente='" + idAsistente + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", tipoAsistente='" + tipoAsistente + '\'' +
                 ", estadoValidacion='" + estadoValidacion + '\'' +
                 ", formacionPrevia='" + formacionPrevia + '\'' +
+                ", disponibilidad='" + disponibilidad + '\'' +
                 '}';
     }
 }
