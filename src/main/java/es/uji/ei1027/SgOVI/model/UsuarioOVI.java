@@ -35,6 +35,7 @@ public class UsuarioOVI {
         this.proyectoVida = proyectoVida;
         this.estado = estado;
     }
+    //mirar si añadir o no contraseña y si hacerlo en una superclase.
 
     public String getIdUsuario() {
         return idUsuario;
