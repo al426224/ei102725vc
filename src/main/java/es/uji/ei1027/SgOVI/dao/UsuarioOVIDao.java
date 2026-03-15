@@ -18,21 +18,21 @@ public class UsuarioOVIDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(UsuarioOVIDao.class.getName());
 
-    public static final String GET_USUARIO_BY_ID = "SELECT * FROM UsuarioOVI WHERE id_usuario = ?";
-    public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM UsuarioOVI WHERE email = ?";
-    public static final String GET_USUARIO_BY_DNI = "SELECT * FROM UsuarioOVI WHERE dni = ?";
-    public static final String ADD_USUARIO = "INSERT INTO UsuarioOVI (nombre, email, telefono, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida_independiente, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_USUARIO = "DELETE FROM UsuarioOVI WHERE id_usuario = ?";
-    public static final String UPDATE_USUARIO = "UPDATE UsuarioOVI SET nombre = ?, email = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida_independiente = ?, estado = ? WHERE id_usuario = ?";
-    public static final String GET_USUARIOS = "SELECT * FROM UsuarioOVI";
-    public static final String GET_USUARIOS_ACTIVOS = "SELECT * FROM UsuarioOVI WHERE estado = true";
+    public static final String GET_USUARIO_BY_ID = "SELECT * FROM UsuariOVI WHERE id_usuario = ?";
+    public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM UsuariOVI WHERE email = ?";
+    public static final String GET_USUARIO_BY_DNI = "SELECT * FROM UsuariOVI WHERE dni = ?";
+    public static final String ADD_USUARIO = "INSERT INTO UsuariOVI (id_usuario, nombre, email, telefono, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String DELETE_USUARIO = "DELETE FROM UsuariOVI WHERE id_usuario = ?";
+    public static final String UPDATE_USUARIO = "UPDATE UsuariOVI SET nombre = ?, email = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
+    public static final String GET_USUARIOS = "SELECT * FROM UsuariOVI";
+    public static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM UsuariOVI WHERE estado = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public UsuarioOVI getUsuario(int id) {
+    public UsuarioOVI getUsuario(String id) {
         try {
             return jdbcTemplate.queryForObject(GET_USUARIO_BY_ID, new UsuarioOVIRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
@@ -60,18 +60,18 @@ public class UsuarioOVIDao {
     }
 
     public void addUsuario(UsuarioOVI usuario) {
-        jdbcTemplate.update(ADD_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
+        jdbcTemplate.update(ADD_USUARIO, usuario.getIdUsuario(), usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
                 usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
-                usuario.getProyectoVidaIndependiente(), usuario.isEstado());
+                usuario.getProyectoVida(), usuario.getEstado());
     }
 
     public void updateUsuario(UsuarioOVI usuario) {
         jdbcTemplate.update(UPDATE_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
                 usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
-                usuario.getProyectoVidaIndependiente(), usuario.isEstado(), usuario.getIdUsuario());
+                usuario.getProyectoVida(), usuario.getEstado(), usuario.getIdUsuario());
     }
 
-    public void deleteUsuario(int id) {
+    public void deleteUsuario(String id) {
         jdbcTemplate.update(DELETE_USUARIO, id);
     }
 
@@ -84,11 +84,11 @@ public class UsuarioOVIDao {
         }
     }
 
-    public List<UsuarioOVI> getUsuariosActivos() {
+    public List<UsuarioOVI> getUsuariosByEstado(String estado) {
         try {
-            return jdbcTemplate.query(GET_USUARIOS_ACTIVOS, new UsuarioOVIRowMapper());
+            return jdbcTemplate.query(GET_USUARIOS_BY_ESTADO, new UsuarioOVIRowMapper(), estado);
         } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron usuarios activos.");
+            logger.warning("No se encontraron usuarios con estado: " + estado);
             return new ArrayList<>();
         }
     }

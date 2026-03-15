@@ -18,21 +18,21 @@ public class AsistentePersonalDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(AsistentePersonalDao.class.getName());
 
-    public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM AsistentePersonal WHERE id_assistent = ?";
+    public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM AsistentePersonal WHERE id_asistente = ?";
     public static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM AsistentePersonal WHERE email = ?";
     public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM AsistentePersonal WHERE tipo_asistente = ?";
     public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM AsistentePersonal WHERE estado_validacion = ?";
-    public static final String ADD_ASSISTENT = "INSERT INTO AsistentePersonal (nombre, email, tipo_asistente, estado_validacion, formacion_previa) VALUES (?, ?, ?, ?, ?)";
-    public static final String DELETE_ASSISTENT = "DELETE FROM AsistentePersonal WHERE id_assistent = ?";
-    public static final String UPDATE_ASSISTENT = "UPDATE AsistentePersonal SET nombre = ?, email = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ? WHERE id_assistent = ?";
-    public static final String GET_ASSISTENTS = "SELECT * FROM AsistentePersonal";
+    public static final String ADD_ASSISTENT = "INSERT INTO AsistentePersonal (id_asistente, nombre, email, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static final String DELETE_ASSISTENT = "DELETE FROM AsistentePersonal WHERE id_asistente = ?";
+    public static final String UPDATE_ASSISTENT = "UPDATE AsistentePersonal SET nombre = ?, email = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ? WHERE id_asistente = ?";
+    public static final String GET_ASSISTANTS = "SELECT * FROM AsistentePersonal";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public AsistentePersonal getAssistent(int id) {
+    public AsistentePersonal getAsistente(String id) {
         try {
             return jdbcTemplate.queryForObject(GET_ASSISTENT_BY_ID, new AsistentePersonalRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
@@ -41,7 +41,7 @@ public class AsistentePersonalDao {
         }
     }
 
-    public AsistentePersonal getAssistentByEmail(String email) {
+    public AsistentePersonal getAsistenteByEmail(String email) {
         try {
             return jdbcTemplate.queryForObject(GET_ASSISTENT_BY_EMAIL, new AsistentePersonalRowMapper(), email);
         } catch (EmptyResultDataAccessException e) {
@@ -50,7 +50,7 @@ public class AsistentePersonalDao {
         }
     }
 
-    public List<AsistentePersonal> getAssistentsByTipo(String tipoAsistente) {
+    public List<AsistentePersonal> getAsistentesByTipo(String tipoAsistente) {
         try {
             return jdbcTemplate.query(GET_ASSISTENT_BY_TIPO, new AsistentePersonalRowMapper(), tipoAsistente);
         } catch (EmptyResultDataAccessException e) {
@@ -59,7 +59,7 @@ public class AsistentePersonalDao {
         }
     }
 
-    public List<AsistentePersonal> getAssistentsByEstado(String estadoValidacion) {
+    public List<AsistentePersonal> getAsistentesByEstado(String estadoValidacion) {
         try {
             return jdbcTemplate.query(GET_ASSISTENTS_BY_ESTADO, new AsistentePersonalRowMapper(), estadoValidacion);
         } catch (EmptyResultDataAccessException e) {
@@ -68,24 +68,25 @@ public class AsistentePersonalDao {
         }
     }
 
-    public void addAssistent(AsistentePersonal assistent) {
-        jdbcTemplate.update(ADD_ASSISTENT, assistent.getNombre(), assistent.getEmail(), 
-                assistent.getTipoAsistente(), assistent.getEstadoValidacion(), assistent.getFormacionPrevia());
+    public void addAsistente(AsistentePersonal asistente) {
+        jdbcTemplate.update(ADD_ASSISTENT, asistente.getIdAsistente(), asistente.getNombre(), asistente.getEmail(), 
+                asistente.getTipoAsistente(), asistente.getEstadoValidacion(), asistente.getFormacionPrevia(),
+                asistente.getDisponibilidad());
     }
 
-    public void updateAssistent(AsistentePersonal assistent) {
-        jdbcTemplate.update(UPDATE_ASSISTENT, assistent.getNombre(), assistent.getEmail(), 
-                assistent.getTipoAsistente(), assistent.getEstadoValidacion(), 
-                assistent.getFormacionPrevia(), assistent.getIdAssistent());
+    public void updateAsistente(AsistentePersonal asistente) {
+        jdbcTemplate.update(UPDATE_ASSISTENT, asistente.getNombre(), asistente.getEmail(), 
+                asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
+                asistente.getFormacionPrevia(), asistente.getDisponibilidad(), asistente.getIdAsistente());
     }
 
-    public void deleteAssistent(int id) {
+    public void deleteAsistente(String id) {
         jdbcTemplate.update(DELETE_ASSISTENT, id);
     }
 
-    public List<AsistentePersonal> getAssistents() {
+    public List<AsistentePersonal> getAsistentes() {
         try {
-            return jdbcTemplate.query(GET_ASSISTENTS, new AsistentePersonalRowMapper());
+            return jdbcTemplate.query(GET_ASSISTANTS, new AsistentePersonalRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron asistentes.");
             return new ArrayList<>();

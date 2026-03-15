@@ -11,7 +11,7 @@ public class UsuarioOVIRowMapper implements RowMapper<UsuarioOVI> {
     @Override
     public UsuarioOVI mapRow(ResultSet rs, int rowNum) throws SQLException {
         UsuarioOVI usuarioOVI = new UsuarioOVI();
-        usuarioOVI.setIdUsuario(rs.getInt("id_usuario"));
+        usuarioOVI.setIdUsuario(rs.getString("id_usuario"));
         usuarioOVI.setNombre(rs.getString("nombre"));
         usuarioOVI.setEmail(rs.getString("email"));
         usuarioOVI.setTelefono(rs.getString("telefono"));
@@ -19,8 +19,8 @@ public class UsuarioOVIRowMapper implements RowMapper<UsuarioOVI> {
         usuarioOVI.setConsentimientoLOPD(rs.getBoolean("consentimiento_lopd"));
         usuarioOVI.setDni(rs.getString("dni"));
         usuarioOVI.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
-        usuarioOVI.setProyectoVidaIndependiente(rs.getString("proyecto_vida_independiente"));
-        usuarioOVI.setEstado(rs.getBoolean("estado"));
+        usuarioOVI.setProyectoVida(rs.getString("proyecto_vida"));
+        usuarioOVI.setEstado(rs.getString("estado"));
         return usuarioOVI;
     }
 }
