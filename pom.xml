@@ -14,7 +14,7 @@
     <name>SgOVI</name>
     <description>Proyecto SgOVI - Gestión de Ofertas de Voluntariado Internacional</description>
     <properties>
-        <java.version>23</java.version>
+        <java.version>21</java.version>
     </properties>
     <dependencies>
         <dependency>
