@@ -6,21 +6,23 @@ public class RegistroContacto {
 
     private int idReg;
     private int idSeleccion;
-    private String tipoContacto;
-    private LocalDate fechaContacto;
+    private String tipoContrato;
+    private LocalDate fechaInicio;
     private String observaciones;
     private String resultado;
+    private LocalDate fechaFin;
 
     public RegistroContacto() {}
 
-    public RegistroContacto(int idReg, int idSeleccion, String tipoContacto, 
-                          LocalDate fechaContacto, String observaciones, String resultado) {
+    public RegistroContacto(int idReg, int idSeleccion, String tipoContrato, 
+                          LocalDate fechaInicio, String observaciones, String resultado, LocalDate fechaFin) {
         this.idReg = idReg;
         this.idSeleccion = idSeleccion;
-        this.tipoContacto = tipoContacto;
-        this.fechaContacto = fechaContacto;
+        this.tipoContrato = tipoContrato;
+        this.fechaInicio = fechaInicio;
         this.observaciones = observaciones;
         this.resultado = resultado;
+        this.fechaFin = fechaFin;
     }
 
     public int getIdReg() {
@@ -39,20 +41,20 @@ public class RegistroContacto {
         this.idSeleccion = idSeleccion;
     }
 
-    public String getTipoContacto() {
-        return tipoContacto;
+    public String getTipoContrato() {
+        return tipoContrato;
     }
 
-    public void setTipoContacto(String tipoContacto) {
-        this.tipoContacto = tipoContacto;
+    public void setTipoContrato(String tipoContrato) {
+        this.tipoContrato = tipoContrato;
     }
 
-    public LocalDate getFechaContacto() {
-        return fechaContacto;
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
     }
 
-    public void setFechaContacto(LocalDate fechaContacto) {
-        this.fechaContacto = fechaContacto;
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
     }
 
     public String getObservaciones() {
@@ -71,15 +73,24 @@ public class RegistroContacto {
         this.resultado = resultado;
     }
 
+    public LocalDate getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(LocalDate fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
     @Override
     public String toString() {
         return "RegistroContacto{" +
                 "idReg=" + idReg +
                 ", idSeleccion=" + idSeleccion +
-                ", tipoContacto='" + tipoContacto + '\'' +
-                ", fechaContacto=" + fechaContacto +
+                ", tipoContrato='" + tipoContrato + '\'' +
+                ", fechaInicio=" + fechaInicio +
                 ", observaciones='" + observaciones + '\'' +
                 ", resultado='" + resultado + '\'' +
+                ", fechaFin=" + fechaFin +
                 '}';
     }
 }

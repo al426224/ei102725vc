@@ -13,10 +13,11 @@ public class RegistroContactoRowMapper implements RowMapper<RegistroContacto> {
         RegistroContacto registro = new RegistroContacto();
         registro.setIdReg(rs.getInt("id_reg"));
         registro.setIdSeleccion(rs.getInt("id_seleccion"));
-        registro.setTipoContacto(rs.getString("tipo_contacto"));
-        registro.setFechaContacto(rs.getDate("fecha_contacto").toLocalDate());
+        registro.setTipoContrato(rs.getString("tipo_contrato"));
+        registro.setFechaInicio(rs.getDate("fecha_inicio").toLocalDate());
         registro.setObservaciones(rs.getString("observaciones"));
         registro.setResultado(rs.getString("resultado"));
+        registro.setFechaFin(rs.getDate("fecha_fin") != null ? rs.getDate("fecha_fin").toLocalDate() : null);
         return registro;
     }
 }

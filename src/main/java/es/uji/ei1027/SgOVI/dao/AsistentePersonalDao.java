@@ -18,14 +18,16 @@ public class AsistentePersonalDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(AsistentePersonalDao.class.getName());
 
-    public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM AsistentePersonal WHERE id_asistente = ?";
-    public static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM AsistentePersonal WHERE email = ?";
-    public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM AsistentePersonal WHERE tipo_asistente = ?";
-    public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM AsistentePersonal WHERE estado_validacion = ?";
-    public static final String ADD_ASSISTENT = "INSERT INTO AsistentePersonal (id_asistente, nombre, email, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_ASSISTENT = "DELETE FROM AsistentePersonal WHERE id_asistente = ?";
-    public static final String UPDATE_ASSISTENT = "UPDATE AsistentePersonal SET nombre = ?, email = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ? WHERE id_asistente = ?";
-    public static final String GET_ASSISTANTS = "SELECT * FROM AsistentePersonal";
+    public static final String TABLE_NAME = "asistentepersonal";
+    
+    public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+    public static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ?";
+    public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
+    public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (id_asistente, nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+    public static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ? WHERE id_asistente = ?";
+    public static final String GET_ASSISTANTS = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -69,14 +71,14 @@ public class AsistentePersonalDao {
     }
 
     public void addAsistente(AsistentePersonal asistente) {
-        jdbcTemplate.update(ADD_ASSISTENT, asistente.getIdAsistente(), asistente.getNombre(), asistente.getEmail(), 
-                asistente.getTipoAsistente(), asistente.getEstadoValidacion(), asistente.getFormacionPrevia(),
-                asistente.getDisponibilidad());
+        jdbcTemplate.update(ADD_ASSISTENT, asistente.getIdAsistente(), asistente.getNombre(), asistente.getEmail(),
+                asistente.getContrasena(), asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
+                asistente.getFormacionPrevia(), asistente.getDisponibilidad());
     }
 
     public void updateAsistente(AsistentePersonal asistente) {
-        jdbcTemplate.update(UPDATE_ASSISTENT, asistente.getNombre(), asistente.getEmail(), 
-                asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
+        jdbcTemplate.update(UPDATE_ASSISTENT, asistente.getNombre(), asistente.getEmail(),
+                asistente.getContrasena(), asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
                 asistente.getFormacionPrevia(), asistente.getDisponibilidad(), asistente.getIdAsistente());
     }
 

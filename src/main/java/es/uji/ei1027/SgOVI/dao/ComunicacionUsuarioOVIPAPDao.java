@@ -18,14 +18,16 @@ public class ComunicacionUsuarioOVIPAPDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(ComunicacionUsuarioOVIPAPDao.class.getName());
 
-    public static final String GET_COMUNICACION_BY_ID = "SELECT * FROM ComunicacionUsuarioOVIPAP WHERE id_comu = ?";
-    public static final String GET_COMUNICACIONES_BY_SELECCION = "SELECT * FROM ComunicacionUsuarioOVIPAP WHERE id_seleccion = ?";
-    public static final String GET_COMUNICACIONES_BY_EMISOR = "SELECT * FROM ComunicacionUsuarioOVIPAP WHERE emisor = ?";
-    public static final String GET_COMUNICACIONES_BY_MEDIO = "SELECT * FROM ComunicacionUsuarioOVIPAP WHERE medio = ?";
-    public static final String ADD_COMUNICACION = "INSERT INTO ComunicacionUsuarioOVIPAP (id_seleccion, emisor, mensaje, medio) VALUES (?, ?, ?, ?)";
-    public static final String DELETE_COMUNICACION = "DELETE FROM ComunicacionUsuarioOVIPAP WHERE id_comu = ?";
-    public static final String UPDATE_COMUNICACION = "UPDATE ComunicacionUsuarioOVIPAP SET id_seleccion = ?, emisor = ?, mensaje = ?, medio = ? WHERE id_comu = ?";
-    public static final String GET_COMUNICACIONES = "SELECT * FROM ComunicacionUsuarioOVIPAP";
+    public static final String TABLE_NAME = "comunicacionusuarioovipap";
+    
+    public static final String GET_COMUNICACION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_comu = ?";
+    public static final String GET_COMUNICACIONES_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    public static final String GET_COMUNICACIONES_BY_EMISOR = "SELECT * FROM " + TABLE_NAME + " WHERE emisor = ?";
+    public static final String GET_COMUNICACIONES_BY_MEDIO = "SELECT * FROM " + TABLE_NAME + " WHERE medio = ?";
+    public static final String ADD_COMUNICACION = "INSERT INTO " + TABLE_NAME + " (id_seleccion, emisor, mensaje, medio) VALUES (?, ?, ?, ?)";
+    public static final String DELETE_COMUNICACION = "DELETE FROM " + TABLE_NAME + " WHERE id_comu = ?";
+    public static final String UPDATE_COMUNICACION = "UPDATE " + TABLE_NAME + " SET id_seleccion = ?, emisor = ?, mensaje = ?, medio = ? WHERE id_comu = ?";
+    public static final String GET_COMUNICACIONES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

@@ -17,7 +17,6 @@ public class PeticionAPRRowMapper implements RowMapper<PeticionAPR> {
         peticion.setDescripcion(rs.getString("descripcion"));
         peticion.setHorasSemanales(rs.getInt("horas_semanales"));
         peticion.setEstado(rs.getString("estado"));
-        peticion.setFechaSolicitud(rs.getDate("fecha_solicitud").toLocalDate());
         return peticion;
     }
 }

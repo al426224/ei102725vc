@@ -14,6 +14,7 @@ public class AsistentePersonalRowMapper implements RowMapper<AsistentePersonal> 
         asistent.setIdAsistente(rs.getString("id_asistente"));
         asistent.setNombre(rs.getString("nombre"));
         asistent.setEmail(rs.getString("email"));
+        asistent.setContrasena(rs.getString("contrasena"));
         asistent.setTipoAsistente(rs.getString("tipo_asistente"));
         asistent.setEstadoValidacion(rs.getString("estado_validacion"));
         asistent.setFormacionPrevia(rs.getString("formacion_previa"));

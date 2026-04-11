@@ -18,14 +18,16 @@ public class SeleccionDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(SeleccionDao.class.getName());
 
-    public static final String GET_SELECCION_BY_ID = "SELECT * FROM Seleccion WHERE id_seleccion = ?";
-    public static final String GET_SELECCIONES_BY_SOLICITUD = "SELECT * FROM Seleccion WHERE id_solicitud = ?";
-    public static final String GET_SELECCIONES_BY_ASISTENTE = "SELECT * FROM Seleccion WHERE id_asistente = ?";
-    public static final String GET_SELECCIONES_BY_ESTADO = "SELECT * FROM Seleccion WHERE estado_seleccion = ?";
-    public static final String ADD_SELECCION = "INSERT INTO Seleccion (id_solicitud, id_asistente, estado_seleccion, puntuacion_match) VALUES (?, ?, ?, ?)";
-    public static final String DELETE_SELECCION = "DELETE FROM Seleccion WHERE id_seleccion = ?";
-    public static final String UPDATE_SELECCION = "UPDATE Seleccion SET id_solicitud = ?, id_asistente = ?, estado_seleccion = ?, puntuacion_match = ? WHERE id_seleccion = ?";
-    public static final String GET_SELECCIONES = "SELECT * FROM Seleccion";
+    public static final String TABLE_NAME = "seleccion";
+    
+    public static final String GET_SELECCION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    public static final String GET_SELECCIONES_BY_SOLICITUD = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
+    public static final String GET_SELECCIONES_BY_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+    public static final String GET_SELECCIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_seleccion = ?";
+    public static final String ADD_SELECCION = "INSERT INTO " + TABLE_NAME + " (id_solicitud, id_asistente, estado_seleccion, puntuacion_match) VALUES (?, ?, ?, ?)";
+    public static final String DELETE_SELECCION = "DELETE FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    public static final String UPDATE_SELECCION = "UPDATE " + TABLE_NAME + " SET id_solicitud = ?, id_asistente = ?, estado_seleccion = ?, puntuacion_match = ? WHERE id_seleccion = ?";
+    public static final String GET_SELECCIONES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

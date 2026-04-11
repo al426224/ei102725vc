@@ -18,14 +18,16 @@ public class UsuarioOVIDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(UsuarioOVIDao.class.getName());
 
-    public static final String GET_USUARIO_BY_ID = "SELECT * FROM UsuariOVI WHERE id_usuario = ?";
-    public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM UsuariOVI WHERE email = ?";
-    public static final String GET_USUARIO_BY_DNI = "SELECT * FROM UsuariOVI WHERE dni = ?";
-    public static final String ADD_USUARIO = "INSERT INTO UsuariOVI (id_usuario, nombre, email, telefono, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_USUARIO = "DELETE FROM UsuariOVI WHERE id_usuario = ?";
-    public static final String UPDATE_USUARIO = "UPDATE UsuariOVI SET nombre = ?, email = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
-    public static final String GET_USUARIOS = "SELECT * FROM UsuariOVI";
-    public static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM UsuariOVI WHERE estado = ?";
+    public static final String TABLE_NAME = "usuariovi";
+    
+    public static final String GET_USUARIO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
+    public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    public static final String GET_USUARIO_BY_DNI = "SELECT * FROM " + TABLE_NAME + " WHERE dni = ?";
+    public static final String ADD_USUARIO = "INSERT INTO " + TABLE_NAME + " (id_usuario, nombre, email, contrasena, telefono, fecha_registro, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String DELETE_USUARIO = "DELETE FROM " + TABLE_NAME + " WHERE id_usuario = ?";
+    public static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
+    public static final String GET_USUARIOS = "SELECT * FROM " + TABLE_NAME;
+    public static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -60,15 +62,17 @@ public class UsuarioOVIDao {
     }
 
     public void addUsuario(UsuarioOVI usuario) {
-        jdbcTemplate.update(ADD_USUARIO, usuario.getIdUsuario(), usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
+        jdbcTemplate.update(ADD_USUARIO, usuario.getIdUsuario(), usuario.getNombre(), usuario.getEmail(), 
+                usuario.getContrasena(), usuario.getTelefono(), usuario.getFechaRegistro(), 
                 usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
                 usuario.getProyectoVida(), usuario.getEstado());
     }
 
     public void updateUsuario(UsuarioOVI usuario) {
-        jdbcTemplate.update(UPDATE_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), 
-                usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
-                usuario.getProyectoVida(), usuario.getEstado(), usuario.getIdUsuario());
+        jdbcTemplate.update(UPDATE_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getContrasena(),
+                usuario.getTelefono(), usuario.isConsentimientoLOPD(), usuario.getDni(), 
+                usuario.getFechaNacimiento(), usuario.getProyectoVida(), usuario.getEstado(), 
+                usuario.getIdUsuario());
     }
 
     public void deleteUsuario(String id) {

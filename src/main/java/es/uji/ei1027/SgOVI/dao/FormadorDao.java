@@ -18,13 +18,15 @@ public class FormadorDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(FormadorDao.class.getName());
 
-    public static final String GET_FORMADOR_BY_ID = "SELECT * FROM Formador WHERE id_formador = ?";
-    public static final String GET_FORMADOR_BY_EMAIL = "SELECT * FROM Formador WHERE email = ?";
-    public static final String GET_FORMADORES_BY_ESPECIALIDAD = "SELECT * FROM Formador WHERE especialidad = ?";
-    public static final String ADD_FORMADOR = "INSERT INTO Formador (nombre, email, telefono, especialidad, historialsesiones) VALUES (?, ?, ?, ?, ?)";
-    public static final String DELETE_FORMADOR = "DELETE FROM Formador WHERE id_formador = ?";
-    public static final String UPDATE_FORMADOR = "UPDATE Formador SET nombre = ?, email = ?, telefono = ?, especialidad = ?, historialsesiones = ? WHERE id_formador = ?";
-    public static final String GET_FORMADORES = "SELECT * FROM Formador";
+    public static final String TABLE_NAME = "formador";
+    
+    public static final String GET_FORMADOR_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_formador = ?";
+    public static final String GET_FORMADOR_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    public static final String GET_FORMADORES_BY_ESPECIALIDAD = "SELECT * FROM " + TABLE_NAME + " WHERE especialidad = ?";
+    public static final String ADD_FORMADOR = "INSERT INTO " + TABLE_NAME + " (nombre, email, telefono, especialidad, historialsesiones) VALUES (?, ?, ?, ?, ?)";
+    public static final String DELETE_FORMADOR = "DELETE FROM " + TABLE_NAME + " WHERE id_formador = ?";
+    public static final String UPDATE_FORMADOR = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, telefono = ?, especialidad = ?, historialsesiones = ? WHERE id_formador = ?";
+    public static final String GET_FORMADORES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

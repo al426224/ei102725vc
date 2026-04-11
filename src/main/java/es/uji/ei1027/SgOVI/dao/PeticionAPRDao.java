@@ -18,14 +18,16 @@ public class PeticionAPRDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(PeticionAPRDao.class.getName());
 
-    public static final String GET_PETICION_BY_ID = "SELECT * FROM PeticionAPR WHERE id_solicitud = ?";
-    public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM PeticionAPR WHERE id_usuario = ?";
-    public static final String GET_PETICIONES_BY_ESTADO = "SELECT * FROM PeticionAPR WHERE estado = ?";
-    public static final String GET_PETICIONES_BY_TIPO = "SELECT * FROM PeticionAPR WHERE tipo_asistencia = ?";
-    public static final String ADD_PETICION = "INSERT INTO PeticionAPR (id_solicitud, id_usuario, tipo_asistencia, descripcion, horas_semanales, estado) VALUES (?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_PETICION = "DELETE FROM PeticionAPR WHERE id_solicitud = ?";
-    public static final String UPDATE_PETICION = "UPDATE PeticionAPR SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ? WHERE id_solicitud = ?";
-    public static final String GET_PETICIONES = "SELECT * FROM PeticionAPR";
+    public static final String TABLE_NAME = "peticionapr";
+    
+    public static final String GET_PETICION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
+    public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
+    public static final String GET_PETICIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
+    public static final String GET_PETICIONES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistencia = ?";
+    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_solicitud, id_usuario, tipo_asistencia, descripcion, horas_semanales, estado) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
+    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ? WHERE id_solicitud = ?";
+    public static final String GET_PETICIONES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

@@ -10,6 +10,7 @@ public class UsuarioOVI {
     private String idUsuario;
     private String nombre;
     private String email;
+    private String contrasena;
     private String telefono;
     private LocalDate fechaRegistro;
     private boolean consentimientoLOPD;
@@ -58,6 +59,14 @@ public class UsuarioOVI {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public String getTelefono() {

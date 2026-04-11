@@ -10,19 +10,17 @@ public class PeticionAPR {
     private String descripcion;
     private int horasSemanales;
     private String estado;
-    private LocalDate fechaSolicitud;
 
     public PeticionAPR() {}
 
     public PeticionAPR(String idSolicitud, String idUsuario, String tipoAsistencia, 
-                      String descripcion, int horasSemanales, String estado, LocalDate fechaSolicitud) {
+                      String descripcion, int horasSemanales, String estado) {
         this.idSolicitud = idSolicitud;
         this.idUsuario = idUsuario;
         this.tipoAsistencia = tipoAsistencia;
         this.descripcion = descripcion;
         this.horasSemanales = horasSemanales;
         this.estado = estado;
-        this.fechaSolicitud = fechaSolicitud;
     }
 
     public String getIdSolicitud() {
@@ -73,14 +71,6 @@ public class PeticionAPR {
         this.estado = estado;
     }
 
-    public LocalDate getFechaSolicitud() {
-        return fechaSolicitud;
-    }
-
-    public void setFechaSolicitud(LocalDate fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
-    }
-
     @Override
     public String toString() {
         return "PeticionAPR{" +
@@ -90,7 +80,6 @@ public class PeticionAPR {
                 ", descripcion='" + descripcion + '\'' +
                 ", horasSemanales=" + horasSemanales +
                 ", estado='" + estado + '\'' +
-                ", fechaSolicitud=" + fechaSolicitud +
                 '}';
     }
 }

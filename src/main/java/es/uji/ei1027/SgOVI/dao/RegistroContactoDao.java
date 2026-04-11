@@ -18,14 +18,15 @@ public class RegistroContactoDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(RegistroContactoDao.class.getName());
 
-    public static final String GET_REGISTRO_BY_ID = "SELECT * FROM RegistroContacto WHERE id_reg = ?";
-    public static final String GET_REGISTROS_BY_SELECCION = "SELECT * FROM RegistroContacto WHERE id_seleccion = ?";
-    public static final String GET_REGISTROS_BY_TIPO = "SELECT * FROM RegistroContacto WHERE tipo_contacto = ?";
-    public static final String GET_REGISTROS_BY_RESULTADO = "SELECT * FROM RegistroContacto WHERE resultado = ?";
-    public static final String ADD_REGISTRO = "INSERT INTO RegistroContacto (id_seleccion, tipo_contacto, observaciones, resultado) VALUES (?, ?, ?, ?)";
-    public static final String DELETE_REGISTRO = "DELETE FROM RegistroContacto WHERE id_reg = ?";
-    public static final String UPDATE_REGISTRO = "UPDATE RegistroContacto SET id_seleccion = ?, tipo_contacto = ?, observaciones = ?, resultado = ? WHERE id_reg = ?";
-    public static final String GET_REGISTROS = "SELECT * FROM RegistroContacto";
+    public static final String TABLE_NAME = "registrocontrato";
+    
+    public static final String GET_REGISTRO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_reg = ?";
+    public static final String GET_REGISTROS_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    public static final String GET_REGISTROS_BY_RESULTADO = "SELECT * FROM " + TABLE_NAME + " WHERE resultado = ?";
+    public static final String ADD_REGISTRO = "INSERT INTO " + TABLE_NAME + " (id_seleccion, tipo_contrato, observaciones, resultado, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String DELETE_REGISTRO = "DELETE FROM " + TABLE_NAME + " WHERE id_reg = ?";
+    public static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_fin = ? WHERE id_reg = ?";
+    public static final String GET_REGISTROS = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -50,15 +51,6 @@ public class RegistroContactoDao {
         }
     }
 
-    public List<RegistroContacto> getRegistrosByTipo(String tipoContacto) {
-        try {
-            return jdbcTemplate.query(GET_REGISTROS_BY_TIPO, new RegistroContactoRowMapper(), tipoContacto);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron registros de tipo: " + tipoContacto);
-            return new ArrayList<>();
-        }
-    }
-
     public List<RegistroContacto> getRegistrosByResultado(String resultado) {
         try {
             return jdbcTemplate.query(GET_REGISTROS_BY_RESULTADO, new RegistroContactoRowMapper(), resultado);
@@ -69,13 +61,15 @@ public class RegistroContactoDao {
     }
 
     public void addRegistro(RegistroContacto registro) {
-        jdbcTemplate.update(ADD_REGISTRO, registro.getIdSeleccion(), registro.getTipoContacto(), 
-                registro.getObservaciones(), registro.getResultado());
+        jdbcTemplate.update(ADD_REGISTRO, registro.getIdSeleccion(), registro.getTipoContrato(), 
+                registro.getObservaciones(), registro.getResultado(), registro.getFechaInicio(), 
+                registro.getFechaFin());
     }
 
     public void updateRegistro(RegistroContacto registro) {
-        jdbcTemplate.update(UPDATE_REGISTRO, registro.getIdSeleccion(), registro.getTipoContacto(), 
-                registro.getObservaciones(), registro.getResultado(), registro.getIdReg());
+        jdbcTemplate.update(UPDATE_REGISTRO, registro.getTipoContrato(), 
+                registro.getObservaciones(), registro.getResultado(), registro.getFechaFin(), 
+                registro.getIdReg());
     }
 
     public void deleteRegistro(int id) {

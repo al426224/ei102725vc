@@ -5,6 +5,7 @@ public class AsistentePersonal {
     private String idAsistente;
     private String nombre;
     private String email;
+    private String contrasena;
     private String tipoAsistente;
     private String estadoValidacion;
     private String formacionPrevia;
@@ -45,6 +46,14 @@ public class AsistentePersonal {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public String getTipoAsistente() {
