@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/estilos.css">
+    <title>Registro Usuario OVI</title>
+</head>
+<body>
+    <!-- Header fijo -->
+    <header>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Lado izquierdo - Título -->
+        <div class="lado-izquierdo">
+            <h1 class="titulo-pagina">Registro<br>Usuario OVI</h1>
+        </div>
+
+        <!-- Lado derecho - Formulario -->
+        <div class="lado-derecho">
+            <form action="/signup/registerUsuarioOVI" method="POST" class="formulario" th:object="${usuarioOVI}">
+
+                <p class="campos-obligatorios">* Campos obligatorios</p>
+
+                <div class="campos">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required
+                           th:field="*{nombre}" placeholder="Tu nombre">
+                    <div class="error" th:if="${#fields.hasErrors('nombre')}"
+                         th:errors="*{nombre}"></div>
+                </div>
+
+                <div class="campos">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required
+                           th:field="*{email}" placeholder="tu@email.com">
+                    <div class="error" th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}"></div>
+                </div>
+
+                <div class="campos">
+                    <label for="contrasena">Contraseña *</label>
+                    <input type="password" id="contrasena" name="contrasena" required
+                           th:field="*{contrasena}" placeholder="Mínimo 8 caracteres">
+                    <div class="error" th:if="${#fields.hasErrors('contrasena')}"
+                         th:errors="*{contrasena}"></div>
+                </div>
+
+                <div class="campos">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono"
+                           th:field="*{telefono}" placeholder="Tu teléfono">
+                </div>
+
+                <div class="campos-fila">
+                    <div class="campos">
+                        <label for="dni">DNI *</label>
+                        <input type="text" id="dni" name="dni" required
+                               th:field="*{dni}" placeholder="12345678A">
+                        <div class="error" th:if="${#fields.hasErrors('dni')}"
+                             th:errors="*{dni}"></div>
+                    </div>
+
+                    <div class="campos">
+                        <label for="fechaNacimiento">Fecha de Nacimiento *</label>
+                        <input type="date" id="fechaNacimiento" name="fechaNacimiento" required
+                               th:field="*{fechaNacimiento}">
+                        <div class="error" th:if="${#fields.hasErrors('fechaNacimiento')}"
+                             th:errors="*{fechaNacimiento}"></div>
+                    </div>
+                </div>
+
+                <div class="campos">
+                    <label for="proyectoVida">Proyecto de Vida</label>
+                    <textarea id="proyectoVida" name="proyectoVida" rows="3"
+                              th:field="*{proyectoVida}" placeholder="Describe tu proyecto de vida"></textarea>
+                </div>
+
+                <div class="campos campos-checkbox">
+                    <input type="checkbox" id="consentimientoLOPD" name="consentimientoLOPD"
+                           th:field="*{consentimientoLOPD}">
+                    <label for="consentimientoLOPD">Acepto el tratamiento de datos personales (LOPD)</label>
+                </div>
+                <div class="error" th:if="${#fields.hasErrors('consentimientoLOPD')}"
+                     th:errors="*{consentimientoLOPD}"></div>
+
+                <div class="enviar">
+                    <button type="submit" class="boton">Registrarse</button>
+                    <a href="/signup" class="boton boton-secundario">Volver</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
