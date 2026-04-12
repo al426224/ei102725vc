@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/estilos.css">
+    <title>Mi Perfil</title>
+</head>
+<body>
+    <!-- Header fijo -->
+    <header>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Lado izquierdo - Datos del perfil -->
+        <div class="lado-izquierdo">
+            <h1 class="titulo-pagina">Mi perfil</h1>
+
+            <div class="tarjeta-perfil">
+                <div class="dato-perfil">
+                    <span class="dato-etiqueta">Nombre:</span>
+                    <span class="dato-valor" th:text="${usuario.nombre}"></span>
+                </div>
+
+                <div class="dato-perfil">
+                    <span class="dato-etiqueta">Email:</span>
+                    <span class="dato-valor" th:text="${usuario.email}"></span>
+                </div>
+
+                <div class="dato-perfil">
+                    <span class="dato-etiqueta">Teléfono:</span>
+                    <span class="dato-valor" th:text="${usuario.telefono}"></span>
+                </div>
+
+                <div class="dato-perfil">
+                    <span class="dato-etiqueta">Proyecto de Vida:</span>
+                    <span class="dato-valor" th:text="${usuario.proyectoVida}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lado derecho - Avatar y acciones -->
+        <div class="lado-derecho lado-derecho-perfil">
+            <div class="avatar-perfil">
+                <img src="/images/avatar-placeholder.png" alt="Avatar de perfil" class="imagen-avatar">
+            </div>
+
+            <div class="acciones-perfil">
+                <a th:href="@{/usuarioOVI/update/{id}(id=${usuario.idUsuario})}" class="boton boton-secundario">Editar perfil</a>
+                <a href="/logout" class="boton">Cerrar sesión</a>
+                <a th:href="@{/usuarioOVI/delete/{id}(id=${usuario.idUsuario})}" class="boton boton-peligro"
+                   onclick="return confirm('¿Estás seguro de que quieres borrar tu perfil? Esta acción no se puede deshacer.')">
+                    Borrar perfil
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

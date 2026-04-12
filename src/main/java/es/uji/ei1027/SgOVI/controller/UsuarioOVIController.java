@@ -94,4 +94,18 @@ public class UsuarioOVIController {
         redirectAttributes.addFlashAttribute("successMessage", "Usuario eliminado correctamente");
         return "redirect:/usuarioOVI/list";
     }
+
+    @GetMapping("/perfil/{id}")
+    public String perfilUsuario(Model model, @PathVariable int id) {
+        // Obtenemos el usuario usando el ID numérico
+        UsuarioOVI usuario = usuarioOVIDao.getUsuario(id);
+
+        if (usuario == null) {
+            return "redirect:/usuarioOVI/list";
+        }
+
+        // Es vital pasar el objeto "usuario" para que el HTML pueda leer sus datos
+        model.addAttribute("usuario", usuario);
+        return "usuarioOVI/perfilUsuarioOVI";
+    }
 }
