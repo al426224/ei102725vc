@@ -2,7 +2,7 @@ package es.uji.ei1027.SgOVI.model;
 
 public class AsistentePersonal {
 
-    private String idAsistente;
+    private int idAsistente;
     private String nombre;
     private String email;
     private String contrasena;
@@ -13,22 +13,23 @@ public class AsistentePersonal {
 
     public AsistentePersonal() {}
 
-    public AsistentePersonal(String idAsistente, String nombre, String email, String tipoAsistente, 
+    public AsistentePersonal(int idAsistente, String nombre, String email, String contrasena, String tipoAsistente, 
                            String estadoValidacion, String formacionPrevia, String disponibilidad) {
         this.idAsistente = idAsistente;
         this.nombre = nombre;
         this.email = email;
+        this.contrasena = contrasena;
         this.tipoAsistente = tipoAsistente;
         this.estadoValidacion = estadoValidacion;
         this.formacionPrevia = formacionPrevia;
         this.disponibilidad = disponibilidad;
     }
 
-    public String getIdAsistente() {
+    public int getIdAsistente() {
         return idAsistente;
     }
 
-    public void setIdAsistente(String idAsistente) {
+    public void setIdAsistente(int idAsistente) {
         this.idAsistente = idAsistente;
     }
 
@@ -91,9 +92,10 @@ public class AsistentePersonal {
     @Override
     public String toString() {
         return "AsistentePersonal{" +
-                "idAsistente='" + idAsistente + '\'' +
+                "idAsistente=" + idAsistente +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
+                ", contrasena='" + contrasena + '\'' +
                 ", tipoAsistente='" + tipoAsistente + '\'' +
                 ", estadoValidacion='" + estadoValidacion + '\'' +
                 ", formacionPrevia='" + formacionPrevia + '\'' +

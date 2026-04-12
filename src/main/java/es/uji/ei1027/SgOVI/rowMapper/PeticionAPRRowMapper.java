@@ -11,8 +11,8 @@ public class PeticionAPRRowMapper implements RowMapper<PeticionAPR> {
     @Override
     public PeticionAPR mapRow(ResultSet rs, int rowNum) throws SQLException {
         PeticionAPR peticion = new PeticionAPR();
-        peticion.setIdSolicitud(rs.getString("id_solicitud"));
-        peticion.setIdUsuario(rs.getString("id_usuario"));
+        peticion.setIdSolicitud(rs.getInt("id_solicitud"));
+        peticion.setIdUsuario(rs.getInt("id_usuario"));
         peticion.setTipoAsistencia(rs.getString("tipo_asistencia"));
         peticion.setDescripcion(rs.getString("descripcion"));
         peticion.setHorasSemanales(rs.getInt("horas_semanales"));

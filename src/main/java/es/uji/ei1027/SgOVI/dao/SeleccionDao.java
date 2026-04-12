@@ -43,7 +43,7 @@ public class SeleccionDao {
         }
     }
 
-    public List<Seleccion> getSeleccionesBySolicitud(String idSolicitud) {
+    public List<Seleccion> getSeleccionesBySolicitud(int idSolicitud) {
         try {
             return jdbcTemplate.query(GET_SELECCIONES_BY_SOLICITUD, new SeleccionRowMapper(), idSolicitud);
         } catch (EmptyResultDataAccessException e) {
@@ -52,7 +52,7 @@ public class SeleccionDao {
         }
     }
 
-    public List<Seleccion> getSeleccionesByAsistente(String idAsistente) {
+    public List<Seleccion> getSeleccionesByAsistente(int idAsistente) {
         try {
             return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE, new SeleccionRowMapper(), idAsistente);
         } catch (EmptyResultDataAccessException e) {

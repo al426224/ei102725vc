@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class PeticionAPR {
 
-    private String idSolicitud;
-    private String idUsuario;
+    private int idSolicitud;
+    private int idUsuario;
     private String tipoAsistencia;
     private String descripcion;
     private int horasSemanales;
@@ -13,7 +13,7 @@ public class PeticionAPR {
 
     public PeticionAPR() {}
 
-    public PeticionAPR(String idSolicitud, String idUsuario, String tipoAsistencia, 
+    public PeticionAPR(int idSolicitud, int idUsuario, String tipoAsistencia, 
                       String descripcion, int horasSemanales, String estado) {
         this.idSolicitud = idSolicitud;
         this.idUsuario = idUsuario;
@@ -23,19 +23,19 @@ public class PeticionAPR {
         this.estado = estado;
     }
 
-    public String getIdSolicitud() {
+    public int getIdSolicitud() {
         return idSolicitud;
     }
 
-    public void setIdSolicitud(String idSolicitud) {
+    public void setIdSolicitud(int idSolicitud) {
         this.idSolicitud = idSolicitud;
     }
 
-    public String getIdUsuario() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(String idUsuario) {
+    public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
 

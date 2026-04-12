@@ -24,7 +24,7 @@ public class AsistentePersonalDao {
     public static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
     public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ?";
     public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
-    public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (id_asistente, nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
     public static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ? WHERE id_asistente = ?";
     public static final String GET_ASSISTANTS = "SELECT * FROM " + TABLE_NAME;
@@ -34,7 +34,7 @@ public class AsistentePersonalDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public AsistentePersonal getAsistente(String id) {
+    public AsistentePersonal getAsistente(int id) {
         try {
             return jdbcTemplate.queryForObject(GET_ASSISTENT_BY_ID, new AsistentePersonalRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
@@ -71,7 +71,7 @@ public class AsistentePersonalDao {
     }
 
     public void addAsistente(AsistentePersonal asistente) {
-        jdbcTemplate.update(ADD_ASSISTENT, asistente.getIdAsistente(), asistente.getNombre(), asistente.getEmail(),
+        jdbcTemplate.update(ADD_ASSISTENT, asistente.getNombre(), asistente.getEmail(),
                 asistente.getContrasena(), asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
                 asistente.getFormacionPrevia(), asistente.getDisponibilidad());
     }
@@ -82,7 +82,7 @@ public class AsistentePersonalDao {
                 asistente.getFormacionPrevia(), asistente.getDisponibilidad(), asistente.getIdAsistente());
     }
 
-    public void deleteAsistente(String id) {
+    public void deleteAsistente(int id) {
         jdbcTemplate.update(DELETE_ASSISTENT, id);
     }
 

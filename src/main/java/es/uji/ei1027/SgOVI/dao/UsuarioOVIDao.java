@@ -23,7 +23,7 @@ public class UsuarioOVIDao {
     public static final String GET_USUARIO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
     public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
     public static final String GET_USUARIO_BY_DNI = "SELECT * FROM " + TABLE_NAME + " WHERE dni = ?";
-    public static final String ADD_USUARIO = "INSERT INTO " + TABLE_NAME + " (id_usuario, nombre, email, contrasena, telefono, fecha_registro, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String ADD_USUARIO = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, fecha_registro, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_USUARIO = "DELETE FROM " + TABLE_NAME + " WHERE id_usuario = ?";
     public static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
     public static final String GET_USUARIOS = "SELECT * FROM " + TABLE_NAME;
@@ -34,7 +34,7 @@ public class UsuarioOVIDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public UsuarioOVI getUsuario(String id) {
+    public UsuarioOVI getUsuario(int id) {
         try {
             return jdbcTemplate.queryForObject(GET_USUARIO_BY_ID, new UsuarioOVIRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
@@ -62,7 +62,7 @@ public class UsuarioOVIDao {
     }
 
     public void addUsuario(UsuarioOVI usuario) {
-        jdbcTemplate.update(ADD_USUARIO, usuario.getIdUsuario(), usuario.getNombre(), usuario.getEmail(), 
+        jdbcTemplate.update(ADD_USUARIO, usuario.getNombre(), usuario.getEmail(), 
                 usuario.getContrasena(), usuario.getTelefono(), usuario.getFechaRegistro(), 
                 usuario.isConsentimientoLOPD(), usuario.getDni(), usuario.getFechaNacimiento(), 
                 usuario.getProyectoVida(), usuario.getEstado());
@@ -75,7 +75,7 @@ public class UsuarioOVIDao {
                 usuario.getIdUsuario());
     }
 
-    public void deleteUsuario(String id) {
+    public void deleteUsuario(int id) {
         jdbcTemplate.update(DELETE_USUARIO, id);
     }
 

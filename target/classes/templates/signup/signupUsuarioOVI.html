@@ -28,9 +28,9 @@
                 <p class="campos-obligatorios">* Campos obligatorios</p>
 
                 <div class="campos">
-                    <label for="nombre">Nombre</label>
+                    <label for="nombre">Nombre completo *</label>
                     <input type="text" id="nombre" name="nombre" required
-                           th:field="*{nombre}" placeholder="Tu nombre">
+                           th:field="*{nombre}" placeholder="Tu nombre completo">
                     <div class="error" th:if="${#fields.hasErrors('nombre')}"
                          th:errors="*{nombre}"></div>
                 </div>

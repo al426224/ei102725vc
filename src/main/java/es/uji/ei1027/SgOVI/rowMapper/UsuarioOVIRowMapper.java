@@ -11,7 +11,7 @@ public class UsuarioOVIRowMapper implements RowMapper<UsuarioOVI> {
     @Override
     public UsuarioOVI mapRow(ResultSet rs, int rowNum) throws SQLException {
         UsuarioOVI usuarioOVI = new UsuarioOVI();
-        usuarioOVI.setIdUsuario(rs.getString("id_usuario"));
+        usuarioOVI.setIdUsuario(rs.getInt("id_usuario"));
         usuarioOVI.setNombre(rs.getString("nombre"));
         usuarioOVI.setEmail(rs.getString("email"));
         usuarioOVI.setContrasena(rs.getString("contrasena"));

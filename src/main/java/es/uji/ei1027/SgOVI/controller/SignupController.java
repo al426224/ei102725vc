@@ -53,7 +53,6 @@ public class SignupController {
             return "signup/signupUsuarioOVI";
         }
 
-        usuarioOVI.setIdUsuario("USR" + System.currentTimeMillis());
         usuarioOVI.setFechaRegistro(LocalDate.now());
         usuarioOVI.setEstado("pendiente");
 

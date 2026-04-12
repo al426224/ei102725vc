@@ -55,7 +55,7 @@ public class UsuarioOVIController {
         UsuarioOVI usuario = null;
         
         if (tipo.equals("id")) {
-            usuario = usuarioOVIDao.getUsuario(valor);
+            usuario = usuarioOVIDao.getUsuario(Integer.parseInt(valor));
         } else if (tipo.equals("email")) {
             usuario = usuarioOVIDao.getUsuarioByEmail(valor);
         } else if (tipo.equals("dni")) {
@@ -72,7 +72,7 @@ public class UsuarioOVIController {
     }
 
     @GetMapping("/update/{id}")
-    public String editUsuario(Model model, @PathVariable String id) {
+    public String editUsuario(Model model, @PathVariable int id) {
         model.addAttribute("usuario", usuarioOVIDao.getUsuario(id));
         return "usuarioOVI/update";
     }
@@ -89,7 +89,7 @@ public class UsuarioOVIController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteUsuario(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
+    public String deleteUsuario(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         usuarioOVIDao.deleteUsuario(id);
         redirectAttributes.addFlashAttribute("successMessage", "Usuario eliminado correctamente");
         return "redirect:/usuarioOVI/list";

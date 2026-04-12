@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class UsuarioOVI {
 
-    private String idUsuario;
+    private int idUsuario;
     private String nombre;
     private String email;
     private String contrasena;
@@ -22,7 +22,7 @@ public class UsuarioOVI {
 
     public UsuarioOVI() {}
 
-    public UsuarioOVI(String idUsuario, String nombre, String email, String telefono, 
+    public UsuarioOVI(int idUsuario, String nombre, String email, String telefono, 
                       LocalDate fechaRegistro, boolean consentimientoLOPD, String dni,
                       LocalDate fechaNacimiento, String proyectoVida, String estado) {
         this.idUsuario = idUsuario;
@@ -37,11 +37,11 @@ public class UsuarioOVI {
         this.estado = estado;
     }
 
-    public String getIdUsuario() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(String idUsuario) {
+    public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
     }
 
@@ -128,7 +128,7 @@ public class UsuarioOVI {
     @Override
     public String toString() {
         return "UsuarioOVI{" +
-                "idUsuario='" + idUsuario + '\'' +
+                "idUsuario=" + idUsuario +
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", telefono='" + telefono + '\'' +

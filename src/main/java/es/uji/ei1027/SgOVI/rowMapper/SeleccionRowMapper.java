@@ -12,8 +12,8 @@ public class SeleccionRowMapper implements RowMapper<Seleccion> {
     public Seleccion mapRow(ResultSet rs, int rowNum) throws SQLException {
         Seleccion seleccion = new Seleccion();
         seleccion.setIdSeleccion(rs.getInt("id_seleccion"));
-        seleccion.setIdSolicitud(rs.getString("id_solicitud"));
-        seleccion.setIdAsistente(rs.getString("id_asistente"));
+        seleccion.setIdSolicitud(rs.getInt("id_solicitud"));
+        seleccion.setIdAsistente(rs.getInt("id_asistente"));
         seleccion.setEstadoSeleccion(rs.getString("estado_seleccion"));
         seleccion.setPuntuacionMatch(rs.getObject("puntuacion_match", Integer.class));
         return seleccion;

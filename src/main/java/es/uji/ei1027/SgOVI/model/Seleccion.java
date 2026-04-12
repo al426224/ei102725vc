@@ -3,14 +3,14 @@ package es.uji.ei1027.SgOVI.model;
 public class Seleccion {
 
     private int idSeleccion;
-    private String idSolicitud;
-    private String idAsistente;
+    private int idSolicitud;
+    private int idAsistente;
     private String estadoSeleccion;
     private Integer puntuacionMatch;
 
     public Seleccion() {}
 
-    public Seleccion(int idSeleccion, String idSolicitud, String idAsistente, 
+    public Seleccion(int idSeleccion, int idSolicitud, int idAsistente, 
                    String estadoSeleccion, Integer puntuacionMatch) {
         this.idSeleccion = idSeleccion;
         this.idSolicitud = idSolicitud;
@@ -27,19 +27,19 @@ public class Seleccion {
         this.idSeleccion = idSeleccion;
     }
 
-    public String getIdSolicitud() {
+    public int getIdSolicitud() {
         return idSolicitud;
     }
 
-    public void setIdSolicitud(String idSolicitud) {
+    public void setIdSolicitud(int idSolicitud) {
         this.idSolicitud = idSolicitud;
     }
 
-    public String getIdAsistente() {
+    public int getIdAsistente() {
         return idAsistente;
     }
 
-    public void setIdAsistente(String idAsistente) {
+    public void setIdAsistente(int idAsistente) {
         this.idAsistente = idAsistente;
     }
 
@@ -63,8 +63,8 @@ public class Seleccion {
     public String toString() {
         return "Seleccion{" +
                 "idSeleccion=" + idSeleccion +
-                ", idSolicitud='" + idSolicitud + '\'' +
-                ", idAsistente='" + idAsistente + '\'' +
+                ", idSolicitud=" + idSolicitud +
+                ", idAsistente=" + idAsistente +
                 ", estadoSeleccion='" + estadoSeleccion + '\'' +
                 ", puntuacionMatch=" + puntuacionMatch +
                 '}';

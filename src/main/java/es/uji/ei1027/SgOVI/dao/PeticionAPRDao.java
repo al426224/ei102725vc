@@ -24,7 +24,7 @@ public class PeticionAPRDao {
     public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
     public static final String GET_PETICIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
     public static final String GET_PETICIONES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistencia = ?";
-    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_solicitud, id_usuario, tipo_asistencia, descripcion, horas_semanales, estado) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado) VALUES (?, ?, ?, ?, ?)";
     public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
     public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ? WHERE id_solicitud = ?";
     public static final String GET_PETICIONES = "SELECT * FROM " + TABLE_NAME;
@@ -34,7 +34,7 @@ public class PeticionAPRDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public PeticionAPR getPeticion(String id) {
+    public PeticionAPR getPeticion(int id) {
         try {
             return jdbcTemplate.queryForObject(GET_PETICION_BY_ID, new PeticionAPRRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
@@ -43,7 +43,7 @@ public class PeticionAPRDao {
         }
     }
 
-    public List<PeticionAPR> getPeticionesByUsuario(String idUsuario) {
+    public List<PeticionAPR> getPeticionesByUsuario(int idUsuario) {
         try {
             return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO, new PeticionAPRRowMapper(), idUsuario);
         } catch (EmptyResultDataAccessException e) {
@@ -71,7 +71,7 @@ public class PeticionAPRDao {
     }
 
     public void addPeticion(PeticionAPR peticion) {
-        jdbcTemplate.update(ADD_PETICION, peticion.getIdSolicitud(), peticion.getIdUsuario(), 
+        jdbcTemplate.update(ADD_PETICION, peticion.getIdUsuario(), 
                 peticion.getTipoAsistencia(), peticion.getDescripcion(), peticion.getHorasSemanales(), 
                 peticion.getEstado());
     }
@@ -82,7 +82,7 @@ public class PeticionAPRDao {
                 peticion.getIdSolicitud());
     }
 
-    public void deletePeticion(String id) {
+    public void deletePeticion(int id) {
         jdbcTemplate.update(DELETE_PETICION, id);
     }
 

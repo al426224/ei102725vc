@@ -46,7 +46,7 @@ public class AsistenciaFormacionDao {
         }
     }
 
-    public List<ActividadFormacion> getActividadesByAsistente(String idAsistente) {
+    public List<ActividadFormacion> getActividadesByAsistente(int idAsistente) {
         try {
             return jdbcTemplate.query(GET_ACTIVIDADES_BY_ASISTENTE, new ActividadFormacionRowMapper(), idAsistente);
         } catch (EmptyResultDataAccessException e) {
@@ -55,16 +55,16 @@ public class AsistenciaFormacionDao {
         }
     }
 
-    public void addAsistencia(int idActividad, String idAsistente) {
-        jdbcTemplate.update(ADD_ASISTENCIA, idActividad, idAsistente);
+    public void addAsistencia(int idActividad, int idUsuario, int idAsistente) {
+        jdbcTemplate.update(ADD_ASISTENCIA, idActividad, idUsuario, idAsistente);
     }
 
-    public void deleteAsistencia(int idActividad, String idAsistente) {
-        jdbcTemplate.update(DELETE_ASISTENCIA, idActividad, idAsistente);
+    public void deleteAsistencia(int idActividad, int idUsuario, int idAsistente) {
+        jdbcTemplate.update(DELETE_ASISTENCIA, idActividad, idUsuario, idAsistente);
     }
 
-    public boolean existsAsistencia(int idActividad, String idAsistente) {
-        int count = jdbcTemplate.queryForObject(EXISTS_ASISTENCIA, Integer.class, idActividad, idAsistente);
+    public boolean existsAsistencia(int idActividad, int idUsuario, int idAsistente) {
+        int count = jdbcTemplate.queryForObject(EXISTS_ASISTENCIA, Integer.class, idActividad, idUsuario, idAsistente);
         return count > 0;
     }
 }
