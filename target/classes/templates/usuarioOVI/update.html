@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/estilos.css">
+    <title>Editar Perfil</title>
+</head>
+<body>
+    <!-- Header fijo -->
+    <header>
+        <div class="logo">
+            <img src="/images/logo.png" alt="Logo">
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <!-- Lado izquierdo - Título -->
+        <div class="lado-izquierdo">
+            <h1 class="titulo-pagina">Editar<br>perfil</h1>
+        </div>
+
+        <!-- Lado derecho - Formulario -->
+        <div class="lado-derecho">
+            <form action="/usuarioOVI/update" method="POST" class="formulario" th:object="${usuario}">
+
+                <!-- Campo oculto para enviar el id al POST -->
+                <input type="hidden" th:field="*{idUsuario}">
+
+                <div class="campos">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre"
+                           th:field="*{nombre}" placeholder="Tu nombre">
+                    <div class="error" th:if="${#fields.hasErrors('nombre')}"
+                         th:errors="*{nombre}"></div>
+                </div>
+
+                <div class="campos">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" name="email"
+                           th:field="*{email}" placeholder="tu@email.com">
+                    <div class="error" th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}"></div>
+                </div>
+
+                <div class="campos">
+                    <label for="telefono">Teléfono</label>
+                    <input type="text" id="telefono" name="telefono"
+                           th:field="*{telefono}" placeholder="Tu teléfono">
+                    <div class="error" th:if="${#fields.hasErrors('telefono')}"
+                         th:errors="*{telefono}"></div>
+                </div>
+
+                <div class="campos">
+                    <label for="proyectoVida">Proyecto de Vida</label>
+                    <textarea id="proyectoVida" name="proyectoVida" rows="3"
+                              th:field="*{proyectoVida}" placeholder="Describe tu proyecto de vida"></textarea>
+                    <div class="error" th:if="${#fields.hasErrors('proyectoVida')}"
+                         th:errors="*{proyectoVida}"></div>
+                </div>
+
+                <div class="enviar">
+                    <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="boton boton-secundario">Cancelar</a>
+                    <button type="submit" class="boton">Confirmar cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
