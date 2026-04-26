@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Inici</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+    <h1>Sistema de Gestio OVI</h1>
+    
+    <p th:if="${session.usuario == null}">
+        <a href="/login">Entrar</a>
+    </p>
+    <p th:unless="${session.usuario == null}">
+        Hola, <span th:text="${session.usuario.nombre}"></span>! 
+        (<span th:text="${session.tipo}"></span>)
+        <a href="/logout">Eixir</a>
+    </p>
+    
+    <nav>
+        <a href="/usuarioOVI/list">Usuaris OVI</a> |
+        <a href="/signup">Registre</a> |
+        <a href="/seleccion/list">Seleccions</a> |
+        <a href="/peticionAPR/list">Peticions</a> |
+        <a href="/asistentePersonal/list">Assistents</a> |
+        <a href="/registroContacto/list">Contactes</a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Usuaris</title>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+    <h1>Usuaris del sistema</h1>
+    <ul>
+        <li th:each="user: ${users}" th:text="${user.username}"></li>
+    </ul>
+    <a href="/">Tornar</a>
+</body>
+</html>
