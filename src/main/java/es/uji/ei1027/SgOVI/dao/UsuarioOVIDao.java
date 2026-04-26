@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.dao;
 
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.rowMapper.UsuarioOVIRowMapper;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -94,6 +95,22 @@ public class UsuarioOVIDao {
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron usuarios con estado: " + estado);
             return new ArrayList<>();
+        }
+    }
+
+    public UsuarioOVI auth(String email, String password) {
+        try {
+            UsuarioOVI user = jdbcTemplate.queryForObject(GET_USUARIO_BY_EMAIL, new UsuarioOVIRowMapper(), email);
+            if (user != null) {
+                BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+                if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
+                    user.setContrasena(null); // No returned for security
+                    return user;
+                }
+            }
+            return null;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
 }

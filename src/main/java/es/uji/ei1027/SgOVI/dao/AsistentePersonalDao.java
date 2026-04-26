@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.dao;
 
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.rowMapper.AsistentePersonalRowMapper;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -86,12 +87,28 @@ public class AsistentePersonalDao {
         jdbcTemplate.update(DELETE_ASSISTENT, id);
     }
 
-    public List<AsistentePersonal> getAsistentes() {
+public List<AsistentePersonal> getAsistentes() {
         try {
             return jdbcTemplate.query(GET_ASSISTANTS, new AsistentePersonalRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron asistentes.");
             return new ArrayList<>();
+        }
+    }
+
+    public AsistentePersonal auth(String email, String password) {
+        try {
+            AsistentePersonal user = jdbcTemplate.queryForObject(GET_ASSISTENT_BY_EMAIL, new AsistentePersonalRowMapper(), email);
+            if (user != null) {
+                BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+                if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
+                    user.setContrasena(null);
+                    return user;
+                }
+            }
+            return null;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
 }

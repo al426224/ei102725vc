@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.dao;
 
 import es.uji.ei1027.SgOVI.model.Formador;
 import es.uji.ei1027.SgOVI.rowMapper.FormadorRowMapper;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,9 +24,9 @@ public class FormadorDao {
     public static final String GET_FORMADOR_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_formador = ?";
     public static final String GET_FORMADOR_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
     public static final String GET_FORMADORES_BY_ESPECIALIDAD = "SELECT * FROM " + TABLE_NAME + " WHERE especialidad = ?";
-    public static final String ADD_FORMADOR = "INSERT INTO " + TABLE_NAME + " (nombre, email, telefono, especialidad, historialsesiones) VALUES (?, ?, ?, ?, ?)";
+    public static final String ADD_FORMADOR = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, especialidad, historialsesiones) VALUES (?, ?, ?, ?, ?, ?)";
     public static final String DELETE_FORMADOR = "DELETE FROM " + TABLE_NAME + " WHERE id_formador = ?";
-    public static final String UPDATE_FORMADOR = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, telefono = ?, especialidad = ?, historialsesiones = ? WHERE id_formador = ?";
+    public static final String UPDATE_FORMADOR = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, especialidad = ?, historialsesiones = ? WHERE id_formador = ?";
     public static final String GET_FORMADORES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
@@ -60,27 +61,44 @@ public class FormadorDao {
         }
     }
 
-    public void addFormador(Formador formador) {
+public void addFormador(Formador formador) {
         jdbcTemplate.update(ADD_FORMADOR, formador.getNombre(), formador.getEmail(),
-                formador.getTelefono(), formador.getEspecialidad(), formador.getHistorialSesiones());
+                formador.getContrasena(), formador.getTelefono(), formador.getEspecialidad(), 
+                formador.getHistorialSesiones());
     }
 
     public void updateFormador(Formador formador) {
         jdbcTemplate.update(UPDATE_FORMADOR, formador.getNombre(), formador.getEmail(),
-                formador.getTelefono(), formador.getEspecialidad(), formador.getHistorialSesiones(),
-                formador.getIdFormador());
+                formador.getContrasena(), formador.getTelefono(), formador.getEspecialidad(), 
+                formador.getHistorialSesiones(), formador.getIdFormador());
     }
 
     public void deleteFormador(int id) {
         jdbcTemplate.update(DELETE_FORMADOR, id);
     }
 
-    public List<Formador> getFormadores() {
+public List<Formador> getFormadores() {
         try {
             return jdbcTemplate.query(GET_FORMADORES, new FormadorRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron formadores.");
             return new ArrayList<>();
+        }
+    }
+
+    public Formador auth(String email, String password) {
+        try {
+            Formador user = jdbcTemplate.queryForObject(GET_FORMADOR_BY_EMAIL, new FormadorRowMapper(), email);
+            if (user != null) {
+                BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+                if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
+                    user.setContrasena(null);
+                    return user;
+                }
+            }
+            return null;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
 }

@@ -14,6 +14,7 @@ public class FormadorRowMapper implements RowMapper<Formador> {
         formador.setIdFormador(rs.getInt("id_formador"));
         formador.setNombre(rs.getString("nombre"));
         formador.setEmail(rs.getString("email"));
+        formador.setContrasena(rs.getString("contrasena"));
         formador.setTelefono(rs.getString("telefono"));
         formador.setEspecialidad(rs.getString("especialidad"));
         formador.setHistorialSesiones(rs.getString("historialsesiones"));

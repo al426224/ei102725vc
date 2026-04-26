@@ -3,6 +3,7 @@ package es.uji.ei1027.SgOVI.controller;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.validator.UsuarioOVISignupValidator;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -55,6 +56,10 @@ public class SignupController {
 
         usuarioOVI.setFechaRegistro(LocalDate.now());
         usuarioOVI.setEstado("pendiente");
+
+        // Encriptar contraseña antes de guardar
+        BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+        usuarioOVI.setContrasena(passwordEncryptor.encryptPassword(usuarioOVI.getContrasena()));
 
         usuarioOVIDao.addUsuario(usuarioOVI);
 

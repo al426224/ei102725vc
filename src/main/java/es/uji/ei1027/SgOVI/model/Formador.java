@@ -5,20 +5,30 @@ public class Formador {
     private int idFormador;
     private String nombre;
     private String email;
+    private String contrasena;
     private String telefono;
     private String especialidad;
     private String historialSesiones;
 
     public Formador() {}
 
-    public Formador(int idFormador, String nombre, String email, String telefono,
+public Formador(int idFormador, String nombre, String email, String contrasena, String telefono,
                     String especialidad, String historialSesiones) {
         this.idFormador = idFormador;
         this.nombre = nombre;
         this.email = email;
+        this.contrasena = contrasena;
         this.telefono = telefono;
         this.especialidad = especialidad;
         this.historialSesiones = historialSesiones;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public int getIdFormador() {
