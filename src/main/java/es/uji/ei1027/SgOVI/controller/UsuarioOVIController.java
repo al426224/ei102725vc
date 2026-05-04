@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -107,5 +108,18 @@ public class UsuarioOVIController {
         // Es vital pasar el objeto "usuario" para que el HTML pueda leer sus datos
         model.addAttribute("usuario", usuario);
         return "usuarioOVI/perfilUsuarioOVI";
+    }
+
+    @GetMapping("/homeUsuarioOVI")
+    public String homeUsuarioOVI(HttpSession session, Model model) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
+
+        // Si no hay usuario en sesión, redirigimos al login por seguridad
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("usuario", usuario);
+        return "usuarioOVI/home";
     }
 }

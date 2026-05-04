@@ -40,7 +40,7 @@ public class LoginController {
         if (usuarioOVI != null) {
             session.setAttribute("usuario", usuarioOVI);
             session.setAttribute("tipo", "usuarioOVI");
-            return "redirect:/";
+            return "redirect:/usuarioOVI/homeUsuarioOVI";
         }
         
         AsistentePersonal asistente = asistentePersonalDao.auth(email, password);

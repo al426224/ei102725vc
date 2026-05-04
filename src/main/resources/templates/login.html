@@ -1,17 +1,56 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login</title>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Ruta dinámica para asegurar que cargue el CSS siempre -->
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <title>Acceso - SgOVI</title>
 </head>
 <body>
-    <h1>Acces</h1>
-    <p th:if="${param.error}" style="color:red">Usuari o contrasenya incorrectes</p>
-    <form action="/login" method="post">
-        <p>Email: <input type="text" name="email"/></p>
-        <p>Contrasenya: <input type="password" name="password"/></p>
-        <button type="submit">Entrar</button>
-    </form>
-    <p><a href="/signup">Registrar-se</a></p>
+<header>
+    <div class="logo">
+        <img th:src="@{/images/logo.png}" alt="Logo">
+    </div>
+</header>
+
+<div class="main-content">
+    <!-- Lado izquierdo - Título siguiendo tu estilo visual -->
+    <div class="lado-izquierdo">
+        <h1 class="titulo-pagina">Acceso al<br>Sistema</h1>
+    </div>
+
+    <!-- Lado derecho - Formulario -->
+    <div class="lado-derecho">
+        <!-- th:action asegura que Spring Security o tu controlador reciban los datos -->
+        <form th:action="@{/login}" method="POST" class="formulario">
+
+            <!-- Mensaje de error (traducido y con estilo de tu CSS) -->
+            <p class="error" th:if="${param.error}">Usuario o contraseña incorrectos</p>
+
+            <div class="campos">
+                <label for="email">Correo Electrónico</label>
+                <!-- Mantengo name="email" para que tu controlador actual lo reconozca -->
+                <input type="text" id="email" name="email" required placeholder="tu@email.com">
+            </div>
+
+            <div class="campos">
+                <label for="password">Contraseña</label>
+                <!-- Mantengo name="password" para que coincida con tu código actual -->
+                <input type="password" id="password" name="password" required placeholder="********">
+            </div>
+
+            <div class="enviar">
+                <button type="submit" class="boton">Entrar</button>
+
+                <div style="margin-top: 25px; text-align: center;">
+                    <p style="margin-bottom: 10px;">¿No tienes cuenta?</p>
+                    <!-- Enlace a tu ruta de registro -->
+                    <a th:href="@{/signup}" class="boton-secundario">Registrarse</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

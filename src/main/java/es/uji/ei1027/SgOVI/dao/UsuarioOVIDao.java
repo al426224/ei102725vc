@@ -101,11 +101,18 @@ public class UsuarioOVIDao {
     public UsuarioOVI auth(String email, String password) {
         try {
             UsuarioOVI user = jdbcTemplate.queryForObject(GET_USUARIO_BY_EMAIL, new UsuarioOVIRowMapper(), email);
-            if (user != null) {
+
+            if (user != null && user.getContrasena() != null && !user.getContrasena().isEmpty()) {
                 BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
-                if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
-                    user.setContrasena(null); // No returned for security
-                    return user;
+
+                try {
+                    if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
+                        user.setContrasena(null);
+                        return user;
+                    }
+                } catch (Exception e) {
+                    logger.severe("Error de encriptación: La contraseña en BD no tiene un formato válido de Jasypt.");
+                    return null;
                 }
             }
             return null;

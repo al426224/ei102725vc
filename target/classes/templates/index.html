@@ -1,28 +1,135 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Inici</title>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SgOVI - Oficina per la Vida Independent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* --- ESTILOS ORIGINALES DE HOME (1).HTML --- */
+        :root {
+            --rosa-base: #f5e6e8;
+            --rosa-medio: #e8c5ca;
+            --rosa-oscuro: #c9848f;
+            --rosa-acento: #b5606e;
+            --negro: #1a1a1a;
+            --gris-texto: #4a4a4a;
+            --blanco: #ffffff;
+            --footer-bg: #3d2428;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--rosa-base);
+            color: var(--negro);
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(245, 230, 232, 0.92);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--rosa-medio);
+            padding: 0 2.5rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+        .nav-logo-icon {
+            width: 38px; height: 38px; background: var(--rosa-acento);
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; font-family: 'Playfair Display', serif;
+            font-size: 1rem; font-weight: 700;
+        }
+
+        .nav-logo-text { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--negro); }
+
+        nav { display: flex; align-items: center; gap: 2rem; }
+        nav a { text-decoration: none; color: var(--gris-texto); font-size: 0.9rem; transition: color 0.2s; }
+        nav a:hover { color: var(--rosa-acento); }
+
+        .nav-acceder {
+            background: var(--negro); color: var(--blanco) !important;
+            padding: 0.45rem 1.2rem; border-radius: 50px; font-weight: 500 !important;
+        }
+
+        /* --- HERO --- */
+        .hero { margin-top: 64px; position: relative; height: 88vh; overflow: hidden; }
+        .slides { display: flex; height: 100%; transition: transform 0.7s cubic-bezier(0.77, 0, 0.175, 1); }
+        .slide { min-width: 100%; height: 100%; display: flex; align-items: center; padding: 4rem 6rem; position: relative; }
+        .slide-1 { background: linear-gradient(135deg, #f0d0d5 0%, #e8b8bf 50%, #dfa0aa 100%); }
+        .slide-content { max-width: 600px; z-index: 2; }
+        .slide-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 1rem; }
+        .slide-desc { font-size: 1.05rem; color: var(--gris-texto); margin-bottom: 2rem; line-height: 1.7; }
+        .slide-cta { display: inline-block; background: var(--negro); color: var(--blanco); text-decoration: none; padding: 0.75rem 2rem; border-radius: 50px; }
+
+        /* --- ACCESO GRID --- */
+        .acceso-section { padding: 5rem 6rem; text-align: center; }
+        .section-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 3rem; }
+        .acceso-grid { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+        .acceso-card {
+            background: var(--blanco); border-radius: 20px; padding: 2.5rem 2rem;
+            width: 240px; text-decoration: none; color: var(--negro);
+            box-shadow: 0 4px 20px rgba(181, 96, 110, 0.1); transition: transform 0.25s;
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+        }
+        .acceso-card:hover { transform: translateY(-6px); }
+        .acceso-icon { width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .acceso-icon.verde { background: #d4edda; }
+        .acceso-icon.azul { background: #cce5f0; }
+        .acceso-nombre { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; }
+    </style>
 </head>
 <body>
-    <h1>Sistema de Gestio OVI</h1>
-    
-    <p th:if="${session.usuario == null}">
-        <a href="/login">Entrar</a>
-    </p>
-    <p th:unless="${session.usuario == null}">
-        Hola, <span th:text="${session.usuario.nombre}"></span>! 
-        (<span th:text="${session.tipo}"></span>)
-        <a href="/logout">Eixir</a>
-    </p>
-    
+
+<header>
+    <a th:href="@{/}" class="nav-logo">
+        <div class="nav-logo-icon">OVI</div>
+        <span class="nav-logo-text">SgOVI Castelló</span>
+    </a>
     <nav>
-        <a href="/usuarioOVI/list">Usuaris OVI</a> |
-        <a href="/signup">Registre</a> |
-        <a href="/seleccion/list">Seleccions</a> |
-        <a href="/peticionAPR/list">Peticions</a> |
-        <a href="/asistentePersonal/list">Assistents</a> |
-        <a href="/registroContacto/list">Contactes</a>
+        <a href="#servicios">Servicios</a>
+        <div th:if="${session.usuario == null}">
+            <a th:href="@{/login}" class="nav-acceder">Acceder</a>
+        </div>
+        <div th:unless="${session.usuario == null}">
+            <span th:text="${session.usuario.nombre}" style="margin-right: 15px; font-weight: 500;">Usuario</span>
+            <a th:href="@{/logout}" class="nav-acceder" style="background: var(--rosa-acento);">Salir</a>
+        </div>
     </nav>
+</header>
+
+<section class="hero">
+    <div class="slides" id="slides">
+        <div class="slide slide-1">
+            <div class="slide-content">
+                <h2 class="slide-title">Vida autónoma e independiente</h2>
+                <p class="slide-desc">Gestión integral de asistencia personal para personas con diversidad funcional en Castelló.</p>
+                <a th:href="@{/login}" class="slide-cta" th:if="${session.usuario == null}">Empezar ahora</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="acceso-section" th:if="${session.usuario == null}">
+    <h2 class="section-title">¿Cómo quieres participar?</h2>
+    <div class="acceso-grid">
+        <a th:href="@{/signup/registerUsuarioOVI}" class="acceso-card">
+            <div class="acceso-icon verde">🙋</div>
+            <span class="acceso-nombre">Usuario OVI</span>
+        </a>
+        <a th:href="@{/signup/registerAsistentePersonal}" class="acceso-card">
+            <div class="acceso-icon azul">🤲</div>
+            <span class="acceso-nombre">Asistente PAP</span>
+        </a>
+    </div>
+</section>
+
 </body>
 </html>

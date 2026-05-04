@@ -1,6 +1,8 @@
 package es.uji.ei1027.SgOVI.controller;
 
+import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
+import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.validator.UsuarioOVISignupValidator;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -20,10 +22,12 @@ import java.time.LocalDate;
 public class SignupController {
 
     private final UsuarioOVIDao usuarioOVIDao;
+    private final AsistentePersonalDao asistentePersonalDao;
 
     @Autowired
     public SignupController(UsuarioOVIDao usuarioOVIDao) {
         this.usuarioOVIDao = usuarioOVIDao;
+        this.asistentePersonalDao = new AsistentePersonalDao();
     }
 
     @InitBinder
@@ -40,6 +44,28 @@ public class SignupController {
     public String showRegisterUsuarioOVIForm(Model model) {
         model.addAttribute("usuarioOVI", new UsuarioOVI());
         return "signup/signupUsuarioOVI";
+    }
+
+
+    @GetMapping("/registerAsistentePersonal")
+    public String showRegisterAsistentePersonalForm(Model model) {
+        model.addAttribute("asistente", new AsistentePersonal()); // Inyectamos objeto para Thymeleaf[cite: 1, 2]
+        return "signup/signupAsistentePersonal";
+    }
+
+    @PostMapping("/registerAsistentePersonal")
+    public String registerAsistentePersonal(@ModelAttribute("asistente") AsistentePersonal asistente) {
+        // Encriptar contraseña antes de persistir[cite: 2]
+        BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+        asistente.setContrasena(passwordEncryptor.encryptPassword(asistente.getContrasena()));
+
+        // Establecer estado por defecto[cite: 2]
+        asistente.setEstadoValidacion("pendiente");
+
+        // Guardar en la base de datos usando el nuevo DAO[cite: 2]
+        asistentePersonalDao.addAsistente(asistente);
+
+        return "registro-exitoso";
     }
 
     @PostMapping("/registerUsuarioOVI")
