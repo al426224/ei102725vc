@@ -25,9 +25,9 @@ public class SignupController {
     private final AsistentePersonalDao asistentePersonalDao;
 
     @Autowired
-    public SignupController(UsuarioOVIDao usuarioOVIDao) {
+    public SignupController(UsuarioOVIDao usuarioOVIDao, AsistentePersonalDao asistentePersonalDao) {
         this.usuarioOVIDao = usuarioOVIDao;
-        this.asistentePersonalDao = new AsistentePersonalDao();
+        this.asistentePersonalDao = asistentePersonalDao;
     }
 
     @InitBinder
@@ -43,29 +43,24 @@ public class SignupController {
     @GetMapping("/registerUsuarioOVI")
     public String showRegisterUsuarioOVIForm(Model model) {
         model.addAttribute("usuarioOVI", new UsuarioOVI());
+        model.addAttribute("rawPassword", "");
         return "signup/signupUsuarioOVI";
     }
 
 
     @GetMapping("/registerAsistentePersonal")
     public String showRegisterAsistentePersonalForm(Model model) {
-        model.addAttribute("asistente", new AsistentePersonal()); // Inyectamos objeto para Thymeleaf[cite: 1, 2]
+        model.addAttribute("asistente", new AsistentePersonal());
         return "signup/signupAsistentePersonal";
     }
 
     @PostMapping("/registerAsistentePersonal")
     public String registerAsistentePersonal(@ModelAttribute("asistente") AsistentePersonal asistente) {
-        // Encriptar contraseña antes de persistir[cite: 2]
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
         asistente.setContrasena(passwordEncryptor.encryptPassword(asistente.getContrasena()));
-
-        // Establecer estado por defecto[cite: 2]
         asistente.setEstadoValidacion("pendiente");
-
-        // Guardar en la base de datos usando el nuevo DAO[cite: 2]
         asistentePersonalDao.addAsistente(asistente);
-
-        return "registro-exitoso";
+        return "redirect:/login?registered";
     }
 
     @PostMapping("/registerUsuarioOVI")
@@ -77,6 +72,7 @@ public class SignupController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("usuarioOVI", usuarioOVI);
+            model.addAttribute("rawPassword", usuarioOVI.getContrasena());
             return "signup/signupUsuarioOVI";
         }
 
@@ -88,7 +84,6 @@ public class SignupController {
         usuarioOVI.setContrasena(passwordEncryptor.encryptPassword(usuarioOVI.getContrasena()));
 
         usuarioOVIDao.addUsuario(usuarioOVI);
-
-        return "registro-exitoso";
+        return "redirect:/login?registered";
     }
 }

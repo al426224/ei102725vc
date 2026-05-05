@@ -63,7 +63,7 @@
             <!-- Campo: Contraseña -->
             <div class="campos">
                 <label for="contrasena">Contraseña *</label>
-                <input type="password" id="contrasena" th:field="*{contrasena}" placeholder="Mínimo 8 caracteres">
+                <input type="password" id="contrasena" name="contrasena" th:value="${rawPassword}" placeholder="Mínimo 8 caracteres">
                 <div class="error" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
             </div>
 

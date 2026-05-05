@@ -24,9 +24,7 @@
     <div class="lado-derecho">
         <!-- th:action asegura que Spring Security o tu controlador reciban los datos -->
         <form th:action="@{/login}" method="POST" class="formulario">
-
-            <!-- Mensaje de error (traducido y con estilo de tu CSS) -->
-            <p class="error" th:if="${param.error}">Usuario o contraseña incorrectos</p>
+            <p th:if="${param.registered}" style="color: #2e7d32; margin-bottom: 10px;">Registro completado. Ya puedes iniciar sesión.</p>
 
             <div class="campos">
                 <label for="email">Correo Electrónico</label>
@@ -38,6 +36,7 @@
                 <label for="password">Contraseña</label>
                 <!-- Mantengo name="password" para que coincida con tu código actual -->
                 <input type="password" id="password" name="password" required placeholder="********">
+                <p class="error" th:if="${param.error}">Usuario o contraseña incorrectos</p>
             </div>
 
             <div class="enviar">

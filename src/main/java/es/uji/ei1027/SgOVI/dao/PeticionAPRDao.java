@@ -24,9 +24,9 @@ public class PeticionAPRDao {
     public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
     public static final String GET_PETICIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
     public static final String GET_PETICIONES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistencia = ?";
-    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado) VALUES (?, ?, ?, ?, ?)";
+    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, franjas_horarias, tipo_tareas, ubicacion, preferencias_genero, experiencia_minima, formacion_especifica, idiomas, otras_preferencias, municipio, fecha_inicio_prevista, tiempo_preferido, preferencia_genero, preferencias) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ? WHERE id_solicitud = ?";
+    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, franjas_horarias = ?, tipo_tareas = ?, ubicacion = ?, preferencias_genero = ?, experiencia_minima = ?, formacion_especifica = ?, idiomas = ?, otras_preferencias = ?, municipio = ?, fecha_inicio_prevista = ?, tiempo_preferido = ?, preferencia_genero = ?, preferencias = ? WHERE id_solicitud = ?";
     public static final String GET_PETICIONES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
@@ -71,14 +71,47 @@ public class PeticionAPRDao {
     }
 
     public void addPeticion(PeticionAPR peticion) {
-        jdbcTemplate.update(ADD_PETICION, peticion.getIdUsuario(), 
-                peticion.getTipoAsistencia(), peticion.getDescripcion(), peticion.getHorasSemanales(), 
-                peticion.getEstado());
+        jdbcTemplate.update(ADD_PETICION, 
+                peticion.getIdUsuario(), 
+                peticion.getTipoAsistencia(), 
+                peticion.getDescripcion(), 
+                peticion.getHorasSemanales(), 
+                peticion.getEstado(),
+                peticion.getFranjasHorarias(),
+                peticion.getTipoTareas(),
+                peticion.getUbicacion(),
+                peticion.getPreferenciasGenero(),
+                peticion.getExperienciaMinima(),
+                peticion.getFormacionEspecifica(),
+                peticion.getIdiomas(),
+                peticion.getOtrasPreferencias(),
+                peticion.getMunicipio(),
+                peticion.getFechaInicioPrevista(),
+                peticion.getTiempoPreferido(),
+                peticion.getPreferenciaGenero(),
+                peticion.getPreferencias());
     }
 
     public void updatePeticion(PeticionAPR peticion) {
-        jdbcTemplate.update(UPDATE_PETICION, peticion.getIdUsuario(), peticion.getTipoAsistencia(), 
-                peticion.getDescripcion(), peticion.getHorasSemanales(), peticion.getEstado(), 
+        jdbcTemplate.update(UPDATE_PETICION, 
+                peticion.getIdUsuario(), 
+                peticion.getTipoAsistencia(), 
+                peticion.getDescripcion(), 
+                peticion.getHorasSemanales(), 
+                peticion.getEstado(),
+                peticion.getFranjasHorarias(),
+                peticion.getTipoTareas(),
+                peticion.getUbicacion(),
+                peticion.getPreferenciasGenero(),
+                peticion.getExperienciaMinima(),
+                peticion.getFormacionEspecifica(),
+                peticion.getIdiomas(),
+                peticion.getOtrasPreferencias(),
+                peticion.getMunicipio(),
+                peticion.getFechaInicioPrevista(),
+                peticion.getTiempoPreferido(),
+                peticion.getPreferenciaGenero(),
+                peticion.getPreferencias(),
                 peticion.getIdSolicitud());
     }
 

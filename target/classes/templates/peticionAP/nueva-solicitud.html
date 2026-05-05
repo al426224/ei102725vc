@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Solicitud AP - SgOVI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/usuarioovi.css}">
+    <script>
+        function autoResize(obj) {
+            obj.style.height = 'auto';
+            obj.style.height = obj.scrollHeight + 'px';
+        }
+    </script>
+</head>
+<body class="sidebar-layout">
+
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">🏠 Dashboard</a>
+        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item">📋 Mis Solicitudes</a>
+        <a th:href="@{/peticionAP/nueva}" class="nav-item active">📝 Nueva Solicitud</a>
+        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">👤 Mi Perfil</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<main class="main-content">
+    <h1 class="page-title">Nueva Solicitud de Asistencia</h1>
+
+    <div class="form-card">
+        <form th:action="@{/peticionAP/nueva}" method="post" th:object="${peticionAP}">
+            <p class="required-text">* Campos obligatorios</p>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipoAsistencia" class="form-label">Tipo de asistencia *</label>
+                    <select id="tipoAsistencia" class="form-select" th:field="*{tipoAsistencia}" required>
+                        <option value="">Selecciona tipo</option>
+                        <option value="PAP">PAP (mayores de edad)</option>
+                        <option value="PATI">PATI (menores de edad)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="horasSemanales" class="form-label">Horas semanales *</label>
+                    <input type="number" id="horasSemanales" class="form-input" th:field="*{horasSemanales}" min="1" max="168" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="franjasHorarias" class="form-label">Franjas horarias preferidas *</label>
+                <input type="text" id="franjasHorarias" class="form-input" th:field="*{franjasHorarias}" placeholder="Ej: Mañanas de 9h a 13h, Tardes de 16h a 20h" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipoTareas" class="form-label">Tipo de tareas *</label>
+                <select id="tipoTareas" class="form-select" th:field="*{tipoTareas}" required>
+                    <option value="">Selecciona tipo de tarea</option>
+                    <option value="acompanyament educatiu">Acompanyamiento educativo</option>
+                    <option value="acompanyament laboral">Acompanyamiento laboral</option>
+                    <option value="cura personal">Cuidado personal</option>
+                    <option value="mobilitat">Movilidad</option>
+                    <option value="domicili">Asistencia en domicilio</option>
+                    <option value="oci temps lliure">Ocio y tiempo libre</option>
+                    <option value="altres">Otros</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ubicacion" class="form-label">Ubicación principal (dirección o municipio) *</label>
+                <input type="text" id="ubicacion" class="form-input" th:field="*{ubicacion}" placeholder="Ej: Castelló de la Plana" required>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion" class="form-label">Descripción de la necesidad</label>
+                <textarea id="descripcion" class="form-textarea" th:field="*{descripcion}" placeholder="Describe brevemente tu situación y necesidades" oninput="autoResize(this)" style="min-height: 60px;"></textarea>
+            </div>
+
+            <h3 class="section-title">Preferencias</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="preferenciasGenero" class="form-label">Género preferido</label>
+                    <select id="preferenciasGenero" class="form-select" th:field="*{preferenciasGenero}">
+                        <option value="">Sin preferencia</option>
+                        <option value="hombre">Hombre</option>
+                        <option value="mujer">Mujer</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="idiomas" class="form-label">Idiomas requeridos</label>
+                    <input type="text" id="idiomas" class="form-input" th:field="*{idiomas}" placeholder="Ej: Valenciano">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="otrasPreferencias" class="form-label">Otras observaciones</label>
+                <input type="text" id="otrasPreferencias" class="form-input" th:field="*{otrasPreferencias}" placeholder="Otras preferencias o comentarios">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

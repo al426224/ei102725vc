@@ -119,7 +119,7 @@ public class UsuarioOVIController {
             return "redirect:/login";
         }
 
-        model.addAttribute("usuario", usuario);
+model.addAttribute("usuario", usuario);
         return "usuarioOVI/home";
     }
 }

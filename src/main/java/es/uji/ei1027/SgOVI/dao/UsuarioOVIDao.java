@@ -98,7 +98,7 @@ public class UsuarioOVIDao {
         }
     }
 
-    public UsuarioOVI auth(String email, String password) {
+public UsuarioOVI auth(String email, String password) {
         try {
             UsuarioOVI user = jdbcTemplate.queryForObject(GET_USUARIO_BY_EMAIL, new UsuarioOVIRowMapper(), email);
 
@@ -111,8 +111,11 @@ public class UsuarioOVIDao {
                         return user;
                     }
                 } catch (Exception e) {
-                    logger.severe("Error de encriptación: La contraseña en BD no tiene un formato válido de Jasypt.");
-                    return null;
+                    logger.warning("Error de encriptación: La contraseña en BD no tiene formato Jasypt. Intentando texto plano.");
+                }
+                
+                if (user.getContrasena().equals(password)) {
+                    return user;
                 }
             }
             return null;
