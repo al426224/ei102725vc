@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Control - SgOVI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rosa-base: #f5e6e8;
+            --rosa-medio: #e8c5ca;
+            --rosa-acento: #b5606e;
+            --negro: #1a1a1a;
+            --blanco: #ffffff;
+            --gris-suave: #fcf8f9;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            margin: 0;
+            display: flex;
+            background-color: var(--gris-suave);
+            height: 100vh;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: var(--blanco);
+            border-right: 1px solid var(--rosa-medio);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.5rem;
+        }
+
+        .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            color: var(--negro);
+            text-align: center;
+        }
+
+        .nav-menu { flex-grow: 1; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            text-decoration: none;
+            color: var(--negro);
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--rosa-base);
+            color: var(--rosa-acento);
+        }
+
+        .nav-item.active {
+            background: var(--negro);
+            color: var(--blanco);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            padding: 1rem;
+            color: #d9534f;
+            text-decoration: none;
+            font-weight: 700;
+            border-top: 1px solid var(--rosa-base);
+            text-align: center;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--rosa-medio) 0%, var(--rosa-base) 100%);
+            padding: 2.5rem;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-card h1 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--blanco);
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--rosa-medio);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .stat-card h3 { font-size: 0.9rem; color: var(--rosa-acento); text-transform: uppercase; }
+        .stat-card p { font-size: 1.8rem; font-weight: 700; margin-top: 0.5rem; }
+
+        .profile-badge {
+            background: var(--rosa-acento);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar de Navegación -->
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a href="#" class="nav-item active">🏠 Dashboard</a>
+        <a th:href="@{/solicitudes/mis-solicitudes}" class="nav-item">📋 Mis Solicitudes</a>
+        <a th:href="@{/asistentes/buscar}" class="nav-item">🤝 Buscar Asistentes</a>
+        <a th:href="@{/mensajes}" class="nav-item">💬 Mensajes</a>
+        <a th:href="@{/usuarioOVI/perfil}" class="nav-item">👤 Mi Perfil</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<!-- Contenido Principal -->
+<main class="main-content">
+    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div>
+            <span class="profile-badge" th:text="${usuario.estado}">pendiente</span>
+        </div>
+        <div style="font-weight: 500;">
+            Usuario: <span th:text="${usuario.nombre}">Nombre</span>
+        </div>
+    </header>
+
+    <section class="welcome-card">
+        <h1>¡Hola de nuevo, <span th:text="${usuario.nombre}">Usuario</span>!</h1>
+        <p>Bienvenido a tu oficina virtual de vida independiente. ¿Qué necesitas gestionar hoy?</p>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <h3>Solicitudes Activas</h3>
+            <p>2</p>
+        </div>
+        <div class="stat-card">
+            <h3>Asistentes Asignados</h3>
+            <p>1</p>
+        </div>
+        <div class="stat-card">
+            <h3>Próxima Cita</h3>
+            <p>12 May</p>
+        </div>
+    </section>
+
+    <!-- Aquí puedes añadir más secciones como una lista rápida de tareas o noticias -->
+</main>
+
+</body>
+</html>

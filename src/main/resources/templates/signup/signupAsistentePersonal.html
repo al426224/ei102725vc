@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Asistente PAP - SgOVI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rosa-base: #f5e6e8;
+            --rosa-medio: #e8c5ca;
+            --rosa-oscuro: #c9848f;
+            --rosa-acento: #b5606e;
+            --negro: #1a1a1a;
+            --gris-texto: #4a4a4a;
+            --blanco: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--rosa-base);
+            color: var(--negro);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .form-container {
+            background: var(--blanco);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(181, 96, 110, 0.12);
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid var(--rosa-medio);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--negro);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            color: var(--gris-texto);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--negro);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--rosa-medio);
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--rosa-acento);
+            box-shadow: 0 0 0 3px rgba(181, 96, 110, 0.1);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--negro);
+            color: var(--blanco);
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--rosa-acento);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--gris-texto);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--rosa-acento);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 500px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .form-container { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="form-header">
+        <h2>Registro Asistente</h2>
+        <p>Forma parte de la red de profesionales PAP/PATI</p>
+    </div>
+
+    <!-- th:object vincula el formulario con el objeto 'asistente' del Model -->
+    <form th:action="@{/signup/registerAsistentePersonal}" th:object="${asistente}" method="post">
+
+        <div class="form-group">
+            <label>Nombre y Apellidos</label>
+            <input type="text" th:field="*{nombre}" placeholder="Ej. Sole Arnau" required>
+        </div>
+
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" th:field="*{email}" placeholder="correo@ejemplo.com" required>
+        </div>
+
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" th:field="*{contrasena}" required>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Perfil</label>
+                <select th:field="*{tipoAsistente}">
+                    <option value="PAP">PAP (Asistente Personal)</option>
+                    <option value="PATI">PATI (Infantil)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Disponibilidad Horaria</label>
+            <input type="text" th:field="*{disponibilidad}" placeholder="Ej. Mañanas, Fines de semana...">
+        </div>
+
+        <div class="form-group">
+            <label>Formación Previa</label>
+            <textarea th:field="*{formacionPrevia}" rows="3" placeholder="Describe brevemente tu formación..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Finalizar Registro</button>
+    </form>
+
+    <a th:href="@{/}" class="back-link">← Volver a la página principal</a>
+</div>
+
+</body>
+</html>
