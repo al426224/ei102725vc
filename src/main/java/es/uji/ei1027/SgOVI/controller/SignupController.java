@@ -4,6 +4,7 @@ import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.validator.AsistentePersonalSignupValidator;
 import es.uji.ei1027.SgOVI.validator.UsuarioOVISignupValidator;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,16 @@ public class SignupController {
     }
 
     @PostMapping("/registerAsistentePersonal")
-    public String registerAsistentePersonal(@ModelAttribute("asistente") AsistentePersonal asistente) {
+    public String registerAsistentePersonal(@ModelAttribute("asistente") AsistentePersonal asistente,
+                                             BindingResult bindingResult, Model model) {
+        AsistentePersonalSignupValidator validator = new AsistentePersonalSignupValidator(asistentePersonalDao);
+        validator.validate(asistente, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("asistente", asistente);
+            return "signup/signupAsistentePersonal";
+        }
+
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
         asistente.setContrasena(passwordEncryptor.encryptPassword(asistente.getContrasena()));
         asistente.setEstadoValidacion("pendiente");

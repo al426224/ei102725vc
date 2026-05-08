@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.validator.UsuarioOVIEditarPerfilValidator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
@@ -78,8 +79,11 @@ public class UsuarioOVIController {
         return "usuarioOVI/update";
     }
 
-    @PostMapping("/update")
-    public String processUpdateSubmit(@ModelAttribute("usuarioOVI") @Validated UsuarioOVI usuario, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+@PostMapping("/update")
+    public String processUpdateSubmit(@ModelAttribute("usuario") @Validated UsuarioOVI usuario, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        UsuarioOVIEditarPerfilValidator validator = new UsuarioOVIEditarPerfilValidator(usuarioOVIDao, String.valueOf(usuario.getIdUsuario()));
+        validator.validate(usuario, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "usuarioOVI/update";
         }

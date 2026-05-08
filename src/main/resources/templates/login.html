@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Ruta dinámica para asegurar que cargue el CSS siempre -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <title>Acceso - SgOVI</title>
 </head>
@@ -15,28 +14,24 @@
 </header>
 
 <div class="main-content">
-    <!-- Lado izquierdo - Título siguiendo tu estilo visual -->
     <div class="lado-izquierdo">
         <h1 class="titulo-pagina">Acceso al<br>Sistema</h1>
     </div>
 
-    <!-- Lado derecho - Formulario -->
     <div class="lado-derecho">
-        <!-- th:action asegura que Spring Security o tu controlador reciban los datos -->
-        <form th:action="@{/login}" method="POST" class="formulario">
+        <form th:action="@{/login}" method="POST" class="formulario" th:object="${userLogin}">
             <p th:if="${param.registered}" style="color: #2e7d32; margin-bottom: 10px;">Registro completado. Ya puedes iniciar sesión.</p>
 
             <div class="campos">
-                <label for="email">Correo Electrónico</label>
-                <!-- Mantengo name="email" para que tu controlador actual lo reconozca -->
-                <input type="text" id="email" name="email" required placeholder="tu@email.com">
+                <label for="username">Correo Electrónico</label>
+                <input type="text" id="username" th:field="*{username}" placeholder="tu@email.com">
+                <div class="error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
             </div>
 
             <div class="campos">
                 <label for="password">Contraseña</label>
-                <!-- Mantengo name="password" para que coincida con tu código actual -->
-                <input type="password" id="password" name="password" required placeholder="********">
-                <p class="error" th:if="${param.error}">Usuario o contraseña incorrectos</p>
+                <input type="password" id="password" th:field="*{password}" placeholder="********">
+                <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
 
             <div class="enviar">
@@ -44,7 +39,6 @@
 
                 <div style="margin-top: 25px; text-align: center;">
                     <p style="margin-bottom: 10px;">¿No tienes cuenta?</p>
-                    <!-- Enlace a tu ruta de registro -->
                     <a th:href="@{/signup}" class="boton-secundario">Registrarse</a>
                 </div>
             </div>
