@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Asistente PAP/PATI - SgOVI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body>
+
+<main class="main-content" style="display: flex; flex-direction: column; align-items: center; padding: 2rem;">
+    <div class="profile-card" style="max-width: 700px; width: 100%;">
+        <div class="profile-details">
+            <div class="info-group">
+                <span class="info-label">Nombre Completo</span>
+                <span class="info-value" th:text="${asistente.nombre}">Nombre</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Email</span>
+                <span class="info-value" th:text="${asistente.email}">Email</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Tipo de Asistente</span>
+                <span class="info-value" th:text="${asistente.tipoAsistente}">Tipo</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Disponibilidad</span>
+                <span class="info-value" th:text="${asistente.disponibilidad}">Disponibilidad</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Formacion Previa</span>
+                <p class="info-value" th:text="${asistente.formacionPrevia}" style="border: none; font-size: 0.95rem; line-height: 1.6;">
+                    Formacion...
+                </p>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
+            <p style="margin-bottom: 1.5rem; font-weight: 500; color: var(--rosa-acento);">Asistente PAP/PATI</p>
+
+            <form th:if="${asistente.estadoValidacion == 'pendiente'}" th:action="@{/tecnico/asistente/approve/{id}(id=${asistente.idAsistente})}" method="post" style="margin-bottom: 0.5rem;">
+                <button type="submit" class="btn btn-success btn-full">Aprobar Asistente</button>
+            </form>
+
+            <form th:if="${asistente.estadoValidacion == 'pendiente'}" th:action="@{/tecnico/asistente/reject/{id}(id=${asistente.idAsistente})}" method="post" style="margin-bottom: 0.5rem;">
+                <button type="submit" class="btn btn-danger btn-full">Rechazar Asistente</button>
+            </form>
+
+            <form th:action="@{/tecnico/asistentes}" method="get" style="margin-bottom: 0.5rem;">
+                <button type="submit" class="btn btn-outline btn-full">Volver a la lista</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

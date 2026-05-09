@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.FormadorDao;
+import es.uji.ei1027.SgOVI.dao.TecnicoOVIDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,9 @@ public class LoginController {
     
     @Autowired
     private FormadorDao formadorDao;
+    
+    @Autowired
+    private TecnicoOVIDao tecnicoOVIDao;
 
     @RequestMapping("/login")
     public String login(Model model) {
@@ -87,6 +91,14 @@ public class LoginController {
             session.setAttribute("tipo", "formador");
             session.setAttribute("rol", Rol.FORMADOR);
             return "redirect:/";
+        }
+
+        TecnicoOVI tecnico = tecnicoOVIDao.auth(usuario.getUsername(), usuario.getPassword());
+        if (tecnico != null) {
+            session.setAttribute("usuario", tecnico);
+            session.setAttribute("tipo", "tecnicoovi");
+            session.setAttribute("rol", Rol.TECNICOOVI);
+            return "redirect:/tecnico/home";
         }
 
         bindingResult.rejectValue("password", "IncorrectPassword", "Usuario o contraseña incorrectos");

@@ -99,11 +99,14 @@ public class PeticionAPController {
         return "peticionAP/detalle";
     }
 
-    private UsuarioOVI getUsuarioSesion(HttpSession session) {
+private UsuarioOVI getUsuarioSesion(HttpSession session) {
         Object tipo = session.getAttribute("tipo");
         Object usuario = session.getAttribute("usuario");
         if ("usuarioOVI".equals(tipo) && usuario instanceof UsuarioOVI) {
-            return (UsuarioOVI) usuario;
+            UsuarioOVI uovi = (UsuarioOVI) usuario;
+            if ("activo".equals(uovi.getEstado())) {
+                return uovi;
+            }
         }
         return null;
     }

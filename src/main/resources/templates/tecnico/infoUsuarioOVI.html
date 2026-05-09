@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle Usuario OVI - SgOVI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body>
+
+<main class="main-content" style="display: flex; flex-direction: column; align-items: center; padding: 2rem;">
+    <div class="profile-card" style="max-width: 700px; width: 100%;">
+        <div class="profile-details">
+            <div class="info-group">
+                <span class="info-label">Nombre Completo</span>
+                <span class="info-value" th:text="${usuario.nombre}">Nombre</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Email</span>
+                <span class="info-value" th:text="${usuario.email}">Email</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Telefono</span>
+                <span class="info-value" th:text="${usuario.telefono}">Telefono</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">DNI</span>
+                <span class="info-value" th:text="${usuario.dni}">DNI</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Fecha de Nacimiento</span>
+                <span class="info-value" th:text="${usuario.fechaNacimiento}">Fecha</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Fecha de Registro</span>
+                <span class="info-value" th:text="${usuario.fechaRegistro}">Fecha Registro</span>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Proyecto de Vida</span>
+                <p class="info-value" th:text="${usuario.proyectoVida}" style="border: none; font-size: 0.95rem; line-height: 1.6;">
+                    Proyecto de vida...
+                </p>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <div class="avatar-placeholder" th:text="${usuario.nombre.substring(0,1)}">U</div>
+            <p style="margin-bottom: 1.5rem; font-weight: 500; color: var(--rosa-acento);">Usuario OVI</p>
+
+            <form th:if="${usuario.estado == 'pendiente'}" th:action="@{/tecnico/usuario/approve/{id}(id=${usuario.idUsuario})}" method="post" style="margin-bottom: 0.5rem;">
+                <button type="submit" class="btn btn-success btn-full">Aprobar Usuario</button>
+            </form>
+
+            <form th:if="${usuario.estado == 'pendiente'}" th:action="@{/tecnico/usuario/reject/{id}(id=${usuario.idUsuario})}" method="post" style="margin-bottom: 0.5rem;">
+                <button type="submit" class="btn btn-danger btn-full">Rechazar Usuario</button>
+            </form>
+
+            <form th:action="@{/tecnico/home}" method="get" style="margin-bottom: 0.5rem;">
+                <button type="submit" class="btn btn-outline btn-full">Volver a la lista</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
