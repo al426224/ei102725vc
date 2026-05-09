@@ -13,13 +13,13 @@
     <div class="brand">SgOVI Panel</div>
 
     <nav class="nav-menu">
-        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">🏠 Dashboard</a>
-        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item active">📋 Mis Solicitudes</a>
-        <a th:href="@{/peticionAP/nueva}" class="nav-item">📝 Nueva Solicitud</a>
-        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">👤 Mi Perfil</a>
+        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">Dashboard</a>
+        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item active">Mis Solicitudes</a>
+        <a th:href="@{/peticionAP/nueva}" class="nav-item">Nueva Solicitud</a>
+        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">Mi Perfil</a>
     </nav>
 
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesion</a>
 </aside>
 
 <main class="main-content">
@@ -28,11 +28,11 @@
     <div class="detail-card">
         <div style="margin-bottom: 1.5rem;">
             <span class="info-label">Estado:</span>
-            <span th:class="${'status-badge estado-' + #strings.replace(peticionAP.estado, ' ', '-')}" th:text="${peticionAP.estado}"></span>
+            <span class="status-badge" th:text="${estadoLabels[peticionAP.estado] ?: peticionAP.estado}"></span>
         </div>
-        
+
         <h3 class="section-title">Datos de la Solicitud</h3>
-        
+
         <div class="section-row">
             <span class="info-label">Tipo de asistencia:</span>
             <span th:text="${peticionAP.tipoAsistencia}"></span>
@@ -42,40 +42,56 @@
             <span th:text="${peticionAP.horasSemanales}"></span>
         </div>
         <div class="section-row">
-            <span class="info-label">Franjas horarias:</span>
-            <span th:text="${peticionAP.franjasHorarias}"></span>
+            <span class="info-label">Tiempo preferido:</span>
+            <span th:text="${peticionAP.tiempoPreferido} ?: '-'"></span>
         </div>
         <div class="section-row">
             <span class="info-label">Tipo de tareas:</span>
-            <span th:text="${peticionAP.tipoTareas}"></span>
+            <span th:text="${peticionAP.tipoTareas} ?: '-'"></span>
         </div>
         <div class="section-row">
-            <span class="info-label">Ubicación:</span>
-            <span th:text="${peticionAP.ubicacion}"></span>
+            <span class="info-label">Municipio:</span>
+            <span th:text="${peticionAP.municipio} ?: '-'"></span>
         </div>
-        
+        <div class="section-row">
+            <span class="info-label">Fecha de inicio prevista:</span>
+            <span th:text="${peticionAP.fechaInicioPrevista != null} ? ${#temporals.format(peticionAP.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></span>
+        </div>
+
         <div class="section-row" th:if="${peticionAP.descripcion}">
-            <span class="info-label">Descripción:</span>
+            <span class="info-label">Descripcion:</span>
             <span th:text="${peticionAP.descripcion}"></span>
         </div>
-        
+
         <h3 class="section-title">Preferencias</h3>
-        
+
         <div class="section-row">
-            <span class="info-label">Género preferido:</span>
-            <span th:text="${peticionAP.preferenciasGenero} ?: 'Sin preferencia'"></span>
+            <span class="info-label">Genero preferido:</span>
+            <span th:text="${peticionAP.preferenciaGenero} ?: 'Sin preferencia'"></span>
         </div>
         <div class="section-row">
-            <span class="info-label">Idiomas:</span>
-            <span th:text="${peticionAP.idiomas} ?: '-'"></span>
+            <span class="info-label">Idiomas requeridos:</span>
+            <span th:text="${peticionAP.idiomasRequeridos} ?: '-'"></span>
         </div>
-        <div class="section-row">
-            <span class="info-label">Otras observaciones:</span>
-            <span th:text="${peticionAP.otrasPreferencias} ?: '-'"></span>
+        <div class="section-row" th:if="${peticionAP.preferencias}">
+            <span class="info-label">Otras preferencias:</span>
+            <span th:text="${peticionAP.preferencias}"></span>
+        </div>
+
+        <div th:if="${peticionAP.estado == 'rechazada'}">
+            <h3 class="section-title">Resultado de la revision</h3>
+            <div class="section-row" th:if="${peticionAP.motivoRechazo}">
+                <span class="info-label">Motivo del rechazo:</span>
+                <span th:text="${peticionAP.motivoRechazo}"></span>
+            </div>
+            <div class="section-row" th:if="${peticionAP.fechaRevision}">
+                <span class="info-label">Fecha de revision:</span>
+                <span th:text="${#temporals.format(peticionAP.fechaRevision, 'dd/MM/yyyy')}"></span>
+            </div>
         </div>
     </div>
-    
-    <a th:href="@{/peticionAP/mis-solicitudes}" class="back-link">← Volver a mis solicitudes</a>
+
+    <a th:href="@{/peticionAP/mis-solicitudes}" class="back-link">Volver a mis solicitudes</a>
 </main>
 
 </body>

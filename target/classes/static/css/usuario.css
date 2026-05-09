@@ -250,6 +250,17 @@ body.sidebar-layout {
     transform: translateY(-2px);
 }
 
+.btn-secondary {
+    background: var(--rosa-medio);
+    color: var(--negro-texto);
+}
+
+.btn-secondary:hover {
+    background: var(--rosa-acento);
+    color: var(--blanco);
+    transform: translateY(-2px);
+}
+
 .btn-danger {
     color: var(--rojo-peligro);
     font-size: 0.85rem;
@@ -455,7 +466,45 @@ body.sidebar-layout {
 .estado-rechazada { color: #d9534f; font-weight: 600; }
 .estado-tancada { color: #5bc0de; font-weight: 600; }
 
-/* Responsive */
+/* ==================== FILTROS ==================== */
+
+.filter-bar {
+    background: var(--blanco);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border: 1px solid var(--rosa-medio);
+}
+
+.filter-row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--rosa-acento);
+    text-transform: uppercase;
+}
+
+.filter-group .form-select {
+    min-width: 200px;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+}
+
+.filter-group .form-select:focus {
+    outline: none;
+}
 @media (max-width: 900px) {
     .profile-card { 
         flex-direction: column; 

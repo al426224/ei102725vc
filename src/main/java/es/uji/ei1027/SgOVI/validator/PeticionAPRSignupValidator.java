@@ -19,24 +19,20 @@ public class PeticionAPRSignupValidator implements Validator {
     }
 
     private void validatePeticionAPR(PeticionAPR peticionAPR, Errors errors) {
-        if (peticionAPR.getIdUsuario() <= 0) {
-            errors.rejectValue("idUsuario", "obligatorio", "El usuario es obligatorio.");
-        }
-
         if (peticionAPR.getTipoAsistencia() == null || peticionAPR.getTipoAsistencia().trim().isEmpty()) {
             errors.rejectValue("tipoAsistencia", "obligatorio", "El tipo de asistencia es obligatorio.");
-        }
-
-        if (peticionAPR.getDescripcion() == null || peticionAPR.getDescripcion().trim().isEmpty()) {
-            errors.rejectValue("descripcion", "obligatoria", "La descripción es obligatoria.");
         }
 
         if (peticionAPR.getHorasSemanales() <= 0) {
             errors.rejectValue("horasSemanales", "obligatorio", "Las horas semanales son obligatorias.");
         }
 
-        if (peticionAPR.getEstado() == null || peticionAPR.getEstado().trim().isEmpty()) {
-            errors.rejectValue("estado", "obligatorio", "El estado es obligatorio.");
+        if (peticionAPR.getMunicipio() == null || peticionAPR.getMunicipio().trim().isEmpty()) {
+            errors.rejectValue("municipio", "obligatorio", "El municipio es obligatorio.");
+        }
+
+        if (peticionAPR.getFechaInicioPrevista() == null) {
+            errors.rejectValue("fechaInicioPrevista", "obligatorio", "La fecha de inicio prevista es obligatoria.");
         }
     }
 }

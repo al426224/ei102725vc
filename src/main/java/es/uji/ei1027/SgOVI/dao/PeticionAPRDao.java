@@ -19,14 +19,15 @@ public class PeticionAPRDao {
     private final Logger logger = Logger.getLogger(PeticionAPRDao.class.getName());
 
     public static final String TABLE_NAME = "peticionapr";
-    
+
     public static final String GET_PETICION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
+    public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ? ORDER BY id_solicitud DESC";
+    public static final String GET_PETICIONES_BY_USUARIO_FILTRADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
     public static final String GET_PETICIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
     public static final String GET_PETICIONES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistencia = ?";
-    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, franjas_horarias, tipo_tareas, ubicacion, preferencias_genero, experiencia_minima, formacion_especifica, idiomas, otras_preferencias, municipio, fecha_inicio_prevista, tiempo_preferido, preferencia_genero, preferencias) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, franjas_horarias = ?, tipo_tareas = ?, ubicacion = ?, preferencias_genero = ?, experiencia_minima = ?, formacion_especifica = ?, idiomas = ?, otras_preferencias = ?, municipio = ?, fecha_inicio_prevista = ?, tiempo_preferido = ?, preferencia_genero = ?, preferencias = ? WHERE id_solicitud = ?";
+    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ? WHERE id_solicitud = ?";
     public static final String GET_PETICIONES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
@@ -38,7 +39,7 @@ public class PeticionAPRDao {
         try {
             return jdbcTemplate.queryForObject(GET_PETICION_BY_ID, new PeticionAPRRowMapper(), id);
         } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontró la petición con id: " + id);
+            logger.warning("No se encontro la peticion con id: " + id);
             return null;
         }
     }
@@ -48,6 +49,29 @@ public class PeticionAPRDao {
             return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO, new PeticionAPRRowMapper(), idUsuario);
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron peticiones para el usuario: " + idUsuario);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<PeticionAPR> getPeticionesByUsuarioFiltrado(int idUsuario, String estado, String ordenar) {
+        String sql = GET_PETICIONES_BY_USUARIO_FILTRADO;
+        List<Object> params = new ArrayList<>();
+        params.add(idUsuario);
+
+        if (estado != null && !estado.isEmpty()) {
+            sql += " AND estado = ?";
+            params.add(estado);
+        }
+
+        if ("fechaInicio".equals(ordenar)) {
+            sql += " ORDER BY fecha_inicio_prevista ASC NULLS LAST";
+        } else {
+            sql += " ORDER BY id_solicitud DESC";
+        }
+
+        try {
+            return jdbcTemplate.query(sql, new PeticionAPRRowMapper(), params.toArray());
+        } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }
     }
@@ -71,47 +95,35 @@ public class PeticionAPRDao {
     }
 
     public void addPeticion(PeticionAPR peticion) {
-        jdbcTemplate.update(ADD_PETICION, 
-                peticion.getIdUsuario(), 
-                peticion.getTipoAsistencia(), 
-                peticion.getDescripcion(), 
-                peticion.getHorasSemanales(), 
+        jdbcTemplate.update(ADD_PETICION,
+                peticion.getIdUsuario(),
+                peticion.getTipoAsistencia(),
+                peticion.getDescripcion(),
+                peticion.getHorasSemanales(),
                 peticion.getEstado(),
-                peticion.getFranjasHorarias(),
+                peticion.getTiempoPreferido(),
                 peticion.getTipoTareas(),
-                peticion.getUbicacion(),
-                peticion.getPreferenciasGenero(),
-                peticion.getExperienciaMinima(),
-                peticion.getFormacionEspecifica(),
-                peticion.getIdiomas(),
-                peticion.getOtrasPreferencias(),
                 peticion.getMunicipio(),
                 peticion.getFechaInicioPrevista(),
-                peticion.getTiempoPreferido(),
                 peticion.getPreferenciaGenero(),
-                peticion.getPreferencias());
+                peticion.getPreferencias(),
+                peticion.getIdiomasRequeridos());
     }
 
     public void updatePeticion(PeticionAPR peticion) {
-        jdbcTemplate.update(UPDATE_PETICION, 
-                peticion.getIdUsuario(), 
-                peticion.getTipoAsistencia(), 
-                peticion.getDescripcion(), 
-                peticion.getHorasSemanales(), 
+        jdbcTemplate.update(UPDATE_PETICION,
+                peticion.getIdUsuario(),
+                peticion.getTipoAsistencia(),
+                peticion.getDescripcion(),
+                peticion.getHorasSemanales(),
                 peticion.getEstado(),
-                peticion.getFranjasHorarias(),
+                peticion.getTiempoPreferido(),
                 peticion.getTipoTareas(),
-                peticion.getUbicacion(),
-                peticion.getPreferenciasGenero(),
-                peticion.getExperienciaMinima(),
-                peticion.getFormacionEspecifica(),
-                peticion.getIdiomas(),
-                peticion.getOtrasPreferencias(),
                 peticion.getMunicipio(),
                 peticion.getFechaInicioPrevista(),
-                peticion.getTiempoPreferido(),
                 peticion.getPreferenciaGenero(),
                 peticion.getPreferencias(),
+                peticion.getIdiomasRequeridos(),
                 peticion.getIdSolicitud());
     }
 

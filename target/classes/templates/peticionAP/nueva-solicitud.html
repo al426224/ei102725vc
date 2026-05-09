@@ -19,13 +19,13 @@
     <div class="brand">SgOVI Panel</div>
 
     <nav class="nav-menu">
-        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">🏠 Dashboard</a>
-        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item">📋 Mis Solicitudes</a>
-        <a th:href="@{/peticionAP/nueva}" class="nav-item active">📝 Nueva Solicitud</a>
-        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">👤 Mi Perfil</a>
+        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">Dashboard</a>
+        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item">Mis Solicitudes</a>
+        <a th:href="@{/peticionAP/nueva}" class="nav-item active">Nueva Solicitud</a>
+        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">Mi Perfil</a>
     </nav>
 
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesion</a>
 </aside>
 
 <main class="main-content">
@@ -43,49 +43,63 @@
                         <option value="PAP">PAP (mayores de edad)</option>
                         <option value="PATI">PATI (menores de edad)</option>
                     </select>
+                    <span th:if="${#fields.hasErrors('tipoAsistencia')}" th:errors="*{tipoAsistencia}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="horasSemanales" class="form-label">Horas semanales *</label>
                     <input type="number" id="horasSemanales" class="form-input" th:field="*{horasSemanales}" min="1" max="168" required>
+                    <span th:if="${#fields.hasErrors('horasSemanales')}" th:errors="*{horasSemanales}" class="field-error"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tiempoPreferido" class="form-label">Tiempo preferido *</label>
+                    <input type="text" id="tiempoPreferido" class="form-input" th:field="*{tiempoPreferido}" placeholder="Ej: Mananas de 9h a 13h" required>
+                    <span th:if="${#fields.hasErrors('tiempoPreferido')}" th:errors="*{tiempoPreferido}" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="tipoTareas" class="form-label">Tipo de tareas</label>
+                    <select id="tipoTareas" class="form-select" th:field="*{tipoTareas}">
+                        <option value="">Selecciona tipo de tarea</option>
+                        <option value="acompanyament educatiu">Acompanyamiento educativo</option>
+                        <option value="acompanyament laboral">Acompanyamiento laboral</option>
+                        <option value="cura personal">Cuidado personal</option>
+                        <option value="mobilitat">Movilidad</option>
+                        <option value="domicili">Asistencia en domicilio</option>
+                        <option value="oci temps lliure">Ocio y tiempo libre</option>
+                        <option value="altres">Otros</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="municipio" class="form-label">Municipio *</label>
+                    <input type="text" id="municipio" class="form-input" th:field="*{municipio}" placeholder="Ej: Castello de la Plana" required>
+                    <span th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="fechaInicioPrevista" class="form-label">Fecha de inicio prevista *</label>
+                    <input type="date" id="fechaInicioPrevista" class="form-input" th:field="*{fechaInicioPrevista}" required>
+                    <span th:if="${#fields.hasErrors('fechaInicioPrevista')}" th:errors="*{fechaInicioPrevista}" class="field-error"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="franjasHorarias" class="form-label">Franjas horarias preferidas *</label>
-                <input type="text" id="franjasHorarias" class="form-input" th:field="*{franjasHorarias}" placeholder="Ej: Mañanas de 9h a 13h, Tardes de 16h a 20h" required>
-            </div>
-
-            <div class="form-group">
-                <label for="tipoTareas" class="form-label">Tipo de tareas *</label>
-                <select id="tipoTareas" class="form-select" th:field="*{tipoTareas}" required>
-                    <option value="">Selecciona tipo de tarea</option>
-                    <option value="acompanyament educatiu">Acompanyamiento educativo</option>
-                    <option value="acompanyament laboral">Acompanyamiento laboral</option>
-                    <option value="cura personal">Cuidado personal</option>
-                    <option value="mobilitat">Movilidad</option>
-                    <option value="domicili">Asistencia en domicilio</option>
-                    <option value="oci temps lliure">Ocio y tiempo libre</option>
-                    <option value="altres">Otros</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="ubicacion" class="form-label">Ubicación principal (dirección o municipio) *</label>
-                <input type="text" id="ubicacion" class="form-input" th:field="*{ubicacion}" placeholder="Ej: Castelló de la Plana" required>
-            </div>
-
-            <div class="form-group">
-                <label for="descripcion" class="form-label">Descripción de la necesidad</label>
-                <textarea id="descripcion" class="form-textarea" th:field="*{descripcion}" placeholder="Describe brevemente tu situación y necesidades" oninput="autoResize(this)" style="min-height: 60px;"></textarea>
+                <label for="descripcion" class="form-label">Descripcion de la necesidad</label>
+                <textarea id="descripcion" class="form-textarea" th:field="*{descripcion}" placeholder="Describe brevemente tu situacion y necesidades" oninput="autoResize(this)" style="min-height: 80px;"></textarea>
             </div>
 
             <h3 class="section-title">Preferencias</h3>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="preferenciasGenero" class="form-label">Género preferido</label>
-                    <select id="preferenciasGenero" class="form-select" th:field="*{preferenciasGenero}">
+                    <label for="preferenciaGenero" class="form-label">Genero preferido</label>
+                    <select id="preferenciaGenero" class="form-select" th:field="*{preferenciaGenero}">
                         <option value="">Sin preferencia</option>
                         <option value="hombre">Hombre</option>
                         <option value="mujer">Mujer</option>
@@ -93,14 +107,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="idiomas" class="form-label">Idiomas requeridos</label>
-                    <input type="text" id="idiomas" class="form-input" th:field="*{idiomas}" placeholder="Ej: Valenciano">
+                    <label for="idiomasRequeridos" class="form-label">Idiomas requeridos</label>
+                    <input type="text" id="idiomasRequeridos" class="form-input" th:field="*{idiomasRequeridos}" placeholder="Ej: Valenciano">
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="otrasPreferencias" class="form-label">Otras observaciones</label>
-                <input type="text" id="otrasPreferencias" class="form-input" th:field="*{otrasPreferencias}" placeholder="Otras preferencias o comentarios">
+                <label for="preferencias" class="form-label">Otras observaciones</label>
+                <textarea id="preferencias" class="form-textarea" th:field="*{preferencias}" placeholder="Otras preferencias o comentarios" oninput="autoResize(this)" style="min-height: 80px;"></textarea>
             </div>
 
             <div class="form-actions">

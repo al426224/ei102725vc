@@ -13,22 +13,46 @@
     <div class="brand">SgOVI Panel</div>
 
     <nav class="nav-menu">
-        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">🏠 Dashboard</a>
-        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item active">📋 Mis Solicitudes</a>
-        <a th:href="@{/peticionAP/nueva}" class="nav-item">📝 Nueva Solicitud</a>
-        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">👤 Mi Perfil</a>
+        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">Dashboard</a>
+        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item active">Mis Solicitudes</a>
+        <a th:href="@{/peticionAP/nueva}" class="nav-item">Nueva Solicitud</a>
+        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">Mi Perfil</a>
     </nav>
 
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesion</a>
 </aside>
 
 <main class="main-content">
     <h1 class="page-title">Mis Solicitudes</h1>
 
     <p th:if="${successMessage}" th:text="${successMessage}" class="success-message"></p>
-    
+
     <a th:href="@{/peticionAP/nueva}" class="btn btn-primary">+ Nueva Solicitud</a>
-    
+
+    <form th:action="@{/peticionAP/mis-solicitudes}" method="get" class="filter-bar">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="en_revision" th:selected="${estadoSeleccionado == 'en_revision'}">En revision</option>
+                    <option value="aprobada" th:selected="${estadoSeleccionado == 'aprobada'}">Aprobada</option>
+                    <option value="rechazada" th:selected="${estadoSeleccionado == 'rechazada'}">Rechazada</option>
+                    <option value="cerrada_contrato" th:selected="${estadoSeleccionado == 'cerrada_contrato'}">Cerrada (contrato)</option>
+                    <option value="cerrada_contrato_finalizado" th:selected="${estadoSeleccionado == 'cerrada_contrato_finalizado'}">Finalizada</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="ordenar">Ordenar por:</label>
+                <select id="ordenar" name="ordenar" class="form-select">
+                    <option value="" th:selected="${ordenarSeleccionado == '' or ordenarSeleccionado == null}">Mas reciente</option>
+                    <option value="fechaInicio" th:selected="${ordenarSeleccionado == 'fechaInicio'}">Fecha inicio mas cercana</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+        </div>
+    </form>
+
     <div class="table-container">
         <table>
             <thead>
@@ -36,22 +60,24 @@
                     <th>ID</th>
                     <th>Tipo</th>
                     <th>Horas</th>
-                    <th>Ubicación</th>
+                    <th>Municipio</th>
+                    <th>Fecha inicio</th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${#lists.isEmpty(peticiones)}">
-                    <td colspan="6" class="empty-state">No tienes solicitudes registradas.</td>
+                    <td colspan="7" class="empty-state">No tienes solicitudes registradas.</td>
                 </tr>
                 <tr th:each="p : ${peticiones}">
                     <td th:text="${p.idSolicitud}"></td>
                     <td th:text="${p.tipoAsistencia}"></td>
                     <td th:text="${p.horasSemanales} + ' h/semana'"></td>
-                    <td th:text="${p.ubicacion}"></td>
+                    <td th:text="${p.municipio} ?: '-'"></td>
+                    <td th:text="${p.fechaInicioPrevista != null} ? ${#temporals.format(p.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></td>
                     <td>
-                        <span th:class="${'estado-' + #strings.replace(p.estado, ' ', '-')}" th:text="${p.estado}"></span>
+                        <span class="status-badge" th:text="${estadoLabels[p.estado] ?: p.estado}"></span>
                     </td>
                     <td>
                         <a th:href="@{/peticionAP/detalle/{id}(id=${p.idSolicitud})}" class="link-detail">Ver detalle</a>
@@ -60,8 +86,8 @@
             </tbody>
         </table>
     </div>
-    
-    <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="back-link">← Volver al Panel</a>
+
+    <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="back-link">Volver al Panel</a>
 </main>
 
 </body>
