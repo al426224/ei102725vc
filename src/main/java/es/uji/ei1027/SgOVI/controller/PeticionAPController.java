@@ -7,7 +7,6 @@ import es.uji.ei1027.SgOVI.validator.PeticionAPRSignupValidator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -54,10 +52,35 @@ public class PeticionAPController {
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",
                 "rechazada", "Rechazada",
+                "cancelada", "Cancelada",
                 "cerrada_contrato", "Cerrada (contrato)",
                 "cerrada_contrato_finalizado", "Finalizada"
         ));
         return "peticionAP/mis-solicitudes";
+    }
+
+    @PostMapping("/cancelar/{id}")
+    public String cancelarSolicitud(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioOVI usuario = getUsuarioSesion(session);
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticion(id);
+        if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        if (!"en_revision".equals(peticion.getEstado())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Solo se pueden cancelar solicitudes en revision");
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        peticion.setEstado("cancelada");
+        peticionAPRDao.updatePeticion(peticion);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Solicitud cancelada correctamente");
+        return "redirect:/peticionAP/mis-solicitudes";
     }
 
     @GetMapping("/nueva")
@@ -117,6 +140,7 @@ public class PeticionAPController {
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",
                 "rechazada", "Rechazada",
+                "cancelada", "Cancelada",
                 "cerrada_contrato", "Cerrada (contrato)",
                 "cerrada_contrato_finalizado", "Finalizada"
         ));

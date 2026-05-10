@@ -67,22 +67,34 @@ public class LoginController {
 
         UsuarioOVI usuarioOVI = usuarioOVIDao.auth(usuario.getUsername(), usuario.getPassword());
         if (usuarioOVI != null) {
-            session.setAttribute("usuario", usuarioOVI);
-            session.setAttribute("tipo", "usuarioOVI");
-            session.setAttribute("rol", Rol.USUARIOOVI);
-            return "redirect:/usuarioOVI/homeUsuarioOVI";
+            if ("activo".equals(usuarioOVI.getEstado())) {
+                session.setAttribute("usuario", usuarioOVI);
+                session.setAttribute("tipo", "usuarioOVI");
+                session.setAttribute("rol", Rol.USUARIOOVI);
+                return "redirect:/usuarioOVI/homeUsuarioOVI";
+            }
+            if ("rechazado".equals(usuarioOVI.getEstado())) {
+                bindingResult.rejectValue("password", "CuentaRechazada", "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
+            } else {
+                bindingResult.rejectValue("password", "CuentaPendiente", "Tu cuenta aún está pendiente de revisión. Espera a que un técnico la valide.");
+            }
+            return "login";
         }
 
         AsistentePersonal asistente = asistentePersonalDao.auth(usuario.getUsername(), usuario.getPassword());
         if (asistente != null) {
-            if ("pendiente".equals(asistente.getEstadoValidacion())) {
-                bindingResult.rejectValue("password", "NotAcceptedYet", "Tu solicitud aún no ha sido aceptada");
-                return "login";
+            if ("validado".equals(asistente.getEstadoValidacion())) {
+                session.setAttribute("usuario", asistente);
+                session.setAttribute("tipo", "asistente");
+                session.setAttribute("rol", Rol.ASISTENTE);
+                return "redirect:/";
             }
-            session.setAttribute("usuario", asistente);
-            session.setAttribute("tipo", "asistente");
-            session.setAttribute("rol", Rol.ASISTENTE);
-            return "redirect:/";
+            if ("rechazado".equals(asistente.getEstadoValidacion())) {
+                bindingResult.rejectValue("password", "CuentaRechazada", "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
+            } else {
+                bindingResult.rejectValue("password", "CuentaPendiente", "Tu cuenta aún está pendiente de revisión. Espera a que un técnico la valide.");
+            }
+            return "login";
         }
 
         Formador formador = formadorDao.auth(usuario.getUsername(), usuario.getPassword());

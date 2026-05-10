@@ -1,8 +1,20 @@
-<nav th:fragment="menu" xmlns:th="http://www.thymeleaf.org">
-    <a th:href="@{/}">Inici</a> | 
-    <a th:href="@{/usuarioOVI/list}">Usuaris OVI</a> | 
-    <a th:href="@{/signup}">Registre</a> |
-    <a th:href="@{/seleccion/list}">Seleccions</a> |
-    <a th:href="@{/peticionAPR/list}">Peticions APR</a> |
-    <a th:href="@{/asistentePersonal/list}">Assistents</a>
-</nav>
+<div th:fragment="menu" xmlns:th="http://www.thymeleaf.org" class="container mt-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">OVI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Inici</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/usuarioOVI/list}">Usuaris OVI</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/signup}">Registre</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/seleccion/list}">Seleccions</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/peticionAPR/list}">Peticions APR</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/asistentePersonal/list}">Assistents</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

@@ -1,9 +1,9 @@
-<div class="loggeduser" th:object="${session}" th:fragment="logininfo">
-    <p th:if="*{usuario == null}">
-        No autenticado <a href="/login" th:href="@{/login}">Entrar</a>
-    </p>
-    <p th:unless="*{usuario == null}">
+<div th:fragment="logininfo" th:object="${session}" xmlns:th="http://www.thymeleaf.org">
+    <div th:if="*{usuario == null}" class="alert alert-info">
+        No autenticado <a href="/login" th:href="@{/login}" class="alert-link">Entrar</a>
+    </div>
+    <div th:unless="*{usuario == null}" class="alert alert-success">
         Autenticado como <span th:text="*{usuario.nombre}"></span>
-        <a href="/logout" th:href="@{/logout}">Salir</a>
-    </p>
+        <a href="/logout" th:href="@{/logout}" class="alert-link">Salir</a>
+    </div>
 </div>

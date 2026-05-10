@@ -10,18 +10,22 @@
     --gris-medio: #888888;
 }
 
-/* Estilos generales */
+/* Reset básico */
 * {
-    background-color: var(--rosa-fondo);
-    color: var(--negro);
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Estilos generales */
 html, body {
     min-height: 100vh;
+}
+
+body {
+    background-color: var(--rosa-fondo);
+    color: var(--negro);
+    font-family: Arial, sans-serif;
 }
 
 /* Header - logo flotando */
@@ -73,29 +77,9 @@ header {
     max-width: 400px;
 }
 
-/* Campos con cajas */
-.campos-obligatorios {
-    font-size: 14px;
-    color: var(--gris-medio);
-    margin-bottom: 20px;
-    text-align: right;
-    background-color: transparent;
-}
-
+/* Campos */
 .campos {
     margin-bottom: 25px;
-    background-color: transparent;
-}
-
-.campos-fila {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.campos-fila .campos {
-    flex: 1;
-    margin-bottom: 0;
 }
 
 .campos label {
@@ -103,11 +87,10 @@ header {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
-    background-color: transparent;
 }
 
-.campos input, 
-.campos textarea, 
+.campos input,
+.campos textarea,
 .campos select {
     width: 100%;
     padding: 15px;
@@ -118,7 +101,7 @@ header {
     font-size: 18px;
 }
 
-.campos input:focus, 
+.campos input:focus,
 .campos textarea:focus,
 .campos select:focus {
     outline: 3px solid var(--gris-oscuro);
@@ -130,26 +113,6 @@ header {
     color: var(--gris-claro);
 }
 
-/* Checkbox */
-.campos-checkbox {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-}
-
-.campos-checkbox input[type="checkbox"] {
-    width: 25px;
-    height: 25px;
-    margin-top: 0;
-    cursor: pointer;
-}
-
-.campos-checkbox label {
-    margin-bottom: 0;
-    font-size: 16px;
-    cursor: pointer;
-}
-
 /* Error */
 .error {
     color: var(--rojo);
@@ -158,25 +121,18 @@ header {
     margin-top: 8px;
 }
 
-/* Enviar - botones centrados */
+/* Zona de botones */
 .enviar {
     margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
-    background-color: transparent;
-}
-
-.enviar .boton {
+    justify-content: center;
+    gap: 18px;
     width: 100%;
 }
 
-.enviar .boton-secundario {
-    width: 100%;
-    text-align: center;
-}
-
+/* Botón principal */
 .boton {
     display: block;
     width: 100%;
@@ -189,6 +145,7 @@ header {
     border-radius: 30px;
     cursor: pointer;
     transition: background-color 0.2s;
+    text-align: center;
 }
 
 .boton:hover {
@@ -200,15 +157,35 @@ header {
     outline-offset: 3px;
 }
 
-/* Botón secundario (volver) */
+/* Texto y botón de registro */
+.registro-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.registro-link p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Botón secundario */
 .boton-secundario {
-    display: inline-block;
-    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 220px;
     padding: 15px 30px;
     background-color: var(--espacios-rellenar);
     color: var(--negro);
-    margin-right: 15px;
     border-radius: 30px;
+    text-decoration: none;
+    text-align: center;
 }
 
 .boton-secundario:hover {
@@ -220,16 +197,50 @@ header {
     .main-content {
         flex-direction: column;
     }
-    
+
     .lado-izquierdo {
         padding: 30px 20px 10px 20px;
     }
-    
+
     .titulo-pagina {
         font-size: 36px;
     }
-    
+
     .lado-derecho {
         padding: 20px;
     }
+}
+
+/* ==================== MODAL POPUP ==================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    margin-bottom: 1rem;
+    color: var(--rosa-acento, #b5606e);
+}
+
+.modal-content p {
+    margin-bottom: 1.5rem;
+    color: var(--negro);
 }
