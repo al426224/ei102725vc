@@ -28,7 +28,9 @@
     <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></div>
     <div th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-danger"></div>
 
-    <a th:href="@{/peticionAP/nueva}" class="btn btn-primary mb-3">+ Nueva Solicitud</a>
+    <div class="page-header-inline">
+        <a th:href="@{/peticionAP/nueva}" class="btn btn-primary">+ Nueva Solicitud</a>
+    </div>
 
     <form th:action="@{/peticionAP/mis-solicitudes}" method="get" class="filter-bar">
         <div class="filter-row">
@@ -80,14 +82,16 @@
                         <span class="status-badge" th:classappend="${p.estado}" th:text="${estadoLabels[p.estado] ?: p.estado}"></span>
                     </td>
                     <td>
-                        <a th:href="@{/peticionAP/detalle/{id}(id=${p.idSolicitud})}" class="link-detail">Ver detalle</a>
+                        <a th:href="@{/peticionAP/detalle/{id}(id=${p.idSolicitud})}" class="link-detail">Ver detalles</a>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+    <div style="text-align: center;">
     <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="back-link">Volver al Panel</a>
+</div>
 </main>
 
 </body>

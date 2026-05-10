@@ -5,44 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SgOVI - Oficina per la Vida Independent</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/usuario.css}">
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
-    <div class="container-fluid px-4">
-        <a th:href="@{/}" class="nav-link d-flex align-items-center gap-2 text-decoration-none">
-            <div class="nav-logo-icon">OVI</div>
-            <span class="nav-logo-text">SgOVI Castelló</span>
+<header class="header">
+    <div class="nombre">
+        <a th:href="@{/}" class="a">
+            <span class="nav-logo-icon">OVI</span>
+            <span class="nav-logo-text">SgOVI</span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav align-items-center">
-                <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
-                <li class="nav-item ms-lg-3" th:if="${session.usuario == null}">
-                    <a th:href="@{/login}" class="nav-acceder">Acceder</a>
-                </li>
-                <li class="nav-item ms-lg-3" th:unless="${session.usuario == null}">
+    </div>
+
+    <div class="navg">
+        <nav class="nav">
+            <ul class="ul">
+                <li class="li"><a href="#inicio" class="a nav-link-item">Inicio</a></li>
+                <li class="li"><a href="#servicios" class="a nav-link-item">Servicios</a></li>
+                <li class="li" th:if="${session.usuario == null}"><a th:href="@{/login}" class="a nav-btn nav-btn-outline">Acceder</a></li>
+                <li class="li" th:if="${session.usuario == null}"><a th:href="@{/signup}" class="a nav-btn nav-btn-outline">Registro</a></li>
+                <li class="li" th:unless="${session.usuario == null}">
                     <span class="usuario-logado" th:text="${session.usuario.nombre}">Usuario</span>
-                    <a th:href="@{/logout}" class="nav-acceder">Salir</a>
+                    <a th:href="@{/logout}" class="a nav-btn nav-btn-outline">Salir</a>
                 </li>
             </ul>
-        </div>
+        </nav>
     </div>
-</nav>
+</header>
 
 <section class="hero" id="inicio">
     <div class="slide-content">
-        <h1>Vida autónoma e independiente</h1>
-        <p class="slide-desc">Gestión integral de asistencia personal para personas con diversidad funcional en Castelló.</p>
+        <h1>Vida autonoma e independiente</h1>
+        <p class="slide-desc">Gestion integral de asistencia personal para personas con diversidad funcional en Castello.</p>
         <a th:href="@{/login}" class="slide-cta" th:if="${session.usuario == null}">Empezar ahora</a>
     </div>
 </section>
 
 <section class="acceso-section" id="servicios" th:if="${session.usuario == null}">
-    <h2 class="section-title">¿Cómo quieres participar?</h2>
+    <h2 class="section-title">Como quieres participar?</h2>
     <div class="row justify-content-center g-4">
         <div class="col-md-4 col-lg-3">
             <a th:href="@{/signup/registerUsuarioOVI}" class="acceso-card">

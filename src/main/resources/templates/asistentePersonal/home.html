@@ -83,7 +83,7 @@
                         <span class="status-badge" th:classappend="${p.seleccion.estadoSeleccion == 'propuesta' ? 'pendiente' : (p.seleccion.estadoSeleccion == 'contactado' ? 'en_revision' : (p.seleccion.estadoSeleccion == 'aceptada' ? 'aprobada' : 'cancelada'))}" th:text="${p.seleccion.estadoSeleccion}"></span>
                     </td>
                     <td>
-                        <a th:href="@{/asistentePersonal/propuesta/{id}(id=${p.peticion.idSolicitud})}" class="link-detail">Ver detalle</a>
+                        <a th:href="@{/asistentePersonal/propuesta/{id}(id=${p.peticion.idSolicitud})}" class="link-detail">Ver detalles</a>
                     </td>
                 </tr>
             </tbody>

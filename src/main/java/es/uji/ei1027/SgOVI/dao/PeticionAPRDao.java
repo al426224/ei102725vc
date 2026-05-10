@@ -61,7 +61,7 @@ public class PeticionAPRDao {
         params.add(idUsuario);
 
         if (estado != null && !estado.isEmpty()) {
-            sql += " AND estado = ?";
+            sql += " AND p.estado = ?";
             params.add(estado);
         }
 

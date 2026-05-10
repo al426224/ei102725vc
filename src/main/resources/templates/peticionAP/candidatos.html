@@ -19,7 +19,7 @@
         <a th:href="@{/usuarioOVI/perfil/{id}(id=${peticion.idUsuario})}" class="nav-item">Mi Perfil</a>
     </nav>
 
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesion</a>
 </aside>
 
 <main class="main-content">
@@ -45,45 +45,54 @@
         </div>
     </div>
 
-    <div class="alert alert-info">
-        Estos son los candidatos sugeridos por el sistema. La comunicacion y contratacion se realiza fuera del sistema.
+    <p class="mb-3">Selecciona al candidato que prefieras. La comunicacion y contratacion se realiza fuera del sistema.</p>
+
+    <div th:if="${#lists.isEmpty(candidatos)}" class="empty-state">
+        No hay candidatos sugeridos para esta solicitud.
     </div>
 
-    <div th:if="${#lists.isEmpty(candidatos)}" class="detail-card mb-4">
-        <div class="empty-state">
-            No hay candidatos sugeridos para esta solicitud todavia.
-        </div>
-    </div>
+    <div th:if="${not #lists.isEmpty(candidatos)}">
+        <form th:action="@{/peticionAP/candidatos/{id}/elegir(id=${peticion.idSolicitud})}" method="post">
+            <div class="table-container">
+                <table class="table table-hover mb-0">
+                    <thead>
+                            <tr>
+                                <th style="width: 40px;"></th>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Tipo</th>
+                                <th scope="col">Disponibilidad</th>
+                                <th scope="col">Formacion</th>
+                                <th scope="col">Puntuacion</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${candidatos}">
+                                <td>
+                                    <input type="radio" name="asistenteSeleccionado" th:value="${c.asistente.idAsistente}" required>
+                                </td>
+                                <td th:text="${c.asistente.nombre}"></td>
+                                <td>
+                                    <span class="status-badge validado" th:text="${c.asistente.tipoAsistente}"></span>
+                                </td>
+                                <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
+                                <td th:text="${#strings.length(c.asistente.formacionPrevia) > 40} ? ${#strings.substring(c.asistente.formacionPrevia, 0, 37)} + '...' : ${c.asistente.formacionPrevia}"></td>
+                                <td>
+                                    <span class="status-badge" th:classappend="${c.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (c.seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${c.seleccion.puntuacionMatch} + ' pts'"></span>
+                                </td>
+                                <td>
+                                    <a th:href="@{/peticionAP/candidato/{idAsistente}/detalle(idAsistente=${c.asistente.idAsistente},idSolicitud=${peticion.idSolicitud})}" class="link-detail">Ver perfil</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-    <div th:if="${not #lists.isEmpty(candidatos)}" class="detail-card mb-4">
-        <table class="table table-hover mb-0">
-            <thead>
-                <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Disponibilidad</th>
-                    <th scope="col">Formacion</th>
-                    <th scope="col">Puntuacion</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="c : ${candidatos}">
-                    <td th:text="${c.asistente.nombre}"></td>
-                    <td>
-                        <span class="status-badge validado" th:text="${c.asistente.tipoAsistente}"></span>
-                    </td>
-                    <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
-                    <td th:text="${#strings.length(c.asistente.formacionPrevia) > 60} ? ${#strings.substring(c.asistente.formacionPrevia, 0, 57)} + '...' : ${c.asistente.formacionPrevia}"></td>
-                    <td>
-                        <span class="status-badge" th:classappend="${c.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (c.seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${c.seleccion.puntuacionMatch} + ' pts'"></span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <div class="form-actions">
-            <a th:href="@{/peticionAP/detalle/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver a la solicitud</a>
-        </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Confirmar seleccion</button>
+                    <a th:href="@{/peticionAP/detalle/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Cancelar</a>
+                </div>
+            </form>
     </div>
 </main>
 

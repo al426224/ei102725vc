@@ -31,6 +31,8 @@ public class SeleccionDao {
     public static final String UPDATE_SELECCION = "UPDATE " + TABLE_NAME + " SET id_solicitud = ?, id_asistente = ?, estado_seleccion = ?, puntuacion_match = ? WHERE id_seleccion = ?";
     public static final String GET_SELECCIONES = "SELECT * FROM " + TABLE_NAME;
     public static final String EXISTS_SELECCION = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
+    public static final String GET_SELECCION_ACEPTADA = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'aceptada' LIMIT 1";
+    public static final String GET_SELECCION_BY_SOLICITUD_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND id_asistente = ? LIMIT 1";
     public static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM " + TABLE_NAME + " s " +
             "JOIN peticionapr p ON s.id_solicitud = p.id_solicitud " +
             "WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' " +
@@ -120,11 +122,27 @@ public List<Seleccion> getSelecciones() {
         }
     }
 
-    public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
+public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
         try {
             return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA, new SeleccionRowMapper(), idAsistente);
         } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
+        }
+    }
+
+    public Seleccion getSeleccionAceptadaPorSolicitud(int idSolicitud) {
+        try {
+            return jdbcTemplate.queryForObject(GET_SELECCION_ACEPTADA, new SeleccionRowMapper(), idSolicitud);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public Seleccion getSeleccionBySolicitudYAsistente(int idSolicitud, int idAsistente) {
+        try {
+            return jdbcTemplate.queryForObject(GET_SELECCION_BY_SOLICITUD_ASISTENTE, new SeleccionRowMapper(), idSolicitud, idAsistente);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
 }

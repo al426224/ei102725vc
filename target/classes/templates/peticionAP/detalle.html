@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.themeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,96 +19,118 @@
         <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">Mi Perfil</a>
     </nav>
 
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesion</a>
 </aside>
 
 <main class="main-content">
     <h1 class="page-title">Detalle de Solicitud</h1>
 
-    <div class="detail-card">
-        <div style="margin-bottom: 1.5rem;">
-            <span class="info-label">Estado:</span>
-            <span class="status-badge" th:classappend="${peticionAP.estado}" th:text="${estadoLabels[peticionAP.estado] ?: peticionAP.estado}"></span>
-        </div>
-
-        <h3 class="section-title">Datos de la Solicitud</h3>
-
-        <div class="section-row">
-            <span class="info-label">Tipo de asistencia:</span>
-            <span th:text="${peticionAP.tipoAsistencia}"></span>
-        </div>
-        <div class="section-row">
-            <span class="info-label">Horas semanales:</span>
-            <span th:text="${peticionAP.horasSemanales}"></span>
-        </div>
-        <div class="section-row">
-            <span class="info-label">Tiempo preferido:</span>
-            <span th:text="${peticionAP.tiempoPreferido} ?: '-'"></span>
-        </div>
-        <div class="section-row">
-            <span class="info-label">Tipo de tareas:</span>
-            <span th:text="${peticionAP.tipoTareas} ?: '-'"></span>
-        </div>
-        <div class="section-row">
-            <span class="info-label">Municipio:</span>
-            <span th:text="${peticionAP.municipio} ?: '-'"></span>
-        </div>
-        <div class="section-row">
-            <span class="info-label">Fecha de inicio prevista:</span>
-            <span th:text="${peticionAP.fechaInicioPrevista != null} ? ${#temporals.format(peticionAP.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></span>
-        </div>
-
-        <div class="section-row" th:if="${peticionAP.descripcion}">
-            <span class="info-label">Descripcion:</span>
-            <span th:text="${peticionAP.descripcion}"></span>
-        </div>
-
-        <h3 class="section-title">Preferencias</h3>
-
-        <div class="section-row">
-            <span class="info-label">Genero preferido:</span>
-            <span th:text="${peticionAP.preferenciaGenero} ?: 'Sin preferencia'"></span>
-        </div>
-        <div class="section-row">
-            <span class="info-label">Idiomas requeridos:</span>
-            <span th:text="${peticionAP.idiomasRequeridos} ?: '-'"></span>
-        </div>
-        <div class="section-row" th:if="${peticionAP.preferencias}">
-            <span class="info-label">Otras preferencias:</span>
-            <span th:text="${peticionAP.preferencias}"></span>
-        </div>
-
-        <div th:if="${peticionAP.estado == 'rechazada'}">
-            <h3 class="section-title">Resultado de la revision</h3>
-            <div class="section-row" th:if="${peticionAP.motivoRechazo}">
-                <span class="info-label">Motivo del rechazo:</span>
-                <span th:text="${peticionAP.motivoRechazo}"></span>
+    <div class="tecnico-detalle-wrapper">
+        <div class="tecnico-detalle-main">
+            <div style="margin-bottom: 1.5rem;">
+                <span class="info-label">Estado:</span>
+                <span class="status-badge" th:classappend="${peticionAP.estado}" th:text="${estadoLabels[peticionAP.estado] ?: peticionAP.estado}"></span>
             </div>
-            <div class="section-row" th:if="${peticionAP.fechaRevision}">
-                <span class="info-label">Fecha de revision:</span>
-                <span th:text="${#temporals.format(peticionAP.fechaRevision, 'dd/MM/yyyy')}"></span>
+
+            <h3 class="section-title">Datos de la Solicitud</h3>
+
+            <div class="section-row">
+                <span class="info-label">Tipo de asistencia:</span>
+                <span th:text="${peticionAP.tipoAsistencia}"></span>
+            </div>
+            <div class="section-row">
+                <span class="info-label">Horas semanales:</span>
+                <span th:text="${peticionAP.horasSemanales}"></span>
+            </div>
+            <div class="section-row">
+                <span class="info-label">Tiempo preferido:</span>
+                <span th:text="${peticionAP.tiempoPreferido} ?: '-'"></span>
+            </div>
+            <div class="section-row">
+                <span class="info-label">Tipo de tareas:</span>
+                <span th:text="${peticionAP.tipoTareas} ?: '-'"></span>
+            </div>
+            <div class="section-row">
+                <span class="info-label">Municipio:</span>
+                <span th:text="${peticionAP.municipio} ?: '-'"></span>
+            </div>
+            <div class="section-row">
+                <span class="info-label">Fecha de inicio prevista:</span>
+                <span th:text="${peticionAP.fechaInicioPrevista != null} ? ${#temporals.format(peticionAP.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></span>
+            </div>
+
+            <div class="section-row" th:if="${peticionAP.descripcion}">
+                <span class="info-label">Descripcion:</span>
+                <span th:text="${peticionAP.descripcion}"></span>
+            </div>
+
+            <h3 class="section-title">Preferencias</h3>
+
+            <div class="section-row">
+                <span class="info-label">Genero preferido:</span>
+                <span th:text="${peticionAP.preferenciaGenero} ?: 'Sin preferencia'"></span>
+            </div>
+            <div class="section-row">
+                <span class="info-label">Idiomas requeridos:</span>
+                <span th:text="${peticionAP.idiomasRequeridos} ?: '-'"></span>
+            </div>
+            <div class="section-row" th:if="${peticionAP.preferencias}">
+                <span class="info-label">Otras preferencias:</span>
+                <span th:text="${peticionAP.preferencias}"></span>
+            </div>
+
+            <div th:if="${peticionAP.estado == 'rechazada'}">
+                <h3 class="section-title">Resultado de la revision</h3>
+                <div class="section-row" th:if="${peticionAP.motivoRechazo}">
+                    <span class="info-label">Motivo del rechazo:</span>
+                    <span th:text="${peticionAP.motivoRechazo}"></span>
+                </div>
+                <div class="section-row" th:if="${peticionAP.fechaRevision}">
+                    <span class="info-label">Fecha de revision:</span>
+                    <span th:text="${#temporals.format(peticionAP.fechaRevision, 'dd/MM/yyyy')}"></span>
+                </div>
             </div>
         </div>
 
-        <div class="form-actions">
-            <button th:if="${peticionAP.estado == 'en_revision'}" type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#cancelarModal">Cancelar Solicitud</button>
-            <a th:if="${peticionAP.estado == 'aprobada'}" th:href="@{/peticionAP/candidatos/{id}(id=${peticionAP.idSolicitud})}" class="btn btn-outline">
-                Ver candidatos sugeridos
-            </a>
-            <a th:href="@{/peticionAP/mis-solicitudes}" class="btn btn-outline">Volver a mis solicitudes</a>
+        <div class="tecnico-action-card">
+            <th:block th:if="${asistenteElegido != null}">
+                <h4 class="tecnico-action-title">Asistente Elegido</h4>
+                <div class="section-row">
+                    <span class="info-label">Nombre:</span>
+                    <span th:text="${asistenteElegido.nombre}"></span>
+                </div>
+                <div class="section-row">
+                    <span class="info-label">Tipo:</span>
+                    <span class="status-badge validado" th:text="${asistenteElegido.tipoAsistente}"></span>
+                </div>
+                <div class="section-row" th:if="${asistenteElegido.disponibilidad}">
+                    <span class="info-label">Disponibilidad:</span>
+                    <span th:text="${asistenteElegido.disponibilidad}"></span>
+                </div>
+            </th:block>
+
+            <th:block th:unless="${asistenteElegido != null}">
+                <th:block th:if="${peticionAP.estado == 'en_revision'}">
+                    <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#cancelarModal">Cancelar Solicitud</button>
+                </th:block>
+                <th:block th:if="${peticionAP.estado == 'aprobada'}">
+                    <a th:href="@{/peticionAP/candidatos/{id}(id=${peticionAP.idSolicitud})}" class="btn btn-primary">Ver candidatos sugeridos</a>
+                </th:block>
+            </th:block>
+
+            <a th:href="@{/peticionAP/mis-solicitudes}" class="back-link">Volver a mis solicitudes</a>
         </div>
     </div>
 
-    <div class="modal fade" id="cancelarModal" tabindex="-1" aria-labelledby="cancelarModalLabel" aria-hidden="true">
+    <div class="modal fade" id="cancelarModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body text-center">
-                    <h5 class="modal-title mb-3" id="cancelarModalLabel" style="display: block;">Cancelar solicitud</h5>
-                    <p class="mb-0">¿Estás seguro/a de que quieres cancelar esta solicitud?<br>Este cambio no se puede deshacer.</p>
+                    <p class="mb-0">¿Estas seguro/a de que quieres cancelar esta solicitud?<br>Este cambio no se puede deshacer.</p>
                     <div class="mt-4 d-flex justify-content-center gap-3">
                         <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Volver</button>
                         <form th:action="@{/peticionAP/cancelar/{id}(id=${peticionAP.idSolicitud})}" method="post">
-                            <button type="submit" class="btn btn-primary">Sí, cancelar</button>
+                            <button type="submit" class="btn btn-danger">Si, cancelar</button>
                         </form>
                     </div>
                 </div>

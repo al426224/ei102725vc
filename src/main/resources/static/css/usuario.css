@@ -79,12 +79,35 @@ body.sidebar-layout {
     overflow-y: auto;
 }
 
+.main-content > *:not(aside):not(.sidebar) {
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.sidebar-layout {
+    height: 100vh;
+    overflow: hidden;
+}
+
+body.sidebar-layout .sidebar-layout {
+    overflow-y: auto;
+    height: 100vh;
+}
+
 /* Page header */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+}
+
+.page-header-inline {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
 .profile-badge {
@@ -212,9 +235,23 @@ body.sidebar-layout {
     background: var(--blanco);
     border-radius: 24px;
     padding: 2.5rem;
+    max-width: 1100px;
+    box-shadow: 0 15px 50px rgba(181, 96, 110, 0.1);
+    border: 1px solid var(--rosa-medio);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-card-centered {
+    background: var(--blanco);
+    border-radius: 24px;
+    padding: 2.5rem;
     max-width: 700px;
     box-shadow: 0 15px 50px rgba(181, 96, 110, 0.1);
     border: 1px solid var(--rosa-medio);
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
 }
 
 .form-row {
@@ -672,6 +709,79 @@ body {
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--negro-texto);
+}
+
+/* ==================== HEADER / NAVBAR ==================== */
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: var(--blanco);
+    border-bottom: 1px solid var(--rosa-medio);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 2rem;
+}
+
+.nombre {
+    display: flex;
+    align-items: center;
+}
+
+.nombre .a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.navg {
+    display: flex;
+    align-items: center;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.li {
+    margin: 0;
+}
+
+.a {
+    text-decoration: none;
+    color: var(--negro-texto);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.a:hover {
+    color: var(--rosa-acento);
+}
+
+.usuario-logado {
+    margin-right: 10px;
+    font-weight: 500;
+    color: var(--negro-texto);
+}
+
+body.index-layout {
+    padding-top: 60px;
 }
 
 .hero {

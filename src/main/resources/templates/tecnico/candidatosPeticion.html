@@ -33,7 +33,7 @@
 
     <h1 class="page-title">Candidatos Sugeridos</h1>
 
-    <div class="detail-card mb-4" style="padding: 1.5rem;">
+<div class="table-container mb-4" style="padding: 1.5rem;">
         <div class="section-row" style="border: none; padding: 0.3rem 0;">
             <span class="info-label">Solicitud:</span>
             <span th:text="${peticion.idSolicitud}"></span>
@@ -52,8 +52,8 @@
         Selecciona los candidatos que quieres proponer al usuario. Podrás modificar la propuesta más adelante.
     </div>
 
-    <form th:if="${not #lists.isEmpty(candidatos)}" th:action="@{/tecnico/peticion/{id}/candidatos/guardar(id=${peticion.idSolicitud})}" method="post">
-        <div class="detail-card mb-4">
+<form th:if="${not #lists.isEmpty(candidatos)}" th:action="@{/tecnico/peticion/{id}/candidatos/guardar(id=${peticion.idSolicitud})}" method="post">
+        <div class="table-container">
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
@@ -63,7 +63,7 @@
                         <th scope="col">Disponibilidad</th>
                         <th scope="col">Coincidencias</th>
                         <th scope="col" style="width: 80px;">Puntos</th>
-                        <th scope="col" style="width: 110px;"></th>
+                        <th scope="col" style="width: 100px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -86,28 +86,24 @@
                             <span class="status-badge" th:classappend="${c.puntuacion >= 60 ? 'aprobada' : (c.puntuacion >= 30 ? 'en_revision' : 'cancelada')}" th:text="${c.puntuacion} + ' pts'"></span>
                         </td>
                         <td>
-                            <a th:href="@{/tecnico/asistente/{id}(id=${c.asistente.idAsistente}, idSolicitud=${peticion.idSolicitud})}" class="btn btn-sm btn-outline">Ver detalle</a>
+                            <a th:href="@{/tecnico/asistente/{id}(id=${c.asistente.idAsistente}, idSolicitud=${peticion.idSolicitud})}" class="link-detail">Ver detalles</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    Guardar propuesta
-                </button>
-                <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver al detalle</a>
-            </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar propuesta</button>
+            <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver al detalle</a>
         </div>
     </form>
 
-    <div th:if="${#lists.isEmpty(candidatos)}" class="detail-card mb-4">
+    <div th:if="${#lists.isEmpty(candidatos)}">
         <div class="empty-state">
             No hay candidatos compatibles para esta solicitud.
         </div>
-        <div class="form-actions" style="padding: 1rem;">
-            <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver al detalle</a>
-        </div>
+        <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="back-link">Volver al detalle</a>
     </div>
 </main>
 

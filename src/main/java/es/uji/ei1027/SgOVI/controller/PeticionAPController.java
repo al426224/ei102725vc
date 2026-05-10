@@ -7,6 +7,7 @@ import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.services.MatchingService;
 import es.uji.ei1027.SgOVI.validator.PeticionAPRSignupValidator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +20,27 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/peticionAP")
 public class PeticionAPController {
 
-    private final PeticionAPRDao peticionAPRDao;
+private final PeticionAPRDao peticionAPRDao;
     private final SeleccionDao seleccionDao;
     private final AsistentePersonalDao asistentePersonalDao;
+    private final MatchingService matchingService;
     private final PeticionAPRSignupValidator validator = new PeticionAPRSignupValidator();
 
     @Autowired
-    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao, AsistentePersonalDao asistentePersonalDao) {
+    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao, AsistentePersonalDao asistentePersonalDao, MatchingService matchingService) {
         this.peticionAPRDao = peticionAPRDao;
         this.seleccionDao = seleccionDao;
         this.asistentePersonalDao = asistentePersonalDao;
+        this.matchingService = matchingService;
     }
 
     @InitBinder
@@ -131,7 +136,7 @@ public class PeticionAPController {
         return "redirect:/peticionAP/mis-solicitudes";
     }
 
-    @GetMapping("/detalle/{id}")
+@GetMapping("/detalle/{id}")
     public String detalleSolicitud(@PathVariable int id, HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -143,8 +148,15 @@ public class PeticionAPController {
             return "redirect:/peticionAP/mis-solicitudes";
         }
 
+        Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(id);
+        AsistentePersonal asistenteElegido = null;
+        if (aceptada != null) {
+            asistenteElegido = asistentePersonalDao.getAsistente(aceptada.getIdAsistente());
+        }
+
         model.addAttribute("peticionAP", peticion);
         model.addAttribute("usuario", usuario);
+        model.addAttribute("asistenteElegido", asistenteElegido);
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",
@@ -156,14 +168,14 @@ public class PeticionAPController {
         return "peticionAP/detalle";
     }
 
-    @GetMapping("/candidatos/{idSolicitud}")
+@GetMapping("/candidatos/{idSolicitud}")
     public String verCandidatos(@PathVariable int idSolicitud, HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
             return "redirect:/login";
         }
 
-        PeticionAPR peticion = peticionAPRDao.getPeticion(idSolicitud);
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(idSolicitud);
         if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
             return "redirect:/peticionAP/mis-solicitudes";
         }
@@ -172,20 +184,39 @@ public class PeticionAPController {
             return "redirect:/peticionAP/detalle/" + idSolicitud;
         }
 
-        List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(idSolicitud, "propuesta");
-        List<CandidatoOVI> candidatos = new ArrayList<>();
-        for (Seleccion s : propuestas) {
-            AsistentePersonal a = asistentePersonalDao.getAsistente(s.getIdAsistente());
-            if (a != null) {
-                CandidatoOVI c = new CandidatoOVI();
-                c.setSeleccion(s);
-                c.setAsistente(a);
-                candidatos.add(c);
-            }
+        Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(idSolicitud);
+        if (aceptada != null) {
+            return "redirect:/peticionAP/detalle/" + idSolicitud;
         }
 
+        List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
+        List<Seleccion> aGuardar = new ArrayList<>();
+        for (MatchingService.CandidatoSugerido cs : candidatos) {
+            Seleccion s = new Seleccion();
+            s.setIdSolicitud(idSolicitud);
+            s.setIdAsistente(cs.getAsistente().getIdAsistente());
+            s.setEstadoSeleccion("propuesta");
+            s.setPuntuacionMatch(cs.getPuntuacion());
+            aGuardar.add(s);
+        }
+
+        if (!aGuardar.isEmpty()) {
+            seleccionDao.guardarCandidatosSugeridos(idSolicitud, aGuardar);
+        }
+
+        List<CandidatoOVI> candidatosData = candidatos.stream().map((csx) -> {
+            CandidatoOVI c = new CandidatoOVI();
+            Seleccion s = new Seleccion();
+            s.setIdAsistente(csx.getAsistente().getIdAsistente());
+            s.setPuntuacionMatch(csx.getPuntuacion());
+            c.setSeleccion(s);
+            c.setAsistente(csx.getAsistente());
+            return c;
+        }).collect(Collectors.toList());
+
         model.addAttribute("peticion", peticion);
-        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("candidatos", candidatosData);
+        model.addAttribute("usuario", usuario);
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",
@@ -194,8 +225,71 @@ public class PeticionAPController {
                 "cerrada_contrato", "Cerrada (contrato)",
                 "cerrada_contrato_finalizado", "Finalizada"
         ));
-
         return "peticionAP/candidatos";
+    }
+
+    @PostMapping("/candidatos/{id}/elegir")
+    public String elegirCandidato(@PathVariable int id, @RequestParam int asistenteSeleccionado, HttpSession session, RedirectAttributes redirectAttributes) {
+        UsuarioOVI usuario = getUsuarioSesion(session);
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
+        if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        if (!"aprobada".equals(peticion.getEstado())) {
+            return "redirect:/peticionAP/detalle/" + id;
+        }
+
+        List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
+        MatchingService.CandidatoSugerido elegido = candidatos.stream()
+                .filter(cs -> cs.getAsistente().getIdAsistente() == asistenteSeleccionado)
+                .findFirst().orElse(null);
+
+        if (elegido == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Asistente no encontrado entre los candidatos");
+            return "redirect:/peticionAP/candidatos/" + id;
+        }
+
+        Seleccion seleccion = new Seleccion();
+        seleccion.setIdSolicitud(id);
+        seleccion.setIdAsistente(asistenteSeleccionado);
+        seleccion.setEstadoSeleccion("aceptada");
+        seleccion.setPuntuacionMatch(elegido.getPuntuacion());
+        seleccionDao.guardarCandidatosSugeridos(id, Collections.singletonList(seleccion));
+
+        redirectAttributes.addFlashAttribute("successMessage", "Has elegido a tu asistente. La comunicacion y contratacion se realiza fuera del sistema.");
+        return "redirect:/peticionAP/detalle/" + id;
+    }
+
+    @GetMapping("/candidato/{idAsistente}/detalle")
+    public String verDetalleCandidato(@PathVariable int idAsistente, @RequestParam int idSolicitud, HttpSession session, Model model) {
+        UsuarioOVI usuario = getUsuarioSesion(session);
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        if (seleccionDao.getSeleccionAceptadaPorSolicitud(idSolicitud) != null) {
+            return "redirect:/peticionAP/detalle/" + idSolicitud;
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(idSolicitud);
+        if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(idAsistente);
+        if (asistente == null) {
+            return "redirect:/peticionAP/candidatos/" + idSolicitud;
+        }
+
+        model.addAttribute("asistente", asistente);
+        model.addAttribute("peticion", peticion);
+        model.addAttribute("usuario", usuario);
+        return "peticionAP/detalleAsistente";
     }
 
     public static class CandidatoOVI {

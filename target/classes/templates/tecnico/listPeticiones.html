@@ -80,7 +80,7 @@
                         <span class="status-badge" th:classappend="${p.estado}" th:text="${estadoLabels[p.estado] ?: p.estado}"></span>
                     </td>
                     <td>
-                        <a th:href="@{/tecnico/peticion/{id}(id=${p.idSolicitud})}" class="link-detail">Ver detalle</a>
+                        <a th:href="@{/tecnico/peticion/{id}(id=${p.idSolicitud})}" class="link-detail">Ver detalles</a>
                     </td>
                 </tr>
             </tbody>
