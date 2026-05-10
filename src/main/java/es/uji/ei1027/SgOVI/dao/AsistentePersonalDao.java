@@ -63,6 +63,9 @@ public class AsistentePersonalDao {
     }
 
     public List<AsistentePersonal> getAsistentesByEstado(String estadoValidacion) {
+        if (estadoValidacion == null || estadoValidacion.isEmpty()) {
+            return getAsistentes();
+        }
         try {
             return jdbcTemplate.query(GET_ASSISTENTS_BY_ESTADO, new AsistentePersonalRowMapper(), estadoValidacion);
         } catch (EmptyResultDataAccessException e) {

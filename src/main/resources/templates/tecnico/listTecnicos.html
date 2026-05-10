@@ -15,6 +15,7 @@
     <nav class="nav-menu">
         <a th:href="@{/tecnico/home}" class="nav-item">Gestionar UsuarioOVI</a>
         <a th:href="@{/tecnico/asistentes}" class="nav-item active">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/peticiones}" class="nav-item">Solicitudes de Asistencia</a>
     </nav>
 
     <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
@@ -35,6 +36,21 @@
 
     <h1 class="page-title">Asistentes PAP/PATI</h1>
 
+    <form th:action="@{/tecnico/asistentes}" method="get" class="filter-bar">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-control">
+                    <option value="" th:selected="${estadoSeleccionado == '' or estadoSeleccionado == null}">Todos</option>
+                    <option value="pendiente" th:selected="${estadoSeleccionado == 'pendiente'}">Pendiente</option>
+                    <option value="validado" th:selected="${estadoSeleccionado == 'validado'}">Validado</option>
+                    <option value="rechazado" th:selected="${estadoSeleccionado == 'rechazado'}">Rechazado</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+        </div>
+    </form>
+
     <div class="table-container">
         <table class="table table-hover mb-0">
             <thead>
@@ -49,7 +65,7 @@
             </thead>
             <tbody>
                 <tr th:if="${#lists.isEmpty(asistentes)}">
-                    <td colspan="6" class="empty-state">No hay asistentes registrados.</td>
+                    <td colspan="6" class="empty-state">No hay asistentes con ese estado.</td>
                 </tr>
                 <tr th:each="a : ${asistentes}">
                     <td th:text="${a.nombre}"></td>

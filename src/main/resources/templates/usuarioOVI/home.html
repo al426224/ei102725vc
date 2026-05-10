@@ -25,7 +25,7 @@
 <main class="main-content">
     <header class="page-header">
         <div>
-            <span class="badge bg-primary" th:text="${usuario.estado}">pendiente</span>
+            <span class="badge" th:classappend="${usuario.estado}" th:text="${usuario.estado}">aceptado</span>
         </div>
         <div class="usuario-nombre">
             Usuario: <span th:text="${usuario.nombre}">Nombre</span>

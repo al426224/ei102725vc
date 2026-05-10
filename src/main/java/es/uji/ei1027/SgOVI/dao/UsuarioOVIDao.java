@@ -90,6 +90,9 @@ public class UsuarioOVIDao {
     }
 
     public List<UsuarioOVI> getUsuariosByEstado(String estado) {
+        if (estado == null || estado.isEmpty()) {
+            return getUsuarios();
+        }
         try {
             return jdbcTemplate.query(GET_USUARIOS_BY_ESTADO, new UsuarioOVIRowMapper(), estado);
         } catch (EmptyResultDataAccessException e) {

@@ -1,9 +1,11 @@
 package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
+import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
 import es.uji.ei1027.SgOVI.dao.TecnicoOVIDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
+import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.TecnicoOVI;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import jakarta.servlet.http.HttpSession;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/tecnico")
@@ -25,16 +29,20 @@ public class TecnicoController {
     private final TecnicoOVIDao tecnicoOVIDao;
     private final UsuarioOVIDao usuarioOVIDao;
     private final AsistentePersonalDao asistentePersonalDao;
+    private final PeticionAPRDao peticionAPRDao;
 
     @Autowired
-    public TecnicoController(TecnicoOVIDao tecnicoOVIDao, UsuarioOVIDao usuarioOVIDao, AsistentePersonalDao asistentePersonalDao) {
+    public TecnicoController(TecnicoOVIDao tecnicoOVIDao, UsuarioOVIDao usuarioOVIDao, 
+                             AsistentePersonalDao asistentePersonalDao, PeticionAPRDao peticionAPRDao) {
         this.tecnicoOVIDao = tecnicoOVIDao;
         this.usuarioOVIDao = usuarioOVIDao;
         this.asistentePersonalDao = asistentePersonalDao;
+        this.peticionAPRDao = peticionAPRDao;
     }
 
     @GetMapping("/home")
-    public String homeTecnico(HttpSession session, Model model) {
+    public String homeTecnico(@RequestParam(value = "estado", required = false) String estado,
+                               HttpSession session, Model model) {
         Object usuario = session.getAttribute("usuario");
         Object tipo = session.getAttribute("tipo");
 
@@ -46,8 +54,9 @@ public class TecnicoController {
             model.addAttribute("tecnico", (TecnicoOVI) usuario);
         }
 
-        List<UsuarioOVI> usuariosPendientes = usuarioOVIDao.getUsuariosByEstado("pendiente");
-        model.addAttribute("usuariosPendientes", usuariosPendientes);
+        List<UsuarioOVI> usuarios = usuarioOVIDao.getUsuariosByEstado(estado);
+        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("estadoSeleccionado", estado);
 
         return "tecnico/listUsuarioOVI";
     }
@@ -77,7 +86,7 @@ public class TecnicoController {
 
         UsuarioOVI usuario = usuarioOVIDao.getUsuario(id);
         if (usuario != null) {
-            usuario.setEstado("activo");
+            usuario.setEstado("aceptado");
             usuarioOVIDao.updateUsuario(usuario);
             redirectAttributes.addFlashAttribute("successMessage", "Usuario aprobado correctamente");
         }
@@ -101,7 +110,8 @@ public class TecnicoController {
     }
 
     @GetMapping("/asistentes")
-    public String listAsistentes(HttpSession session, Model model) {
+    public String listAsistentes(@RequestParam(value = "estado", required = false) String estado,
+                                 HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
             return "redirect:/login";
@@ -112,9 +122,39 @@ public class TecnicoController {
             model.addAttribute("tecnico", (TecnicoOVI) usuario);
         }
 
-        List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentes();
+        List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentesByEstado(estado);
         model.addAttribute("asistentes", asistentes);
+        model.addAttribute("estadoSeleccionado", estado);
+
         return "tecnico/listTecnicos";
+    }
+
+    @GetMapping("/peticiones")
+    public String listPeticiones(@RequestParam(value = "estado", required = false) String estado,
+                                 HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"tecnicoovi".equals(tipo)) {
+            return "redirect:/login";
+        }
+
+        Object usuario = session.getAttribute("usuario");
+        if (usuario instanceof TecnicoOVI) {
+            model.addAttribute("tecnico", (TecnicoOVI) usuario);
+        }
+
+        List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByEstadoFiltrado(estado);
+        model.addAttribute("peticiones", peticiones);
+        model.addAttribute("estadoSeleccionado", estado);
+        model.addAttribute("estadoLabels", Map.of(
+                "en_revision", "En revision",
+                "aprobada", "Aprobada",
+                "rechazada", "Rechazada",
+                "cancelada", "Cancelada",
+                "cerrada_contrato", "Cerrada (contrato)",
+                "cerrada_contrato_finalizado", "Finalizada"
+        ));
+
+        return "tecnico/listPeticiones";
     }
 
     @GetMapping("/asistente/{id}")
@@ -142,7 +182,7 @@ public class TecnicoController {
 
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
-            asistente.setEstadoValidacion("validado");
+            asistente.setEstadoValidacion("aceptado");
             asistentePersonalDao.updateAsistente(asistente);
             redirectAttributes.addFlashAttribute("successMessage", "Asistente aprobado correctamente");
         }

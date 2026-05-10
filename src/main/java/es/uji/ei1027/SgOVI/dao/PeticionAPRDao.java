@@ -149,4 +149,16 @@ public class PeticionAPRDao {
             return new ArrayList<>();
         }
     }
+
+    public List<PeticionAPR> getPeticionesByEstadoFiltrado(String estado) {
+        if (estado == null || estado.isEmpty()) {
+            return getPeticiones();
+        }
+        try {
+            return jdbcTemplate.query(GET_PETICIONES_BY_ESTADO, new PeticionAPRRowMapper(), estado);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron peticiones con estado: " + estado);
+            return new ArrayList<>();
+        }
+    }
 }

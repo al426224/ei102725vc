@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitudes de Asistencia - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="sidebar-layout">
+
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a th:href="@{/tecnico/home}" class="nav-item">Gestionar UsuarioOVI</a>
+        <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/peticiones}" class="nav-item active">Solicitudes de Asistencia</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <span class="badge">TÉCNICO OVI</span>
+        </div>
+        <div class="tecnico-nombre">
+            Técnico: <span th:text="${tecnico.nombre}">Técnico</span>
+        </div>
+    </header>
+
+    <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></div>
+
+    <h1 class="page-title">Solicitudes de Asistencia</h1>
+
+    <form th:action="@{/tecnico/peticiones}" method="get" class="filter-bar">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-control">
+                    <option value="" th:selected="${estadoSeleccionado == '' or estadoSeleccionado == null}">Todas</option>
+                    <option value="en_revision" th:selected="${estadoSeleccionado == 'en_revision'}">En revision</option>
+                    <option value="aprobada" th:selected="${estadoSeleccionado == 'aprobada'}">Aprobada</option>
+                    <option value="rechazada" th:selected="${estadoSeleccionado == 'rechazada'}">Rechazada</option>
+                    <option value="cancelada" th:selected="${estadoSeleccionado == 'cancelada'}">Cancelada</option>
+                    <option value="cerrada_contrato" th:selected="${estadoSeleccionado == 'cerrada_contrato'}">Cerrada (contrato)</option>
+                    <option value="cerrada_contrato_finalizado" th:selected="${estadoSeleccionado == 'cerrada_contrato_finalizado'}">Finalizada</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+        </div>
+    </form>
+
+    <div class="table-container">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Horas</th>
+                    <th scope="col">Municipio</th>
+                    <th scope="col">Fecha inicio</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(peticiones)}">
+                    <td colspan="6" class="empty-state">No hay solicitudes con ese estado.</td>
+                </tr>
+                <tr th:each="p : ${peticiones}">
+                    <td th:text="${p.tipoAsistencia}"></td>
+                    <td th:text="${p.horasSemanales} + ' h/semana'"></td>
+                    <td th:text="${p.municipio} ?: '-'"></td>
+                    <td th:text="${p.fechaInicioPrevista != null} ? ${#temporals.format(p.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></td>
+                    <td>
+                        <span class="status-badge" th:classappend="${p.estado}" th:text="${estadoLabels[p.estado] ?: p.estado}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/peticionAP/detalle/{id}(id=${p.idSolicitud})}" class="link-detail">Ver detalle</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

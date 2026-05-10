@@ -15,6 +15,7 @@
     <nav class="nav-menu">
         <a th:href="@{/tecnico/home}" class="nav-item active">Gestionar UsuarioOVI</a>
         <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/peticiones}" class="nav-item">Solicitudes de Asistencia</a>
     </nav>
 
     <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
@@ -37,7 +38,22 @@
 
     <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></div>
 
-    <h2 class="page-title">Usuarios OVI Pendientes</h2>
+    <h2 class="page-title">Usuarios OVI</h2>
+
+    <form th:action="@{/tecnico/home}" method="get" class="filter-bar">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" name="estado" class="form-control">
+                    <option value="" th:selected="${estadoSeleccionado == '' or estadoSeleccionado == null}">Todos</option>
+                    <option value="pendiente" th:selected="${estadoSeleccionado == 'pendiente'}">Pendiente</option>
+                    <option value="aceptado" th:selected="${estadoSeleccionado == 'aceptado'}">Aceptado</option>
+                    <option value="rechazado" th:selected="${estadoSeleccionado == 'rechazado'}">Rechazado</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Filtrar</button>
+        </div>
+    </form>
 
     <div class="table-container">
         <table class="table table-hover mb-0">
@@ -52,10 +68,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:if="${#lists.isEmpty(usuariosPendientes)}">
-                    <td colspan="6" class="empty-state">No hay usuarios pendientes de validación.</td>
+                <tr th:if="${#lists.isEmpty(usuarios)}">
+                    <td colspan="6" class="empty-state">No hay usuarios con ese estado.</td>
                 </tr>
-                <tr th:each="u : ${usuariosPendientes}">
+                <tr th:each="u : ${usuarios}">
                     <td th:text="${u.nombre}"></td>
                     <td th:text="${u.email}"></td>
                     <td th:text="${u.dni}"></td>

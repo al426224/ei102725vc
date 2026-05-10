@@ -67,7 +67,7 @@ public class LoginController {
 
         UsuarioOVI usuarioOVI = usuarioOVIDao.auth(usuario.getUsername(), usuario.getPassword());
         if (usuarioOVI != null) {
-            if ("activo".equals(usuarioOVI.getEstado())) {
+            if ("aceptado".equals(usuarioOVI.getEstado())) {
                 session.setAttribute("usuario", usuarioOVI);
                 session.setAttribute("tipo", "usuarioOVI");
                 session.setAttribute("rol", Rol.USUARIOOVI);
@@ -83,7 +83,7 @@ public class LoginController {
 
         AsistentePersonal asistente = asistentePersonalDao.auth(usuario.getUsername(), usuario.getPassword());
         if (asistente != null) {
-            if ("validado".equals(asistente.getEstadoValidacion())) {
+            if ("aceptado".equals(asistente.getEstadoValidacion())) {
                 session.setAttribute("usuario", asistente);
                 session.setAttribute("tipo", "asistente");
                 session.setAttribute("rol", Rol.ASISTENTE);
