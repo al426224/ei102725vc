@@ -105,20 +105,26 @@
                           rows="5"
                           placeholder="Añade observaciones si lo necesitas"></textarea>
 
-                <button type="submit" class="tecnico-btn tecnico-btn-aprobar">
+                <button type="submit" class="btn btn-success">
                     Aprobar
                 </button>
             </form>
 
             <button type="button"
-                    class="tecnico-btn tecnico-btn-rechazar"
+                    class="btn btn-danger"
                     data-bs-toggle="modal"
                     data-bs-target="#rechazoModal">
                 Rechazar
             </button>
         </div>
 
-        <a th:href="@{/tecnico/peticiones}" class="tecnico-btn tecnico-btn-volver">
+        <div th:if="${peticion.estado == 'aprobada'}">
+            <a th:href="@{/tecnico/peticion/{id}/candidatos(id=${peticion.idSolicitud})}" class="btn btn-primary">
+                Ver candidatos sugeridos
+            </a>
+        </div>
+
+        <a th:href="@{/tecnico/peticiones}" class="back-link">
             Volver a la lista
         </a>
     </aside>
@@ -145,10 +151,10 @@
                 </div>
 
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="tecnico-btn tecnico-btn-volver" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="submit" class="tecnico-btn tecnico-btn-rechazar">
+                    <button type="submit" class="btn btn-danger">
                         Confirmar rechazo
                     </button>
                 </div>

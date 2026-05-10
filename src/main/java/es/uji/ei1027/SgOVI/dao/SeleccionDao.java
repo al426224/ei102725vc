@@ -21,13 +21,20 @@ public class SeleccionDao {
     public static final String TABLE_NAME = "seleccion";
     
     public static final String GET_SELECCION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
-    public static final String GET_SELECCIONES_BY_SOLICITUD = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
+    public static final String GET_SELECCIONES_BY_SOLICITUD = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? ORDER BY puntuacion_match DESC";
     public static final String GET_SELECCIONES_BY_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
     public static final String GET_SELECCIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_seleccion = ?";
+    public static final String GET_SELECCIONES_BY_SOLICITUD_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = ? ORDER BY puntuacion_match DESC";
     public static final String ADD_SELECCION = "INSERT INTO " + TABLE_NAME + " (id_solicitud, id_asistente, estado_seleccion, puntuacion_match) VALUES (?, ?, ?, ?)";
     public static final String DELETE_SELECCION = "DELETE FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    public static final String DELETE_SELECCIONES_BY_SOLICITUD = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
     public static final String UPDATE_SELECCION = "UPDATE " + TABLE_NAME + " SET id_solicitud = ?, id_asistente = ?, estado_seleccion = ?, puntuacion_match = ? WHERE id_seleccion = ?";
     public static final String GET_SELECCIONES = "SELECT * FROM " + TABLE_NAME;
+    public static final String EXISTS_SELECCION = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
+    public static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM " + TABLE_NAME + " s " +
+            "JOIN peticionapr p ON s.id_solicitud = p.id_solicitud " +
+            "WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' " +
+            "ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -84,11 +91,39 @@ public class SeleccionDao {
         jdbcTemplate.update(DELETE_SELECCION, id);
     }
 
-    public List<Seleccion> getSelecciones() {
+public List<Seleccion> getSelecciones() {
         try {
             return jdbcTemplate.query(GET_SELECCIONES, new SeleccionRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron selecciones.");
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Seleccion> getSeleccionesBySolicitudAndEstado(int idSolicitud, String estado) {
+        try {
+            return jdbcTemplate.query(GET_SELECCIONES_BY_SOLICITUD_ESTADO, new SeleccionRowMapper(), idSolicitud, estado);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public boolean hasPropuestasForSolicitud(int idSolicitud) {
+        Integer count = jdbcTemplate.queryForObject(EXISTS_SELECCION, Integer.class, idSolicitud);
+        return count != null && count > 0;
+    }
+
+    public void guardarCandidatosSugeridos(int idSolicitud, List<Seleccion> candidatos) {
+        jdbcTemplate.update(DELETE_SELECCIONES_BY_SOLICITUD, idSolicitud);
+        for (Seleccion s : candidatos) {
+            jdbcTemplate.update(ADD_SELECCION, s.getIdSolicitud(), s.getIdAsistente(), s.getEstadoSeleccion(), s.getPuntuacionMatch());
+        }
+    }
+
+    public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
+        try {
+            return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA, new SeleccionRowMapper(), idAsistente);
+        } catch (EmptyResultDataAccessException e) {
             return new ArrayList<>();
         }
     }

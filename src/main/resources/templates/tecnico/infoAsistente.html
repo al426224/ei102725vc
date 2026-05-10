@@ -57,6 +57,10 @@
             <form th:action="@{/tecnico/asistentes}" method="get" class="form-inline">
                 <button type="submit" class="btn btn-outline btn-full">Volver a la lista</button>
             </form>
+
+            <a th:if="${volverACandidatos != null}" th:href="@{/tecnico/peticion/{id}/candidatos(id=${volverACandidatos})}" class="btn btn-outline btn-full" style="margin-top: 0.5rem;">
+                Volver a candidatos
+            </a>
         </div>
     </div>
 </main>

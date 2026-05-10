@@ -85,9 +85,10 @@ public class LoginController {
         if (asistente != null) {
             if ("aceptado".equals(asistente.getEstadoValidacion())) {
                 session.setAttribute("usuario", asistente);
+                session.setAttribute("userId", asistente.getIdAsistente());
                 session.setAttribute("tipo", "asistente");
                 session.setAttribute("rol", Rol.ASISTENTE);
-                return "redirect:/";
+                return "redirect:/asistentePersonal/home";
             }
             if ("rechazado".equals(asistente.getEstadoValidacion())) {
                 bindingResult.rejectValue("password", "CuentaRechazada", "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");

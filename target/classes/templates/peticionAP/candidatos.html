@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidatos Sugeridos - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="sidebar-layout">
+
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">Dashboard</a>
+        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item active">Mis Solicitudes</a>
+        <a th:href="@{/peticionAP/nueva}" class="nav-item">Nueva Solicitud</a>
+        <a th:href="@{/usuarioOVI/perfil/{id}(id=${peticion.idUsuario})}" class="nav-item">Mi Perfil</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<main class="main-content">
+    <h1 class="page-title">Candidatos Sugeridos</h1>
+
+    <div class="detail-card mb-4">
+        <h3 class="section-title">Solicitud</h3>
+        <div class="section-row">
+            <span class="info-label">Tipo de asistencia:</span>
+            <span th:text="${peticion.tipoAsistencia}"></span>
+        </div>
+        <div class="section-row">
+            <span class="info-label">Horas semanales:</span>
+            <span th:text="${peticion.horasSemanales} + ' h/semana'"></span>
+        </div>
+        <div class="section-row">
+            <span class="info-label">Municipio:</span>
+            <span th:text="${peticion.municipio} ?: '-'"></span>
+        </div>
+        <div class="section-row">
+            <span class="info-label">Estado:</span>
+            <span class="status-badge" th:classappend="${peticion.estado}" th:text="${estadoLabels[peticion.estado] ?: peticion.estado}"></span>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        Estos son los candidatos sugeridos por el sistema. La comunicacion y contratacion se realiza fuera del sistema.
+    </div>
+
+    <div th:if="${#lists.isEmpty(candidatos)}" class="detail-card mb-4">
+        <div class="empty-state">
+            No hay candidatos sugeridos para esta solicitud todavia.
+        </div>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(candidatos)}" class="detail-card mb-4">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Disponibilidad</th>
+                    <th scope="col">Formacion</th>
+                    <th scope="col">Puntuacion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${candidatos}">
+                    <td th:text="${c.asistente.nombre}"></td>
+                    <td>
+                        <span class="status-badge validado" th:text="${c.asistente.tipoAsistente}"></span>
+                    </td>
+                    <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
+                    <td th:text="${#strings.length(c.asistente.formacionPrevia) > 60} ? ${#strings.substring(c.asistente.formacionPrevia, 0, 57)} + '...' : ${c.asistente.formacionPrevia}"></td>
+                    <td>
+                        <span class="status-badge" th:classappend="${c.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (c.seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${c.seleccion.puntuacionMatch} + ' pts'"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="form-actions">
+            <a th:href="@{/peticionAP/detalle/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver a la solicitud</a>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

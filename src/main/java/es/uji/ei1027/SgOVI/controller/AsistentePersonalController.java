@@ -1,7 +1,11 @@
 package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
+import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
+import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
+import es.uji.ei1027.SgOVI.model.PeticionAPR;
+import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.validator.AsistentePersonalSignupValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
@@ -14,6 +18,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,17 +28,106 @@ import java.util.logging.Logger;
 public class AsistentePersonalController {
 
     private final AsistentePersonalDao asistentePersonalDao;
+    private final SeleccionDao seleccionDao;
+    private final PeticionAPRDao peticionAPRDao;
     private final Logger logger = Logger.getLogger(AsistentePersonalController.class.getName());
 
     @Autowired
-    public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao) {
+    public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao, SeleccionDao seleccionDao, PeticionAPRDao peticionAPRDao) {
         this.asistentePersonalDao = asistentePersonalDao;
+        this.seleccionDao = seleccionDao;
+        this.peticionAPRDao = peticionAPRDao;
     }
 
-    @InitBinder
+@InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
+    }
+
+    @GetMapping("/home")
+    public String homeAsistente(HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        Integer idAsistente = (Integer) session.getAttribute("userId");
+        if (idAsistente == null) {
+            return "redirect:/login";
+        }
+
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(idAsistente);
+        if (asistente == null) {
+            return "redirect:/login";
+        }
+
+        List<Seleccion> selecciones = seleccionDao.getSeleccionesByAsistenteNoRechazada(idAsistente);
+        List<PropuestaInfo> propuestas = new ArrayList<>();
+        for (Seleccion s : selecciones) {
+            PeticionAPR p = peticionAPRDao.getPeticion(s.getIdSolicitud());
+            if (p != null) {
+                propuestas.add(new PropuestaInfo(s, p));
+            }
+        }
+
+        int propuestasRecibidas = propuestas.size();
+        int enContacto = (int) propuestas.stream().filter(p -> "contactado".equals(p.seleccion.getEstadoSeleccion())).count();
+        int aceptadas = (int) propuestas.stream().filter(p -> "aceptada".equals(p.seleccion.getEstadoSeleccion())).count();
+
+        model.addAttribute("asistente", asistente);
+        model.addAttribute("propuestas", propuestas);
+        model.addAttribute("propuestasRecibidas", propuestasRecibidas);
+        model.addAttribute("enContacto", enContacto);
+        model.addAttribute("aceptadas", aceptadas);
+        return "asistentePersonal/home";
+    }
+
+    public static class PropuestaInfo {
+        public Seleccion seleccion;
+        public PeticionAPR peticion;
+
+        public PropuestaInfo(Seleccion seleccion, PeticionAPR peticion) {
+            this.seleccion = seleccion;
+            this.peticion = peticion;
+        }
+    }
+
+    @GetMapping("/perfil/{id}")
+    public String perfilAsistente(@PathVariable int id, HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
+        if (asistente == null) {
+            return "redirect:/asistentePersonal/home";
+        }
+        model.addAttribute("asistente", asistente);
+        return "asistentePersonal/perfil";
+    }
+
+    @GetMapping("/propuesta/{id}")
+    public String verPropuesta(@PathVariable int id, HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticion(id);
+        if (peticion == null) {
+            return "redirect:/asistentePersonal/home";
+        }
+
+        Seleccion seleccion = seleccionDao.getSeleccionesByAsistenteNoRechazada((Integer) session.getAttribute("userId"))
+                .stream().filter(s -> s.getIdSolicitud() == id).findFirst().orElse(null);
+        if (seleccion == null) {
+            return "redirect:/asistentePersonal/home";
+        }
+
+        model.addAttribute("peticion", peticion);
+        model.addAttribute("seleccion", seleccion);
+        model.addAttribute("asistente", asistentePersonalDao.getAsistente((Integer) session.getAttribute("userId")));
+        return "asistentePersonal/propuesta";
     }
 
     @GetMapping("/list")
@@ -120,17 +215,7 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @GetMapping("/perfil/{id}")
-    public String perfilAsistente(Model model, @PathVariable int id) {
-        AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
 
-        if (asistente == null) {
-            return "redirect:/asistentePersonal/list";
-        }
-
-        model.addAttribute("asistente", asistente);
-        return "asistentePersonal/perfil";
-    }
 
     @GetMapping("/validar/{id}")
     public String validarAsistenteForm(Model model, @PathVariable int id) {

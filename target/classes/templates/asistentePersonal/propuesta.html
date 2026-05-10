@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Propuesta - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="sidebar-layout">
+
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a th:href="@{/asistentePersonal/home}" class="nav-item active">Dashboard</a>
+        <a th:href="@{/asistentePersonal/perfil/{id}(id=${asistente.idAsistente})}" class="nav-item">Mi Perfil</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<main class="main-content">
+    <h1 class="page-title">Detalle de Propuesta</h1>
+
+    <div class="detail-card">
+        <div class="section-row">
+            <span class="info-label">Usuario:</span>
+            <span th:text="${peticion.nombreUsuario} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Tipo de asistencia:</span>
+            <span th:text="${peticion.tipoAsistencia}"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Horas semanales:</span>
+            <span th:text="${peticion.horasSemanales}"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Municipio:</span>
+            <span th:text="${peticion.municipio} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Fecha inicio prevista:</span>
+            <span th:text="${peticion.fechaInicioPrevista != null} ? ${#temporals.format(peticion.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Tiempo preferido:</span>
+            <span th:text="${peticion.tiempoPreferido} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Tipo de tareas:</span>
+            <span th:text="${peticion.tipoTareas} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Puntuación de compatibilidad:</span>
+            <span class="status-badge" th:classappend="${seleccion.puntuacionMatch >= 60 ? 'aprobada' : (seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${seleccion.puntuacionMatch} + ' pts'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Estado de la propuesta:</span>
+            <span class="status-badge" th:classappend="${seleccion.estadoSeleccion == 'propuesta' ? 'pendiente' : (seleccion.estadoSeleccion == 'contactado' ? 'en_revision' : (seleccion.estadoSeleccion == 'aceptada' ? 'aprobada' : 'cancelada'))}" th:text="${seleccion.estadoSeleccion}"></span>
+        </div>
+
+        <div th:if="${peticion.descripcion}" class="info-group">
+            <span class="info-label">Descripción</span>
+            <p class="info-value info-texto-libre" th:text="${peticion.descripcion}"></p>
+        </div>
+
+        <div th:if="${peticion.preferencias}" class="info-group">
+            <span class="info-label">Preferencias del usuario</span>
+            <p class="info-value info-texto-libre" th:text="${peticion.preferencias}"></p>
+        </div>
+
+        <div class="form-actions">
+            <a th:href="@{/asistentePersonal/home}" class="btn btn-outline">Volver al panel</a>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

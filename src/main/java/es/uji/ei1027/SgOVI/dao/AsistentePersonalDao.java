@@ -21,10 +21,11 @@ public class AsistentePersonalDao {
 
     public static final String TABLE_NAME = "asistentepersonal";
     
-    public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
     public static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
     public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ?";
     public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
+    public static final String GET_ASSISTENTS_COMPATIBLES = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ? AND estado_validacion = 'aceptado'";
     public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
     public static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ? WHERE id_asistente = ?";
@@ -95,6 +96,18 @@ public List<AsistentePersonal> getAsistentes() {
             return jdbcTemplate.query(GET_ASSISTANTS, new AsistentePersonalRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron asistentes.");
+            return new ArrayList<>();
+        }
+    }
+
+    public List<AsistentePersonal> getCandidatosCompatibles(String tipoAsistencia) {
+        if (tipoAsistencia == null || tipoAsistencia.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        try {
+            return jdbcTemplate.query(GET_ASSISTENTS_COMPATIBLES, new AsistentePersonalRowMapper(), tipoAsistencia);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron candidatos compatibles para tipo: " + tipoAsistencia);
             return new ArrayList<>();
         }
     }

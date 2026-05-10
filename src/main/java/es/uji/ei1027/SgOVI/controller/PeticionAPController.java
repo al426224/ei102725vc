@@ -1,7 +1,11 @@
 package es.uji.ei1027.SgOVI.controller;
 
+import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
+import es.uji.ei1027.SgOVI.dao.SeleccionDao;
+import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
+import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.validator.PeticionAPRSignupValidator;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,11 +27,15 @@ import java.util.Map;
 public class PeticionAPController {
 
     private final PeticionAPRDao peticionAPRDao;
+    private final SeleccionDao seleccionDao;
+    private final AsistentePersonalDao asistentePersonalDao;
     private final PeticionAPRSignupValidator validator = new PeticionAPRSignupValidator();
 
     @Autowired
-    public PeticionAPController(PeticionAPRDao peticionAPRDao) {
+    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao, AsistentePersonalDao asistentePersonalDao) {
         this.peticionAPRDao = peticionAPRDao;
+        this.seleccionDao = seleccionDao;
+        this.asistentePersonalDao = asistentePersonalDao;
     }
 
     @InitBinder
@@ -145,6 +154,58 @@ public class PeticionAPController {
                 "cerrada_contrato_finalizado", "Finalizada"
         ));
         return "peticionAP/detalle";
+    }
+
+    @GetMapping("/candidatos/{idSolicitud}")
+    public String verCandidatos(@PathVariable int idSolicitud, HttpSession session, Model model) {
+        UsuarioOVI usuario = getUsuarioSesion(session);
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticion(idSolicitud);
+        if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        if (!"aprobada".equals(peticion.getEstado())) {
+            return "redirect:/peticionAP/detalle/" + idSolicitud;
+        }
+
+        List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(idSolicitud, "propuesta");
+        List<CandidatoOVI> candidatos = new ArrayList<>();
+        for (Seleccion s : propuestas) {
+            AsistentePersonal a = asistentePersonalDao.getAsistente(s.getIdAsistente());
+            if (a != null) {
+                CandidatoOVI c = new CandidatoOVI();
+                c.setSeleccion(s);
+                c.setAsistente(a);
+                candidatos.add(c);
+            }
+        }
+
+        model.addAttribute("peticion", peticion);
+        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("estadoLabels", Map.of(
+                "en_revision", "En revision",
+                "aprobada", "Aprobada",
+                "rechazada", "Rechazada",
+                "cancelada", "Cancelada",
+                "cerrada_contrato", "Cerrada (contrato)",
+                "cerrada_contrato_finalizado", "Finalizada"
+        ));
+
+        return "peticionAP/candidatos";
+    }
+
+    public static class CandidatoOVI {
+        private Seleccion seleccion;
+        private AsistentePersonal asistente;
+
+        public Seleccion getSeleccion() { return seleccion; }
+        public void setSeleccion(Seleccion seleccion) { this.seleccion = seleccion; }
+        public AsistentePersonal getAsistente() { return asistente; }
+        public void setAsistente(AsistentePersonal asistente) { this.asistente = asistente; }
     }
 
     private UsuarioOVI getUsuarioSesion(HttpSession session) {

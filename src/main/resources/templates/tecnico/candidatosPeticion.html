@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidatos Sugeridos - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="sidebar-layout">
+
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a th:href="@{/tecnico/home}" class="nav-item">Gestionar UsuarioOVI</a>
+        <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/peticiones}" class="nav-item active">Solicitudes de Asistencia</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <span class="badge">TÉCNICO OVI</span>
+        </div>
+    </header>
+
+    <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></div>
+    <div th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-danger"></div>
+
+    <h1 class="page-title">Candidatos Sugeridos</h1>
+
+    <div class="detail-card mb-4" style="padding: 1.5rem;">
+        <div class="section-row" style="border: none; padding: 0.3rem 0;">
+            <span class="info-label">Solicitud:</span>
+            <span th:text="${peticion.idSolicitud}"></span>
+        </div>
+        <div class="section-row" style="border: none; padding: 0.3rem 0;">
+            <span class="info-label">Usuario:</span>
+            <span th:text="${peticion.nombreUsuario} ?: 'No disponible'"></span>
+        </div>
+        <div class="section-row" style="border: none; padding: 0.3rem 0;">
+            <span class="info-label">Tipo de asistencia:</span>
+            <span th:text="${peticion.tipoAsistencia}"></span>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        Selecciona los candidatos que quieres proponer al usuario. Podrás modificar la propuesta más adelante.
+    </div>
+
+    <form th:if="${not #lists.isEmpty(candidatos)}" th:action="@{/tecnico/peticion/{id}/candidatos/guardar(id=${peticion.idSolicitud})}" method="post">
+        <div class="detail-card mb-4">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;"></th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Disponibilidad</th>
+                        <th scope="col">Coincidencias</th>
+                        <th scope="col" style="width: 80px;">Puntos</th>
+                        <th scope="col" style="width: 110px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="c : ${candidatos}">
+                        <td>
+                            <input type="checkbox" name="candidatosSeleccionados" th:value="${c.asistente.idAsistente}">
+                        </td>
+                        <td>
+                            <a th:href="@{/tecnico/asistente/{id}(id=${c.asistente.idAsistente})}" class="link-detail" th:text="${c.asistente.nombre}"></a>
+                        </td>
+                        <td>
+                            <span class="status-badge validado" th:text="${c.asistente.tipoAsistente}"></span>
+                        </td>
+                        <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
+                        <td>
+                            <span th:each="etiqueta : ${c.etiquetas}" class="badge me-1 mb-1" style="background: var(--rosa-base); color: var(--rosa-acento); font-size: 0.7rem;" th:text="${etiqueta}"></span>
+                            <span th:if="${#lists.isEmpty(c.etiquetas)}" style="color: #999; font-size: 0.85rem;">Sin coincidencias claras</span>
+                        </td>
+                        <td>
+                            <span class="status-badge" th:classappend="${c.puntuacion >= 60 ? 'aprobada' : (c.puntuacion >= 30 ? 'en_revision' : 'cancelada')}" th:text="${c.puntuacion} + ' pts'"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/tecnico/asistente/{id}(id=${c.asistente.idAsistente}, idSolicitud=${peticion.idSolicitud})}" class="btn btn-sm btn-outline">Ver detalle</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    Guardar propuesta
+                </button>
+                <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver al detalle</a>
+            </div>
+        </div>
+    </form>
+
+    <div th:if="${#lists.isEmpty(candidatos)}" class="detail-card mb-4">
+        <div class="empty-state">
+            No hay candidatos compatibles para esta solicitud.
+        </div>
+        <div class="form-actions" style="padding: 1rem;">
+            <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver al detalle</a>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

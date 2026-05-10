@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="sidebar-layout">
+
+<aside class="sidebar">
+    <div class="brand">SgOVI Panel</div>
+
+    <nav class="nav-menu">
+        <a th:href="@{/asistentePersonal/home}" class="nav-item active">Dashboard</a>
+        <a th:href="@{/asistentePersonal/perfil/{id}(id=${asistente.idAsistente})}" class="nav-item">Mi Perfil</a>
+    </nav>
+
+    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
+</aside>
+
+<main class="main-content">
+    <header class="page-header">
+        <div>
+            <span class="badge" th:classappend="${asistente.estadoValidacion}" th:text="${asistente.estadoValidacion}">aceptado</span>
+        </div>
+        <div class="usuario-nombre">
+            Usuario: <span th:text="${asistente.nombre}">Nombre</span>
+        </div>
+    </header>
+
+    <section class="welcome-card">
+        <h1>¡Hola de nuevo, <span th:text="${asistente.nombre}">Asistente</span>!</h1>
+        <p>Bienvenido a tu panel de asistente personal. Aquí puedes gestionar las propuestas que te han llegado.</p>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <h3>Propuestas Recibidas</h3>
+            <p th:text="${propuestasRecibidas}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>En Contacto</h3>
+            <p th:text="${enContacto}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Aceptadas</h3>
+            <p th:text="${aceptadas}">0</p>
+        </div>
+    </section>
+
+    <div class="table-container" style="margin-top: 1.5rem;">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Municipio</th>
+                    <th scope="col">Fecha inicio</th>
+                    <th scope="col">Tipo tareas</th>
+                    <th scope="col">Puntuación</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(propuestas)}">
+                    <td colspan="8" class="empty-state">No tienes propuestas de usuarios en este momento.</td>
+                </tr>
+                <tr th:each="p : ${propuestas}">
+                    <td th:text="${p.peticion.nombreUsuario} ?: '-'"></td>
+                    <td>
+                        <span class="status-badge validado" th:text="${p.peticion.tipoAsistencia}"></span>
+                    </td>
+                    <td th:text="${p.peticion.municipio} ?: '-'"></td>
+                    <td th:text="${p.peticion.fechaInicioPrevista != null} ? ${#temporals.format(p.peticion.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></td>
+                    <td th:text="${p.peticion.tipoTareas} ?: '-'"></td>
+                    <td>
+                        <span class="status-badge" th:classappend="${p.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (p.seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${p.seleccion.puntuacionMatch} + ' pts'"></span>
+                    </td>
+                    <td>
+                        <span class="status-badge" th:classappend="${p.seleccion.estadoSeleccion == 'propuesta' ? 'pendiente' : (p.seleccion.estadoSeleccion == 'contactado' ? 'en_revision' : (p.seleccion.estadoSeleccion == 'aceptada' ? 'aprobada' : 'cancelada'))}" th:text="${p.seleccion.estadoSeleccion}"></span>
+                    </td>
+                    <td>
+                        <a th:href="@{/asistentePersonal/propuesta/{id}(id=${p.peticion.idSolicitud})}" class="link-detail">Ver detalle</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>
