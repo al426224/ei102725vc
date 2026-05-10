@@ -96,22 +96,18 @@
     <aside class="tecnico-action-card">
         <h2 class="tecnico-action-title">Gestión de solicitud</h2>
 
-        <div th:if="${peticion.estado == 'en_revision'}">
-            <form th:action="@{/tecnico/peticion/approve/{id}(id=${peticion.idSolicitud})}" method="post" class="tecnico-action-form">
-                <label for="observaciones" class="info-label">Observaciones</label>
+<div class="tecnico-action-buttons" th:if="${peticion.estado == 'en_revision'}">
+            <form th:action="@{/tecnico/peticion/approve/{id}(id=${peticion.idSolicitud})}" method="post">
                 <textarea id="observaciones"
                           name="observaciones"
                           class="tecnico-observaciones"
                           rows="5"
                           placeholder="Añade observaciones si lo necesitas"></textarea>
-
-                <button type="submit" class="btn btn-success">
-                    Aprobar
-                </button>
+                <button type="submit" class="btn btn-primary">Aprobar</button>
             </form>
 
             <button type="button"
-                    class="btn btn-danger"
+                    class="btn btn-outline"
                     data-bs-toggle="modal"
                     data-bs-target="#rechazoModal">
                 Rechazar
@@ -131,32 +127,22 @@
 
 </main>
 
-<div class="modal fade tecnico-modal" id="rechazoModal" tabindex="-1" aria-labelledby="rechazoModalLabel" aria-hidden="true">
+<div class="modal fade tecnico-modal" id="rechazoModal" tabindex="-1" aria-hidden="true" th:if="${peticion.estado == 'en_revision'}">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <form th:action="@{/tecnico/peticion/reject/{id}(id=${peticion.idSolicitud})}" method="post">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title" id="rechazoModalLabel">Motivo de rechazo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                </div>
-
-                <div class="modal-body">
-                    <label for="motivoRechazo" class="info-label">Indica el motivo</label>
+                <div class="modal-body text-center">
+                    <h5 class="modal-title mb-3">Motivo de rechazo</h5>
                     <textarea id="motivoRechazo"
                               name="observaciones"
                               class="tecnico-observaciones"
                               rows="5"
-                              placeholder="Escribe aquí el motivo del rechazo..."
+                              placeholder="Escribe aqui el motivo del rechazo..."
                               required></textarea>
-                </div>
-
-                <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-danger">
-                        Confirmar rechazo
-                    </button>
+                    <div class="form-actions" style="justify-content: center;">
+                        <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Volver</button>
+                        <button type="submit" class="btn btn-primary">Confirmar rechazo</button>
+                    </div>
                 </div>
             </form>
         </div>

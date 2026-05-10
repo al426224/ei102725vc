@@ -42,47 +42,35 @@ public class MatchingService {
     private int calcularPuntuacion(PeticionAPR peticion, AsistentePersonal asistente, CandidatoSugerido cs) {
         int puntos = 0;
 
-        if (peticion.getTiempoPreferido() != null && !peticion.getTiempoPreferido().isEmpty()
-                && asistente.getDisponibilidad() != null && !asistente.getDisponibilidad().isEmpty()) {
-            if (asistente.getDisponibilidad().equalsIgnoreCase(peticion.getTiempoPreferido())) {
-                puntos += 40;
-                cs.getEtiquetas().add("Disponibilidad coincidida (+40)");
-            } else if (asistente.getDisponibilidad().toLowerCase().contains(peticion.getTiempoPreferido().toLowerCase())
-                    || peticion.getTiempoPreferido().toLowerCase().contains(asistente.getDisponibilidad().toLowerCase())) {
-                puntos += 20;
-                cs.getEtiquetas().add("Disponibilidad parcialmente coincidente (+20)");
-            }
-        }
-
         if (peticion.getMunicipio() != null && !peticion.getMunicipio().isEmpty()
-                && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
-            if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getMunicipio().toLowerCase())) {
-                puntos += 30;
-                cs.getEtiquetas().add("Formacion en zona del municipio (+30)");
+                && asistente.getMunicipio() != null && !asistente.getMunicipio().isEmpty()) {
+            if (asistente.getMunicipio().equalsIgnoreCase(peticion.getMunicipio())) {
+                puntos += 40;
+                cs.getEtiquetas().add("Municipio coincidido (+40)");
             }
         }
 
         if (peticion.getPreferenciaGenero() != null && !peticion.getPreferenciaGenero().isEmpty()
                 && asistente.getNombre() != null) {
-            boolean hombre = asistente.getNombre().toLowerCase().contains(" ") == false && (
+            boolean hombre = !asistente.getNombre().contains(" ") && (
                     asistente.getNombre().toLowerCase().endsWith("o") || asistente.getNombre().toLowerCase().endsWith("os")
             );
             boolean mujer = asistente.getNombre().toLowerCase().contains("a") && !hombre;
 
             if (peticion.getPreferenciaGenero().equalsIgnoreCase("Hombre") && hombre) {
-                puntos += 10;
-                cs.getEtiquetas().add("Genero preferido coincide (+10)");
+                puntos += 30;
+                cs.getEtiquetas().add("Genero preferido coincide (+30)");
             } else if (peticion.getPreferenciaGenero().equalsIgnoreCase("Mujer") && mujer) {
-                puntos += 10;
-                cs.getEtiquetas().add("Genero preferido coincide (+10)");
+                puntos += 30;
+                cs.getEtiquetas().add("Genero preferido coincide (+30)");
             }
         }
 
         if (peticion.getIdiomasRequeridos() != null && !peticion.getIdiomasRequeridos().isEmpty()
                 && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
             if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getIdiomasRequeridos().toLowerCase())) {
-                puntos += 10;
-                cs.getEtiquetas().add("Idiomas en formacion (+10)");
+                puntos += 20;
+                cs.getEtiquetas().add("Idioma requerido en formacion (+20)");
             }
         }
 

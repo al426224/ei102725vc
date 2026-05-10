@@ -35,6 +35,11 @@
             </div>
 
             <div class="info-group">
+                <span class="info-label">Municipio</span>
+                <span class="info-value" th:text="${asistente.municipio} ?: '-'">Municipio</span>
+            </div>
+
+            <div class="info-group">
                 <span class="info-label">Formacion Previa</span>
                 <p class="info-value info-texto-libre" th:text="${asistente.formacionPrevia}">
                     Formacion...

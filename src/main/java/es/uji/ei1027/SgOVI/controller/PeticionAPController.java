@@ -191,20 +191,23 @@ private final PeticionAPRDao peticionAPRDao;
 
         List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
         List<Seleccion> aGuardar = new ArrayList<>();
+        int count = 0;
         for (MatchingService.CandidatoSugerido cs : candidatos) {
+            if (count >= 10) break;
             Seleccion s = new Seleccion();
             s.setIdSolicitud(idSolicitud);
             s.setIdAsistente(cs.getAsistente().getIdAsistente());
             s.setEstadoSeleccion("propuesta");
             s.setPuntuacionMatch(cs.getPuntuacion());
             aGuardar.add(s);
+            count++;
         }
 
         if (!aGuardar.isEmpty()) {
             seleccionDao.guardarCandidatosSugeridos(idSolicitud, aGuardar);
         }
 
-        List<CandidatoOVI> candidatosData = candidatos.stream().map((csx) -> {
+        List<CandidatoOVI> candidatosData = candidatos.stream().limit(10).map((csx) -> {
             CandidatoOVI c = new CandidatoOVI();
             Seleccion s = new Seleccion();
             s.setIdAsistente(csx.getAsistente().getIdAsistente());

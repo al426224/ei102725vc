@@ -49,7 +49,13 @@ public class PeticionAPR {
     public void setTiempoPreferido(String tiempoPreferido) { this.tiempoPreferido = tiempoPreferido; }
 
     public String getTipoTareas() { return tipoTareas; }
-    public void setTipoTareas(String tipoTareas) { this.tipoTareas = tipoTareas; }
+    public void setTipoTareas(String tipoTareas) {
+        if (tipoTareas != null && !tipoTareas.isEmpty()) {
+            this.tipoTareas = tipoTareas.substring(0, 1).toUpperCase() + tipoTareas.substring(1);
+        } else {
+            this.tipoTareas = tipoTareas;
+        }
+    }
 
     public String getMunicipio() { return municipio; }
     public void setMunicipio(String municipio) { this.municipio = municipio; }

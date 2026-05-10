@@ -68,6 +68,12 @@
                 <div class="error" th:if="${#fields.hasErrors('formacionPrevia')}" th:errors="*{formacionPrevia}"></div>
             </div>
 
+            <div class="campos">
+                <label for="municipio">Municipio <abbr title="campo obligatorio">*</abbr></label>
+                <input type="text" id="municipio" th:field="*{municipio}" class="form-control" placeholder="Ej. Valencia, Castellón...">
+                <div class="error" th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}"></div>
+            </div>
+
             <div class="enviar">
                 <button type="submit" class="btn btn-primary" style="display: block;">Finalizar Registro</button>
                 <a th:href="@{/signup}" class="back-link">Volver atras</a>

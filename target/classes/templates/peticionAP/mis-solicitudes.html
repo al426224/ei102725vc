@@ -61,6 +61,7 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
+                    <th scope="col">Tipo de tarea</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Horas</th>
                     <th scope="col">Municipio</th>
@@ -71,9 +72,10 @@
             </thead>
             <tbody>
                 <tr th:if="${#lists.isEmpty(peticiones)}">
-                    <td colspan="6" class="empty-state">No tienes solicitudes registradas.</td>
+                    <td colspan="7" class="empty-state">No tienes solicitudes registradas.</td>
                 </tr>
                 <tr th:each="p : ${peticiones}">
+                    <td th:text="${p.tipoTareas} ?: '-'"></td>
                     <td th:text="${p.tipoAsistencia}"></td>
                     <td th:text="${p.horasSemanales} + ' h/semana'"></td>
                     <td th:text="${p.municipio} ?: '-'"></td>

@@ -59,11 +59,19 @@
                     Formación...
                 </p>
             </div>
+
+            <div class="info-group">
+                <span class="info-label">Municipio</span>
+                <p class="info-value" th:text="${asistente.municipio} ?: '-'">
+                    Municipio...
+                </p>
+            </div>
         </div>
 
         <div class="profile-actions">
             <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
-            <p class="perfil-rol">Asistente <span th:text="${asistente.tipoAsistente}">PAP</span></p>
+            <p class="perfil-nombre" th:text="${asistente.nombre}">Nombre</p>
+            <p class="perfil-rol" th:text="${asistente.tipoAsistente}">PAP</p>
 
             <a th:href="@{/asistentePersonal/home}" class="btn btn-outline">Volver al Panel</a>
         </div>

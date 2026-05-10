@@ -241,8 +241,10 @@ public class TecnicoController {
         return "tecnico/infoPeticion";
     }
 
-    @PostMapping("/peticion/approve/{id}")
-    public String approvePeticion(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+@PostMapping("/peticion/approve/{id}")
+    public String approvePeticion(@PathVariable int id,
+                                  @RequestParam(value = "observaciones", required = false) String observaciones,
+                                  HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
             return "redirect:/login";
@@ -251,13 +253,15 @@ public class TecnicoController {
         PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
         if (peticion != null) {
             peticion.setEstado("aprobada");
+            peticion.setObservacionesTecnico(observaciones);
+            peticion.setFechaRevision(java.time.LocalDate.now());
             peticionAPRDao.updatePeticion(peticion);
             redirectAttributes.addFlashAttribute("successMessage", "Solicitud aprobada correctamente");
         }
         return "redirect:/tecnico/peticiones";
     }
 
-    @PostMapping("/peticion/reject/{id}")
+@PostMapping("/peticion/reject/{id}")
     public String rejectPeticion(@PathVariable int id,
                                   @RequestParam(value = "observaciones", required = false) String observaciones,
                                   HttpSession session, RedirectAttributes redirectAttributes) {
@@ -269,14 +273,15 @@ public class TecnicoController {
         PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
         if (peticion != null) {
             peticion.setEstado("rechazada");
-            peticion.setObservacionesTecnico(observaciones);
+            peticion.setMotivoRechazo(observaciones);
+            peticion.setFechaRevision(java.time.LocalDate.now());
             peticionAPRDao.updatePeticion(peticion);
             redirectAttributes.addFlashAttribute("successMessage", "Solicitud rechazada");
         }
         return "redirect:/tecnico/peticiones";
     }
 
-    @GetMapping("/peticion/{id}/candidatos")
+@GetMapping("/peticion/{id}/candidatos")
     public String verCandidatos(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -292,7 +297,18 @@ public class TecnicoController {
             return "redirect:/tecnico/peticion/" + id;
         }
 
-        List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
+        List<AsistentePersonal> todosAsistentes = asistentePersonalDao.getCandidatosCompatibles(peticion.getTipoAsistencia());
+        List<MatchingService.CandidatoSugerido> candidatos = new java.util.ArrayList<>();
+
+        for (AsistentePersonal a : todosAsistentes) {
+            MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
+            cs.setAsistente(a);
+            int puntuacion = calcularPuntuacionManual(peticion, a, cs);
+            cs.setPuntuacion(puntuacion);
+            candidatos.add(cs);
+        }
+
+        candidatos.sort((c1, c2) -> Integer.compare(c2.getPuntuacion(), c1.getPuntuacion()));
 
         model.addAttribute("peticion", peticion);
         model.addAttribute("candidatos", candidatos);
@@ -308,7 +324,48 @@ public class TecnicoController {
         return "tecnico/candidatosPeticion";
     }
 
-    @PostMapping("/peticion/{id}/candidatos/guardar")
+private int calcularPuntuacionManual(PeticionAPR peticion, AsistentePersonal asistente, MatchingService.CandidatoSugerido cs) {
+        int puntos = 0;
+
+        if (peticion.getMunicipio() != null && !peticion.getMunicipio().isEmpty()
+                && asistente.getMunicipio() != null && !asistente.getMunicipio().isEmpty()) {
+            if (asistente.getMunicipio().equalsIgnoreCase(peticion.getMunicipio())) {
+                puntos += 40;
+            }
+        }
+
+        if (peticion.getPreferenciaGenero() != null && !peticion.getPreferenciaGenero().isEmpty()
+                && asistente.getNombre() != null) {
+            boolean hombre = !asistente.getNombre().contains(" ") && (
+                    asistente.getNombre().toLowerCase().endsWith("o") || asistente.getNombre().toLowerCase().endsWith("os")
+            );
+            boolean mujer = asistente.getNombre().toLowerCase().contains("a") && !hombre;
+
+            if (peticion.getPreferenciaGenero().equalsIgnoreCase("Hombre") && hombre) {
+                puntos += 30;
+            } else if (peticion.getPreferenciaGenero().equalsIgnoreCase("Mujer") && mujer) {
+                puntos += 30;
+            }
+        }
+
+        if (peticion.getIdiomasRequeridos() != null && !peticion.getIdiomasRequeridos().isEmpty()
+                && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
+            if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getIdiomasRequeridos().toLowerCase())) {
+                puntos += 20;
+            }
+        }
+
+        if (peticion.getTipoTareas() != null && !peticion.getTipoTareas().isEmpty()
+                && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
+            if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getTipoTareas().toLowerCase())) {
+                puntos += 10;
+            }
+        }
+
+        return puntos;
+    }
+
+@PostMapping("/peticion/{id}/candidatos/guardar")
     public String guardarCandidatos(@PathVariable int id,
                                      @RequestParam(value = "candidatosSeleccionados", required = false) List<Integer> idsAsistentes,
                                      HttpSession session, RedirectAttributes redirectAttributes) {
@@ -322,17 +379,20 @@ public class TecnicoController {
             return "redirect:/tecnico/peticiones";
         }
 
-        List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
+        List<AsistentePersonal> todosAsistentes = asistentePersonalDao.getCandidatosCompatibles(peticion.getTipoAsistencia());
         List<Seleccion> aGuardar = new ArrayList<>();
 
         if (idsAsistentes != null) {
-            for (MatchingService.CandidatoSugerido cs : candidatos) {
-                if (idsAsistentes.contains(cs.getAsistente().getIdAsistente())) {
+            for (AsistentePersonal a : todosAsistentes) {
+                if (idsAsistentes.contains(a.getIdAsistente())) {
+                    MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
+                    cs.setAsistente(a);
+                    int puntuacion = calcularPuntuacionManual(peticion, a, cs);
                     Seleccion s = new Seleccion();
                     s.setIdSolicitud(id);
-                    s.setIdAsistente(cs.getAsistente().getIdAsistente());
+                    s.setIdAsistente(a.getIdAsistente());
                     s.setEstadoSeleccion("propuesta");
-                    s.setPuntuacionMatch(cs.getPuntuacion());
+                    s.setPuntuacionMatch(puntuacion);
                     aGuardar.add(s);
                 }
             }
@@ -342,7 +402,7 @@ public class TecnicoController {
             seleccionDao.guardarCandidatosSugeridos(id, aGuardar);
             redirectAttributes.addFlashAttribute("successMessage", "Propuesta guardada correctamente");
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "No has seleccionado ningun candidato");
+            redirectAttributes.addFlashAttribute("errorMessage", "Debes seleccionar al menos un candidato");
         }
 
         return "redirect:/tecnico/peticion/" + id;

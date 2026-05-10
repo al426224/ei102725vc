@@ -55,7 +55,6 @@
             <thead>
                 <tr>
                     <th scope="col">Usuario</th>
-                    <th scope="col">Tipo</th>
                     <th scope="col">Municipio</th>
                     <th scope="col">Fecha inicio</th>
                     <th scope="col">Tipo tareas</th>
@@ -66,13 +65,10 @@
             </thead>
             <tbody>
                 <tr th:if="${#lists.isEmpty(propuestas)}">
-                    <td colspan="8" class="empty-state">No tienes propuestas de usuarios en este momento.</td>
+                    <td colspan="7" class="empty-state">No tienes propuestas de usuarios en este momento.</td>
                 </tr>
                 <tr th:each="p : ${propuestas}">
                     <td th:text="${p.peticion.nombreUsuario} ?: '-'"></td>
-                    <td>
-                        <span class="status-badge validado" th:text="${p.peticion.tipoAsistencia}"></span>
-                    </td>
                     <td th:text="${p.peticion.municipio} ?: '-'"></td>
                     <td th:text="${p.peticion.fechaInicioPrevista != null} ? ${#temporals.format(p.peticion.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></td>
                     <td th:text="${p.peticion.tipoTareas} ?: '-'"></td>

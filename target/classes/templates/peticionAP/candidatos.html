@@ -59,6 +59,7 @@
                             <tr>
                                 <th style="width: 40px;"></th>
                                 <th scope="col">Nombre</th>
+                                <th scope="col">Municipio</th>
                                 <th scope="col">Tipo</th>
                                 <th scope="col">Disponibilidad</th>
                                 <th scope="col">Formacion</th>
@@ -72,13 +73,14 @@
                                     <input type="radio" name="asistenteSeleccionado" th:value="${c.asistente.idAsistente}" required>
                                 </td>
                                 <td th:text="${c.asistente.nombre}"></td>
+                                <td th:text="${c.asistente.municipio} ?: '-'"></td>
                                 <td>
                                     <span class="status-badge validado" th:text="${c.asistente.tipoAsistente}"></span>
                                 </td>
                                 <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
                                 <td th:text="${#strings.length(c.asistente.formacionPrevia) > 40} ? ${#strings.substring(c.asistente.formacionPrevia, 0, 37)} + '...' : ${c.asistente.formacionPrevia}"></td>
                                 <td>
-                                    <span class="status-badge" th:classappend="${c.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (c.seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${c.seleccion.puntuacionMatch} + ' pts'"></span>
+                                    <span class="status-badge" th:classappend="${c.seleccion.puntuacionMatch >= 80 ? 'mejor-opcion' : (c.seleccion.puntuacionMatch >= 60 ? 'aprobado' : (c.seleccion.puntuacionMatch >= 40 ? 'en_revision' : 'cancelada'))}" th:text="${c.seleccion.puntuacionMatch} + ' pts'"></span>
                                 </td>
                                 <td>
                                     <a th:href="@{/peticionAP/candidato/{idAsistente}/detalle(idAsistente=${c.asistente.idAsistente},idSolicitud=${peticion.idSolicitud})}" class="link-detail">Ver perfil</a>

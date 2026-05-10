@@ -364,6 +364,7 @@ body.sidebar-layout .sidebar-layout {
     color: var(--rosa-acento);
     text-decoration: none;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .link-detail:hover {
@@ -413,6 +414,7 @@ body.sidebar-layout .sidebar-layout {
 
 .status-badge.pendiente { color: #856404; background: #fff3cd; }
 .status-badge.aprobado, .status-badge.aprobada { color: #155724; background: #d4edda; }
+.status-badge.mejor-opcion { color: #0c5460; background: #d1ecf1; }
 .status-badge.rechazado, .status-badge.rechazada { color: #721c24; background: #f8d7da; }
 .status-badge.cancelada { color: #383d41; background: #e2e3e5; }
 .status-badge.en_revision { color: #856404; background: #fff3cd; }
@@ -520,8 +522,22 @@ body.sidebar-layout .sidebar-layout {
 
 .info-texto-libre {
     border: none;
-    font-size: 0.95rem;
+    border-bottom: 1px solid var(--rosa-base);
+    font-size: 1.1rem;
     line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-bottom: 0.5rem;
+    display: block;
+}
+
+.perfil-nombre {
+    margin-bottom: 0.25rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--negro-texto);
+    text-align: center;
+    word-break: break-word;
 }
 
 .perfil-rol {
@@ -1023,6 +1039,24 @@ footer {
     outline: none;
     border-color: var(--rosa-acento);
     box-shadow: 0 0 0 3px rgba(181, 96, 110, 0.12);
+}
+
+.tecnico-action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tecnico-action-buttons form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tecnico-action-buttons .btn {
+    width: 100%;
+    display: block;
+    text-align: center;
 }
 
 .tecnico-modal .modal-content {

@@ -52,5 +52,9 @@ public class AsistentePersonalSignupValidator implements Validator {
         if (asistente.getDisponibilidad() == null || asistente.getDisponibilidad().trim().isEmpty()) {
             errors.rejectValue("disponibilidad", "obligatorio", "La disponibilidad es obligatoria.");
         }
+
+        if (asistente.getMunicipio() == null || asistente.getMunicipio().trim().isEmpty()) {
+            errors.rejectValue("municipio", "obligatorio", "El municipio es obligatorio.");
+        }
     }
 }

@@ -26,9 +26,9 @@ public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME +
     public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ?";
     public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
     public static final String GET_ASSISTENTS_COMPATIBLES = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ? AND estado_validacion = 'aceptado'";
-    public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
+public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad, municipio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
-    public static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ? WHERE id_asistente = ?";
+    public static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ?, municipio = ? WHERE id_asistente = ?";
     public static final String GET_ASSISTANTS = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
@@ -75,16 +75,17 @@ public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME +
         }
     }
 
-    public void addAsistente(AsistentePersonal asistente) {
+public void addAsistente(AsistentePersonal asistente) {
         jdbcTemplate.update(ADD_ASSISTENT, asistente.getNombre(), asistente.getEmail(),
                 asistente.getContrasena(), asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
-                asistente.getFormacionPrevia(), asistente.getDisponibilidad());
+                asistente.getFormacionPrevia(), asistente.getDisponibilidad(), asistente.getMunicipio());
     }
 
     public void updateAsistente(AsistentePersonal asistente) {
         jdbcTemplate.update(UPDATE_ASSISTENT, asistente.getNombre(), asistente.getEmail(),
                 asistente.getContrasena(), asistente.getTipoAsistente(), asistente.getEstadoValidacion(), 
-                asistente.getFormacionPrevia(), asistente.getDisponibilidad(), asistente.getIdAsistente());
+                asistente.getFormacionPrevia(), asistente.getDisponibilidad(), asistente.getMunicipio(), 
+                asistente.getIdAsistente());
     }
 
     public void deleteAsistente(int id) {
