@@ -1,6 +1,8 @@
 package es.uji.ei1027.SgOVI.controller;
 
+import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
+import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.validator.UsuarioOVIEditarPerfilValidator;
 import jakarta.servlet.http.HttpSession;
@@ -23,11 +25,13 @@ import java.util.logging.Logger;
 public class UsuarioOVIController {
 
     private final UsuarioOVIDao usuarioOVIDao;
+    private final PeticionAPRDao peticionAPRDao;
     private final Logger logger = Logger.getLogger(UsuarioOVIController.class.getName());
 
     @Autowired
-    public UsuarioOVIController(UsuarioOVIDao usuarioOVIDao) {
+    public UsuarioOVIController(UsuarioOVIDao usuarioOVIDao, PeticionAPRDao peticionAPRDao) {
         this.usuarioOVIDao = usuarioOVIDao;
+        this.peticionAPRDao = peticionAPRDao;
     }
 
     @InitBinder
@@ -118,12 +122,17 @@ public class UsuarioOVIController {
     public String homeUsuarioOVI(HttpSession session, Model model) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
 
-        // Si no hay usuario en sesión, redirigimos al login por seguridad
         if (usuario == null) {
             return "redirect:/login";
         }
 
-model.addAttribute("usuario", usuario);
+        List<PeticionAPR> peticionesAprobadas = peticionAPRDao.getPeticionesByUsuarioAndEstado(usuario.getIdUsuario(), "aprobada");
+        List<PeticionAPR> peticionesEnRevision = peticionAPRDao.getPeticionesByUsuarioAndEstado(usuario.getIdUsuario(), "en_revision");
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("solicitudesAprobadas", peticionesAprobadas.size());
+        model.addAttribute("solicitudesEnRevision", peticionesEnRevision.size());
+        model.addAttribute("asistentesAsignados", 0);
         return "usuarioOVI/home";
     }
 }

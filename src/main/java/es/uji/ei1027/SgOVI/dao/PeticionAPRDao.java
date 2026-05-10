@@ -29,6 +29,7 @@ public class PeticionAPRDao {
     public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
     public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ? WHERE id_solicitud = ?";
     public static final String GET_PETICIONES = "SELECT * FROM " + TABLE_NAME;
+    public static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ? AND estado = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -136,6 +137,15 @@ public class PeticionAPRDao {
             return jdbcTemplate.query(GET_PETICIONES, new PeticionAPRRowMapper());
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron peticiones.");
+            return new ArrayList<>();
+        }
+    }
+
+    public List<PeticionAPR> getPeticionesByUsuarioAndEstado(int idUsuario, String estado) {
+        try {
+            return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO_AND_ESTADO, new PeticionAPRRowMapper(), idUsuario, estado);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron peticiones para el usuario con estado: " + estado);
             return new ArrayList<>();
         }
     }

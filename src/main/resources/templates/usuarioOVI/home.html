@@ -40,15 +40,15 @@
     <section class="stats-grid">
         <div class="stat-card">
             <h3>Solicitudes Activas</h3>
-            <p>2</p>
+            <p th:text="${solicitudesAprobadas}">0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Solicitudes en Revisión</h3>
+            <p th:text="${solicitudesEnRevision}">0</p>
         </div>
         <div class="stat-card">
             <h3>Asistentes Asignados</h3>
-            <p>1</p>
-        </div>
-        <div class="stat-card">
-            <h3>Próxima Cita</h3>
-            <p>12 May</p>
+            <p th:text="${asistentesAsignados}">0</p>
         </div>
     </section>
 </main>
