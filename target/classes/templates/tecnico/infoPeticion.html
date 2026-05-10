@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Solicitud - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="tecnico-detalle-page">
+
+<main class="tecnico-detalle-wrapper">
+
+    <section class="tecnico-detalle-main">
+        <h1 class="page-title">Detalle de la Solicitud</h1>
+
+        <div class="info-group">
+            <span class="info-label">Estado</span>
+            <span class="status-badge"
+                  th:classappend="${peticion.estado}"
+                  th:text="${estadoLabels[peticion.estado] ?: peticion.estado}">
+            </span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Usuario solicitante</span>
+            <span th:text="${peticion.nombreUsuario} ?: 'No disponible'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Tipo de asistencia</span>
+            <span th:text="${peticion.tipoAsistencia}"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Horas semanales</span>
+            <span th:text="${peticion.horasSemanales} + ' h/semana'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Municipio</span>
+            <span th:text="${peticion.municipio} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Fecha inicio prevista</span>
+            <span th:text="${peticion.fechaInicioPrevista != null} ? ${#temporals.format(peticion.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Tiempo preferido</span>
+            <span th:text="${peticion.tiempoPreferido} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Tipo de tareas</span>
+            <span th:text="${peticion.tipoTareas} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Preferencia de género</span>
+            <span th:text="${peticion.preferenciaGenero} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Idiomas requeridos</span>
+            <span th:text="${peticion.idiomasRequeridos} ?: '-'"></span>
+        </div>
+
+        <div class="section-row">
+            <span class="info-label">Fecha de revisión</span>
+            <span th:text="${peticion.fechaRevision != null} ? ${#temporals.format(peticion.fechaRevision, 'dd/MM/yyyy')} : '-'"></span>
+        </div>
+
+        <div class="info-group">
+            <span class="info-label">Descripción</span>
+            <p class="info-value info-texto-libre" th:text="${peticion.descripcion} ?: '-'"></p>
+        </div>
+
+        <div class="info-group">
+            <span class="info-label">Preferencias adicionales</span>
+            <p class="info-value info-texto-libre" th:text="${peticion.preferencias} ?: '-'"></p>
+        </div>
+
+        <div class="info-group" th:if="${peticion.estado == 'rechazada'}">
+            <span class="info-label">Motivo del rechazo</span>
+            <p class="info-value info-texto-libre" th:text="${peticion.motivoRechazo} ?: '-'"></p>
+        </div>
+
+        <div class="info-group" th:if="${peticion.observacionesTecnico != null and peticion.observacionesTecnico != ''}">
+            <span class="info-label">Observaciones del técnico</span>
+            <p class="info-value info-texto-libre" th:text="${peticion.observacionesTecnico}"></p>
+        </div>
+    </section>
+
+    <aside class="tecnico-action-card">
+        <h2 class="tecnico-action-title">Gestión de solicitud</h2>
+
+        <div th:if="${peticion.estado == 'en_revision'}">
+            <form th:action="@{/tecnico/peticion/approve/{id}(id=${peticion.idSolicitud})}" method="post" class="tecnico-action-form">
+                <label for="observaciones" class="info-label">Observaciones</label>
+                <textarea id="observaciones"
+                          name="observaciones"
+                          class="tecnico-observaciones"
+                          rows="5"
+                          placeholder="Añade observaciones si lo necesitas"></textarea>
+
+                <button type="submit" class="tecnico-btn tecnico-btn-aprobar">
+                    Aprobar
+                </button>
+            </form>
+
+            <button type="button"
+                    class="tecnico-btn tecnico-btn-rechazar"
+                    data-bs-toggle="modal"
+                    data-bs-target="#rechazoModal">
+                Rechazar
+            </button>
+        </div>
+
+        <a th:href="@{/tecnico/peticiones}" class="tecnico-btn tecnico-btn-volver">
+            Volver a la lista
+        </a>
+    </aside>
+
+</main>
+
+<div class="modal fade tecnico-modal" id="rechazoModal" tabindex="-1" aria-labelledby="rechazoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form th:action="@{/tecnico/peticion/reject/{id}(id=${peticion.idSolicitud})}" method="post">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="rechazoModalLabel">Motivo de rechazo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <label for="motivoRechazo" class="info-label">Indica el motivo</label>
+                    <textarea id="motivoRechazo"
+                              name="observaciones"
+                              class="tecnico-observaciones"
+                              rows="5"
+                              placeholder="Escribe aquí el motivo del rechazo..."
+                              required></textarea>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="tecnico-btn tecnico-btn-volver" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="tecnico-btn tecnico-btn-rechazar">
+                        Confirmar rechazo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

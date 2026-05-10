@@ -29,6 +29,7 @@ public class PeticionAPRRowMapper implements RowMapper<PeticionAPR> {
                 rs.getDate("fecha_revision").toLocalDate() : null);
         peticion.setMotivoRechazo(rs.getString("motivo_rechazo"));
         peticion.setObservacionesTecnico(rs.getString("observaciones_tecnico"));
+        peticion.setNombreUsuario(rs.getString("nombre_usuario"));
         return peticion;
     }
 }

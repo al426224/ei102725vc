@@ -23,6 +23,7 @@ public class PeticionAPR {
     private LocalDate fechaRevision;
     private String motivoRechazo;
     private String observacionesTecnico;
+    private String nombreUsuario;
 
     public PeticionAPR() {}
 
@@ -74,6 +75,9 @@ public class PeticionAPR {
 
     public String getObservacionesTecnico() { return observacionesTecnico; }
     public void setObservacionesTecnico(String observacionesTecnico) { this.observacionesTecnico = observacionesTecnico; }
+
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
 
     @Override
     public String toString() {

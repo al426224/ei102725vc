@@ -20,16 +20,17 @@ public class PeticionAPRDao {
 
     public static final String TABLE_NAME = "peticionapr";
 
-    public static final String GET_PETICION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String GET_PETICIONES_BY_USUARIO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ? ORDER BY id_solicitud DESC";
-    public static final String GET_PETICIONES_BY_USUARIO_FILTRADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
-    public static final String GET_PETICIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
-    public static final String GET_PETICIONES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistencia = ?";
+    public static final String GET_PETICION_BY_ID = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
+    public static final String GET_PETICIONES_BY_USUARIO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? ORDER BY p.id_solicitud DESC";
+    public static final String GET_PETICIONES_BY_USUARIO_FILTRADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?";
+    public static final String GET_PETICIONES_BY_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.estado = ?";
+    public static final String GET_PETICIONES_BY_TIPO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.tipo_asistencia = ?";
     public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ? WHERE id_solicitud = ?";
-    public static final String GET_PETICIONES = "SELECT * FROM " + TABLE_NAME;
-    public static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ? AND estado = ?";
+    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ? WHERE id_solicitud = ?";
+    public static final String GET_PETICIONES = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario";
+    public static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? AND p.estado = ?";
+    public static final String GET_PETICION_WITH_USER = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -65,9 +66,9 @@ public class PeticionAPRDao {
         }
 
         if ("fechaInicio".equals(ordenar)) {
-            sql += " ORDER BY fecha_inicio_prevista ASC NULLS LAST";
+            sql += " ORDER BY p.fecha_inicio_prevista ASC NULLS LAST";
         } else {
-            sql += " ORDER BY id_solicitud DESC";
+            sql += " ORDER BY p.id_solicitud DESC";
         }
 
         try {
@@ -125,7 +126,18 @@ public class PeticionAPRDao {
                 peticion.getPreferenciaGenero(),
                 peticion.getPreferencias(),
                 peticion.getIdiomasRequeridos(),
+                peticion.getObservacionesTecnico(),
+                peticion.getMotivoRechazo(),
                 peticion.getIdSolicitud());
+    }
+
+    public PeticionAPR getPeticionWithUser(int id) {
+        try {
+            return jdbcTemplate.queryForObject(GET_PETICION_WITH_USER, new PeticionAPRRowMapper(), id);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontro la peticion con id: " + id);
+            return null;
+        }
     }
 
     public void deletePeticion(int id) {

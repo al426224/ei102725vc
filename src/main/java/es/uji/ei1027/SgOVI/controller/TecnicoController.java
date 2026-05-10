@@ -204,4 +204,63 @@ public class TecnicoController {
         }
         return "redirect:/tecnico/asistentes";
     }
+
+    @GetMapping("/peticion/{id}")
+    public String verPeticion(@PathVariable int id, HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"tecnicoovi".equals(tipo)) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
+        if (peticion == null) {
+            return "redirect:/tecnico/peticiones";
+        }
+
+        model.addAttribute("peticion", peticion);
+        model.addAttribute("estadoLabels", Map.of(
+                "en_revision", "En revision",
+                "aprobada", "Aprobada",
+                "rechazada", "Rechazada",
+                "cancelada", "Cancelada",
+                "cerrada_contrato", "Cerrada (contrato)",
+                "cerrada_contrato_finalizado", "Finalizada"
+        ));
+        return "tecnico/infoPeticion";
+    }
+
+    @PostMapping("/peticion/approve/{id}")
+    public String approvePeticion(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"tecnicoovi".equals(tipo)) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
+        if (peticion != null) {
+            peticion.setEstado("aprobada");
+            peticionAPRDao.updatePeticion(peticion);
+            redirectAttributes.addFlashAttribute("successMessage", "Solicitud aprobada correctamente");
+        }
+        return "redirect:/tecnico/peticiones";
+    }
+
+    @PostMapping("/peticion/reject/{id}")
+    public String rejectPeticion(@PathVariable int id,
+                                  @RequestParam(value = "observaciones", required = false) String observaciones,
+                                  HttpSession session, RedirectAttributes redirectAttributes) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"tecnicoovi".equals(tipo)) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
+        if (peticion != null) {
+            peticion.setEstado("rechazada");
+            peticion.setObservacionesTecnico(observaciones);
+            peticionAPRDao.updatePeticion(peticion);
+            redirectAttributes.addFlashAttribute("successMessage", "Solicitud rechazada");
+        }
+        return "redirect:/tecnico/peticiones";
+    }
 }
