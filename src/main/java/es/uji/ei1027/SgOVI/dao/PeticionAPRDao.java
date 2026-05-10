@@ -27,7 +27,7 @@ public class PeticionAPRDao {
     public static final String GET_PETICIONES_BY_TIPO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.tipo_asistencia = ?";
     public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ? WHERE id_solicitud = ?";
+    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_solicitud = ?";
     public static final String GET_PETICIONES = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario";
     public static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? AND p.estado = ?";
     public static final String GET_PETICION_WITH_USER = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
@@ -128,6 +128,7 @@ public class PeticionAPRDao {
                 peticion.getIdiomasRequeridos(),
                 peticion.getObservacionesTecnico(),
                 peticion.getMotivoRechazo(),
+                peticion.getFechaRevision(),
                 peticion.getIdSolicitud());
     }
 

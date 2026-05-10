@@ -8,13 +8,14 @@ public class AsistentePersonal {
     private String contrasena;
     private String tipoAsistente;
     private String estadoValidacion;
-    private String formacionPrevia;
+private String formacionPrevia;
     private String disponibilidad;
+    private String municipio;
 
     public AsistentePersonal() {}
 
     public AsistentePersonal(int idAsistente, String nombre, String email, String contrasena, String tipoAsistente, 
-                           String estadoValidacion, String formacionPrevia, String disponibilidad) {
+                           String estadoValidacion, String formacionPrevia, String disponibilidad, String municipio) {
         this.idAsistente = idAsistente;
         this.nombre = nombre;
         this.email = email;
@@ -23,6 +24,7 @@ public class AsistentePersonal {
         this.estadoValidacion = estadoValidacion;
         this.formacionPrevia = formacionPrevia;
         this.disponibilidad = disponibilidad;
+        this.municipio = municipio;
     }
 
     public int getIdAsistente() {
@@ -85,8 +87,16 @@ public class AsistentePersonal {
         return disponibilidad;
     }
 
-    public void setDisponibilidad(String disponibilidad) {
+public void setDisponibilidad(String disponibilidad) {
         this.disponibilidad = disponibilidad;
+    }
+
+    public String getMunicipio() {
+        return municipio;
+    }
+
+    public void setMunicipio(String municipio) {
+        this.municipio = municipio;
     }
 
     @Override
@@ -99,7 +109,8 @@ public class AsistentePersonal {
                 ", tipoAsistente='" + tipoAsistente + '\'' +
                 ", estadoValidacion='" + estadoValidacion + '\'' +
                 ", formacionPrevia='" + formacionPrevia + '\'' +
-                ", disponibilidad='" + disponibilidad + '\'' +
+", disponibilidad='" + disponibilidad + '\'' +
+                ", municipio='" + municipio + '\'' +
                 '}';
     }
 }

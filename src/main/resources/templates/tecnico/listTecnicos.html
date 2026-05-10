@@ -58,6 +58,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Email</th>
                     <th scope="col">Tipo</th>
+                    <th scope="col">Municipio</th>
                     <th scope="col">Disponibilidad</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Acciones</th>
@@ -65,12 +66,13 @@
             </thead>
             <tbody>
                 <tr th:if="${#lists.isEmpty(asistentes)}">
-                    <td colspan="6" class="empty-state">No hay asistentes con ese estado.</td>
+                    <td colspan="7" class="empty-state">No hay asistentes con ese estado.</td>
                 </tr>
                 <tr th:each="a : ${asistentes}">
                     <td th:text="${a.nombre}"></td>
                     <td th:text="${a.email}"></td>
                     <td th:text="${a.tipoAsistente}"></td>
+                    <td th:text="${a.municipio} ?: '-'"></td>
                     <td th:text="${a.disponibilidad}"></td>
                     <td>
                         <span class="status-badge" th:classappend="${a.estadoValidacion}" th:text="${a.estadoValidacion}"></span>

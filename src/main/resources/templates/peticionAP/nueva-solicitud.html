@@ -61,8 +61,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="tipoTareas" class="form-label">Tipo de tareas</label>
-                    <select id="tipoTareas" class="form-control" th:field="*{tipoTareas}">
+                    <label for="tipoTareas" class="form-label">Tipo de tareas <abbr title="campo obligatorio">*</abbr></label>
+                    <select id="tipoTareas" class="form-control" th:field="*{tipoTareas}" required>
                         <option value="">Selecciona tipo de tarea</option>
                         <option value="acompanyament educatiu">Acompanyamiento educativo</option>
                         <option value="acompanyament laboral">Acompanyamiento laboral</option>
@@ -72,6 +72,7 @@
                         <option value="oci temps lliure">Ocio y tiempo libre</option>
                         <option value="altres">Otros</option>
                     </select>
+                    <span th:if="${#fields.hasErrors('tipoTareas')}" th:errors="*{tipoTareas}" class="field-error"></span>
                 </div>
             </div>
 

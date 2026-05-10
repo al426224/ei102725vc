@@ -41,6 +41,11 @@
             <span class="status-badge validado" th:text="${asistente.tipoAsistente}">PAP</span>
         </div>
 
+<div class="section-row">
+            <span class="info-label">Municipio</span>
+            <span th:text="${asistente.municipio} ?: '-'"></span>
+        </div>
+
         <div class="section-row">
             <span class="info-label">Disponibilidad</span>
             <span th:text="${asistente.disponibilidad} ?: '-'"></span>

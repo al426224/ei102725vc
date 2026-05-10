@@ -31,6 +31,10 @@ public class PeticionAPRSignupValidator implements Validator {
             errors.rejectValue("municipio", "obligatorio", "El municipio es obligatorio.");
         }
 
+        if (peticionAPR.getTipoTareas() == null || peticionAPR.getTipoTareas().trim().isEmpty()) {
+            errors.rejectValue("tipoTareas", "obligatorio", "El tipo de tareas es obligatorio.");
+        }
+
         if (peticionAPR.getFechaInicioPrevista() == null) {
             errors.rejectValue("fechaInicioPrevista", "obligatorio", "La fecha de inicio prevista es obligatoria.");
         }
