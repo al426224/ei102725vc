@@ -70,6 +70,8 @@
             <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
             <p class="perfil-nombre" th:text="${asistente.nombre}">Nombre</p>
             <p class="perfil-rol" th:text="${asistente.tipoAsistente}">PAP</p>
+
+            <a th:if="${asistente.estadoValidacion == 'aceptado'}" th:href="@{/asistentePersonal/update/{id}(id=${asistente.idAsistente})}" class="btn btn-primary">Editar</a>
         </div>
     </div>
 

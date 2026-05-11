@@ -33,10 +33,8 @@ public class SeleccionDao {
     public static final String EXISTS_SELECCION = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
     public static final String GET_SELECCION_ACEPTADA = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'aceptada' LIMIT 1";
     public static final String GET_SELECCION_BY_SOLICITUD_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND id_asistente = ? LIMIT 1";
-    public static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM " + TABLE_NAME + " s " +
-            "JOIN peticionapr p ON s.id_solicitud = p.id_solicitud " +
-            "WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' " +
-            "ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
+public static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM seleccion s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
+    public static final String UPDATE_PUNTUACION_MATCH = "UPDATE seleccion SET puntuacion_match = ? WHERE id_seleccion = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -144,5 +142,9 @@ public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public void updatePuntuacionMatch(int idSeleccion, int puntuacion) {
+        jdbcTemplate.update(UPDATE_PUNTUACION_MATCH, puntuacion, idSeleccion);
     }
 }

@@ -39,14 +39,14 @@ public class MatchingService {
         return resultado;
     }
 
-    private int calcularPuntuacion(PeticionAPR peticion, AsistentePersonal asistente, CandidatoSugerido cs) {
+public int calcularPuntuacion(PeticionAPR peticion, AsistentePersonal asistente, CandidatoSugerido cs) {
         int puntos = 0;
 
         if (peticion.getMunicipio() != null && !peticion.getMunicipio().isEmpty()
                 && asistente.getMunicipio() != null && !asistente.getMunicipio().isEmpty()) {
             if (asistente.getMunicipio().equalsIgnoreCase(peticion.getMunicipio())) {
                 puntos += 40;
-                cs.getEtiquetas().add("Municipio coincidido (+40)");
+                if (cs != null) cs.getEtiquetas().add("Municipio coincidido (+40)");
             }
         }
 
@@ -59,10 +59,10 @@ public class MatchingService {
 
             if (peticion.getPreferenciaGenero().equalsIgnoreCase("Hombre") && hombre) {
                 puntos += 30;
-                cs.getEtiquetas().add("Genero preferido coincide (+30)");
+                if (cs != null) cs.getEtiquetas().add("Genero preferido coincide (+30)");
             } else if (peticion.getPreferenciaGenero().equalsIgnoreCase("Mujer") && mujer) {
                 puntos += 30;
-                cs.getEtiquetas().add("Genero preferido coincide (+30)");
+                if (cs != null) cs.getEtiquetas().add("Genero preferido coincide (+30)");
             }
         }
 
@@ -70,7 +70,7 @@ public class MatchingService {
                 && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
             if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getIdiomasRequeridos().toLowerCase())) {
                 puntos += 20;
-                cs.getEtiquetas().add("Idioma requerido en formacion (+20)");
+                if (cs != null) cs.getEtiquetas().add("Idioma requerido en formacion (+20)");
             }
         }
 
@@ -78,7 +78,7 @@ public class MatchingService {
                 && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
             if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getTipoTareas().toLowerCase())) {
                 puntos += 10;
-                cs.getEtiquetas().add("Tipo de tareas en formacion (+10)");
+                if (cs != null) cs.getEtiquetas().add("Tipo de tareas en formacion (+10)");
             }
         }
 

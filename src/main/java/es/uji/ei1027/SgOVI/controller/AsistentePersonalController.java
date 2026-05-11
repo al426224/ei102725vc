@@ -6,6 +6,7 @@ import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.Seleccion;
+import es.uji.ei1027.SgOVI.services.MatchingService;
 import es.uji.ei1027.SgOVI.validator.AsistentePersonalSignupValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
@@ -21,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/asistentePersonal")
@@ -30,13 +30,14 @@ public class AsistentePersonalController {
     private final AsistentePersonalDao asistentePersonalDao;
     private final SeleccionDao seleccionDao;
     private final PeticionAPRDao peticionAPRDao;
-    private final Logger logger = Logger.getLogger(AsistentePersonalController.class.getName());
+    private final MatchingService matchingService;
 
     @Autowired
-    public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao, SeleccionDao seleccionDao, PeticionAPRDao peticionAPRDao) {
+    public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao, SeleccionDao seleccionDao, PeticionAPRDao peticionAPRDao, MatchingService matchingService) {
         this.asistentePersonalDao = asistentePersonalDao;
         this.seleccionDao = seleccionDao;
         this.peticionAPRDao = peticionAPRDao;
+        this.matchingService = matchingService;
     }
 
 @InitBinder
@@ -97,6 +98,10 @@ public class AsistentePersonalController {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
             return "redirect:/login";
+        }
+        Integer sessionId = (Integer) session.getAttribute("userId");
+        if (sessionId == null || sessionId != id) {
+            return "redirect:/asistentePersonal/home";
         }
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente == null) {
@@ -188,24 +193,57 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @GetMapping("/update/{id}")
-    public String updateAsistenteForm(Model model, @PathVariable int id) {
-        model.addAttribute("asistentePersonal", asistentePersonalDao.getAsistente(id));
+@GetMapping("/update/{id}")
+    public String updateAsistenteForm(@PathVariable int id, HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        Integer sessionId = (Integer) session.getAttribute("userId");
+        if (sessionId == null || sessionId != id) {
+            return "redirect:/login";
+        }
+
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
+        if (asistente == null) {
+            return "redirect:/asistentePersonal/home";
+        }
+        if (!"aceptado".equals(asistente.getEstadoValidacion())) {
+            return "redirect:/asistentePersonal/perfil/" + id;
+        }
+
+        model.addAttribute("asistente", asistente);
         return "asistentePersonal/update";
     }
 
     @PostMapping("/update")
-    public String updateAsistente(@ModelAttribute("asistentePersonal") @Validated AsistentePersonal asistente,
-                                  BindingResult bindingResult, Model model,
-                                  RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("asistentePersonal", asistente);
-            return "asistentePersonal/update";
+    public String updateAsistente(@ModelAttribute("asistente") AsistentePersonal asistente,
+                                  BindingResult bindingResult, HttpSession session,
+                                  Model model, RedirectAttributes redirectAttributes) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        Integer sessionId = (Integer) session.getAttribute("userId");
+        if (sessionId == null || sessionId != asistente.getIdAsistente()) {
+            return "redirect:/login";
         }
 
         asistentePersonalDao.updateAsistente(asistente);
-        redirectAttributes.addFlashAttribute("successMessage", "Asistente actualizado correctamente");
-        return "redirect:/asistentePersonal/list";
+
+        List<Seleccion> selecciones = seleccionDao.getSeleccionesByAsistente(asistente.getIdAsistente());
+        for (Seleccion s : selecciones) {
+            PeticionAPR peticion = peticionAPRDao.getPeticion(s.getIdSolicitud());
+            if (peticion != null) {
+                MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
+                cs.setAsistente(asistente);
+                int puntos = matchingService.calcularPuntuacion(peticion, asistente, cs);
+                seleccionDao.updatePuntuacionMatch(s.getIdSeleccion(), puntos);
+            }
+        }
+
+        redirectAttributes.addFlashAttribute("successMessage", "Perfil actualizado correctamente");
+        return "redirect:/asistentePersonal/perfil/" + asistente.getIdAsistente();
     }
 
     @GetMapping("/delete/{id}")

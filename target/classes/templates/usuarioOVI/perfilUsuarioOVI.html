@@ -58,17 +58,17 @@
 
         <div class="profile-actions">
             <div class="avatar-placeholder" th:text="${usuario.nombre.substring(0,1)}">S</div>
+            <p class="perfil-nombre" th:text="${usuario.nombre}">Nombre</p>
             <p class="perfil-rol">Usuario OVI</p>
 
             <a th:href="@{/usuarioOVI/update/{id}(id=${usuario.idUsuario})}" class="btn btn-primary">Editar Datos</a>
-            <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="btn btn-outline">Volver al Panel</a>
         </div>
     </div>
-</main>
 
-<footer>
-    <p>© 2026 SgOVI - Oficina per la Vida Independent de Castelló</p>
-</footer>
+    <footer>
+        <p>© 2026 SgOVI - Oficina per la Vida Independent de Castelló</p>
+    </footer>
+</main>
 
 </body>
 </html>
