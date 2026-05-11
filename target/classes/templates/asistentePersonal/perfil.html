@@ -62,9 +62,7 @@
 
             <div class="info-group">
                 <span class="info-label">Municipio</span>
-                <p class="info-value" th:text="${asistente.municipio} ?: '-'">
-                    Municipio...
-                </p>
+                <span class="info-value" th:text="${asistente.municipio} ?: '-'">Municipio...</span>
             </div>
         </div>
 
@@ -72,15 +70,13 @@
             <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
             <p class="perfil-nombre" th:text="${asistente.nombre}">Nombre</p>
             <p class="perfil-rol" th:text="${asistente.tipoAsistente}">PAP</p>
-
-            <a th:href="@{/asistentePersonal/home}" class="btn btn-outline">Volver al Panel</a>
         </div>
     </div>
-</main>
 
-<footer>
-    <p>© 2026 SgOVI - Oficina per la Vida Independent de Castelló</p>
-</footer>
+    <footer>
+        <p>© 2026 SgOVI - Oficina per la Vida Independent de Castelló</p>
+    </footer>
+</main>
 
 </body>
 </html>
