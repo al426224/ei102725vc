@@ -102,6 +102,7 @@ public class TecnicoController {
         return "redirect:/tecnico/home";
     }
 
+
     @PostMapping("/usuario/reject/{id}")
     public String rejectUsuario(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
@@ -201,6 +202,7 @@ public class TecnicoController {
         return "redirect:/tecnico/asistentes";
     }
 
+
     @PostMapping("/asistente/reject/{id}")
     public String rejectAsistente(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
@@ -261,6 +263,7 @@ public class TecnicoController {
         return "redirect:/tecnico/peticiones";
     }
 
+
 @PostMapping("/peticion/reject/{id}")
     public String rejectPeticion(@PathVariable int id,
                                   @RequestParam(value = "observaciones", required = false) String observaciones,
@@ -280,6 +283,7 @@ public class TecnicoController {
         }
         return "redirect:/tecnico/peticiones";
     }
+
 
 @GetMapping("/peticion/{id}/candidatos")
     public String verCandidatos(@PathVariable int id, HttpSession session, Model model) {

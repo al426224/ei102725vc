@@ -51,12 +51,12 @@
             <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
             <p class="perfil-rol">Asistente PAP/PATI</p>
 
-            <form th:if="${asistente.estadoValidacion == 'pendiente'}" th:action="@{/tecnico/asistente/approve/{id}(id=${asistente.idAsistente})}" method="post" class="form-inline mb-2">
-                <button type="submit" class="btn btn-success btn-full">Aprobar Asistente</button>
-            </form>
+            <div th:if="${asistente.estadoValidacion == 'pendiente'}" class="mb-2">
+                <label for="aprobarAsistenteToggle" class="btn btn-primary btn-full">Aprobar Asistente</label>
+            </div>
 
             <form th:if="${asistente.estadoValidacion == 'pendiente'}" th:action="@{/tecnico/asistente/reject/{id}(id=${asistente.idAsistente})}" method="post" class="form-inline mb-2">
-                <button type="submit" class="btn btn-danger btn-full">Rechazar Asistente</button>
+                <button type="submit" class="btn btn-outline btn-full">Rechazar Asistente</button>
             </form>
 
             <form th:action="@{/tecnico/asistentes}" method="get" class="form-inline">
@@ -70,5 +70,18 @@
     </div>
 </main>
 
+<input th:if="${asistente.estadoValidacion == 'pendiente'}" type="checkbox" id="aprobarAsistenteToggle" class="notice-toggle">
+<div th:if="${asistente.estadoValidacion == 'pendiente'}" class="window-notice">
+    <div class="content">
+        <div class="content-text">¿Estas seguro de que quieres aprobar este asistente?<br>Este cambio no se puede deshacer.</div>
+        <div class="content-buttons">
+            <label for="aprobarAsistenteToggle" class="btn btn-outline">Volver</label>
+            <form th:action="@{/tecnico/asistente/approve/{id}(id=${asistente.idAsistente})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-primary">Si, aprobar</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
+
 </html>

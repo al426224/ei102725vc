@@ -34,6 +34,8 @@ public class UsuarioOVISignupValidator implements Validator {
 
         if (usuarioOVI.getEmail() == null || usuarioOVI.getEmail().trim().isEmpty()) {
             errors.rejectValue("email", "obligatorio", "El email es obligatorio.");
+        } else if (usuarioOVI.getEmail().length() > 100) {
+            errors.rejectValue("email", "longitud", "El email no puede superar los 100 caracteres.");
         } else if (usuarioOVIDao.getUsuarioByEmail(usuarioOVI.getEmail()) != null) {
             errors.rejectValue("email", "duplicado", "El email ya esta en uso.");
         }
@@ -42,6 +44,8 @@ public class UsuarioOVISignupValidator implements Validator {
             errors.rejectValue("contrasena", "obligatorio", "La contrasena es obligatoria.");
         } else if (usuarioOVI.getContrasena().length() < 8) {
             errors.rejectValue("contrasena", "longitud", "La contrasena debe tener al menos 8 caracteres.");
+        } else if (usuarioOVI.getContrasena().length() > 255) {
+            errors.rejectValue("contrasena", "longitud", "La contrasena no puede superar los 255 caracteres.");
         }
 
         if (usuarioOVI.getDni() == null || usuarioOVI.getDni().trim().isEmpty()) {

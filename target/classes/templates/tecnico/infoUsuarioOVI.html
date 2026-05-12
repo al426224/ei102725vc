@@ -56,12 +56,12 @@
             <div class="avatar-placeholder" th:text="${usuario.nombre.substring(0,1)}">U</div>
             <p class="perfil-rol">Usuario OVI</p>
 
-            <form th:if="${usuario.estado == 'pendiente'}" th:action="@{/tecnico/usuario/approve/{id}(id=${usuario.idUsuario})}" method="post" class="form-inline mb-2">
-                <button type="submit" class="btn btn-success btn-full">Aprobar Usuario</button>
-            </form>
+            <div th:if="${usuario.estado == 'pendiente'}" class="mb-2">
+                <label for="aprobarUsuarioToggle" class="btn btn-primary btn-full">Aprobar Usuario</label>
+            </div>
 
             <form th:if="${usuario.estado == 'pendiente'}" th:action="@{/tecnico/usuario/reject/{id}(id=${usuario.idUsuario})}" method="post" class="form-inline mb-2">
-                <button type="submit" class="btn btn-danger btn-full">Rechazar Usuario</button>
+                <button type="submit" class="btn btn-outline btn-full">Rechazar Usuario</button>
             </form>
 
             <form th:action="@{/tecnico/home}" method="get" class="form-inline">
@@ -71,5 +71,17 @@
     </div>
 </main>
 
+<input th:if="${usuario.estado == 'pendiente'}" type="checkbox" id="aprobarUsuarioToggle" class="notice-toggle">
+<div th:if="${usuario.estado == 'pendiente'}" class="window-notice">
+    <div class="content">
+        <div class="content-text">¿Estas seguro de que quieres aprobar este usuario?<br>Este cambio no se puede deshacer.</div>
+        <div class="content-buttons">
+            <label for="aprobarUsuarioToggle" class="btn btn-outline">Volver</label>
+            <form th:action="@{/tecnico/usuario/approve/{id}(id=${usuario.idUsuario})}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-primary">Si, aprobar</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

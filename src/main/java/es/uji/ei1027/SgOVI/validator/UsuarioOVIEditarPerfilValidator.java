@@ -36,6 +36,8 @@ public class UsuarioOVIEditarPerfilValidator implements Validator {
 
         if (usuarioOVI.getEmail() == null || usuarioOVI.getEmail().trim().isEmpty()) {
             errors.rejectValue("email", "obligatorio", "El correo electronico es obligatorio.");
+        } else if (usuarioOVI.getEmail().length() > 100) {
+            errors.rejectValue("email", "longitud", "El correo electronico no puede superar los 100 caracteres.");
         } else {
             UsuarioOVI existente = usuarioOVIDao.getUsuarioByEmail(usuarioOVI.getEmail());
 

@@ -31,25 +31,25 @@
 
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre</label>
-                <input type="text" id="nombre" class="form-control" th:field="*{nombre}" placeholder="Tu nombre">
+                <input type="text" id="nombre" class="form-control" th:field="*{nombre}" placeholder="Tu nombre" maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
             </div>
 
             <div class="form-group">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" id="email" class="form-control" th:field="*{email}" placeholder="tu@email.com">
+                <input type="email" id="email" class="form-control" th:field="*{email}" placeholder="tu@email.com" maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
 
             <div class="form-group">
                 <label for="telefono" class="form-label">Teléfono</label>
-                <input type="text" id="telefono" class="form-control" th:field="*{telefono}" placeholder="Tu teléfono">
+                <input type="text" id="telefono" class="form-control" th:field="*{telefono}" placeholder="Tu teléfono" maxlength="20">
                 <div class="error" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
             </div>
 
             <div class="form-group">
                 <label for="proyectoVida" class="form-label">Proyecto de Vida</label>
-                <textarea id="proyectoVida" class="form-control" th:field="*{proyectoVida}" placeholder="Describe tu proyecto de vida"></textarea>
+                <textarea id="proyectoVida" class="form-control" th:field="*{proyectoVida}" placeholder="Describe tu proyecto de vida" maxlength="1000"></textarea>
                 <div class="error" th:if="${#fields.hasErrors('proyectoVida')}" th:errors="*{proyectoVida}"></div>
             </div>
 

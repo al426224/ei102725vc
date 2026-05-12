@@ -6,12 +6,6 @@
     <title>Nueva Solicitud AP - SgOVI</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" th:href="@{/css/usuario.css}">
-    <script>
-        function autoResize(obj) {
-            obj.style.height = 'auto';
-            obj.style.height = obj.scrollHeight + 'px';
-        }
-    </script>
 </head>
 <body class="sidebar-layout">
 
@@ -32,7 +26,7 @@
     <h1 class="page-title">Nueva Solicitud de Asistencia</h1>
 
     <div class="form-card">
-        <form th:action="@{/peticionAP/nueva}" method="post" th:object="${peticionAP}">
+        <form th:action="@{/peticionAP/nueva}" method="post" th:object="${peticionAP}" id="solicitudForm">
             <p class="required-text"><abbr title="campo obligatorio">*</abbr> Campos obligatorios</p>
 
             <div class="form-row">
@@ -92,7 +86,7 @@
 
             <div class="form-group">
                 <label for="descripcion" class="form-label">Descripcion de la necesidad</label>
-                <textarea id="descripcion" class="form-control" th:field="*{descripcion}" placeholder="Describe brevemente tu situacion y necesidades" oninput="autoResize(this)" style="min-height: 80px;"></textarea>
+                <textarea id="descripcion" class="form-control" th:field="*{descripcion}" placeholder="Describe brevemente tu situacion y necesidades" rows="3"></textarea>
             </div>
 
             <h3 class="section-title">Preferencias</h3>
@@ -115,7 +109,7 @@
 
             <div class="form-group">
                 <label for="preferencias" class="form-label">Otras observaciones</label>
-                <textarea id="preferencias" class="form-control" th:field="*{preferencias}" placeholder="Otras preferencias o comentarios" oninput="autoResize(this)" style="min-height: 80px;"></textarea>
+                <textarea id="preferencias" class="form-control" th:field="*{preferencias}" placeholder="Otras preferencias o comentarios" rows="3"></textarea>
             </div>
 
             <div class="form-actions">

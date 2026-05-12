@@ -405,10 +405,19 @@ body.sidebar-layout .sidebar-layout {
 
 .error-message {
     background: #f8d7da;
-    color: #721c24;
+    color: var(--rojo-peligro);
     padding: 1rem;
     border-radius: 12px;
     margin-bottom: 1.5rem;
+}
+
+.field-error,
+.error {
+    color: var(--rojo-peligro);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0.35rem;
+    display: block;
 }
 
 /* ==================== DETALLE SOLICITUD ==================== */
@@ -952,6 +961,62 @@ body.index-layout {
     color: var(--negro-texto);
 }
 
+.notice-toggle {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.window-notice {
+    background: rgba(33, 41, 52, .85);
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    display: none;
+    position: fixed;
+    z-index: 999;
+    padding: 1rem;
+}
+
+.window-notice .content {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(33, 41, 52, .75);
+    box-sizing: content-box;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 600px;
+    min-width: 320px !important;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding: 2rem;
+    font-size: 1.05rem;
+}
+
+.window-notice .content-text {
+    color: var(--negro-texto);
+    text-align: center;
+}
+
+.window-notice .content-buttons {
+    margin-top: 1.25rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+#aprobarUsuarioToggle:checked + .window-notice,
+#aprobarAsistenteToggle:checked + .window-notice,
+#cancelarSolicitudToggle:checked + .window-notice,
+#aprobarPeticionToggle:checked + .window-notice,
+#rechazarPeticionToggle:checked + .window-notice {
+    display: flex;
+}
+
 @media (max-width: 900px) {
     .profile-card { 
         flex-direction: column; 
@@ -1065,6 +1130,28 @@ body.index-layout {
 .tecnico-modal .modal-content {
     border-radius: 20px;
     border: 1px solid var(--rosa-medio);
+}
+
+.cancel-modal-content {
+    border-radius: 16px;
+    border: 1px solid var(--rosa-medio);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-modal-content .modal-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+.modal-dialog.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 1rem);
+}
+
+.modal.fade .modal-dialog {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media (max-width: 900px) {

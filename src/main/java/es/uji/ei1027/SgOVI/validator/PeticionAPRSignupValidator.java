@@ -4,6 +4,8 @@ import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 public class PeticionAPRSignupValidator implements Validator {
 
     @Override
@@ -41,6 +43,8 @@ public class PeticionAPRSignupValidator implements Validator {
 
         if (peticionAPR.getFechaInicioPrevista() == null) {
             errors.rejectValue("fechaInicioPrevista", "obligatorio", "La fecha de inicio prevista es obligatoria.");
+        } else if (peticionAPR.getFechaInicioPrevista().isBefore(LocalDate.now())) {
+            errors.rejectValue("fechaInicioPrevista", "formato", "La fecha de inicio debe ser hoy o posterior.");
         }
 
         if (peticionAPR.getDescripcion() != null && peticionAPR.getDescripcion().length() > 500) {

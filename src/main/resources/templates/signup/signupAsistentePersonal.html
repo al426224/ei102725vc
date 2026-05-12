@@ -30,20 +30,20 @@
 
             <div class="campos">
                 <label for="nombre">Nombre completo <abbr title="campo obligatorio">*</abbr></label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Tu nombre completo">
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Tu nombre completo" maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
             </div>
 
             <div class="campos">
                 <label for="email">Email <abbr title="campo obligatorio">*</abbr></label>
-                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="tu@email.com">
+                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="tu@email.com" maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
 
             <div class="campos-fila">
                 <div class="campos">
                     <label for="contrasena">Contraseña <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="password" id="contrasena" name="contrasena" class="form-control" placeholder="Mínimo 8 caracteres">
+                    <input type="password" id="contrasena" name="contrasena" class="form-control" placeholder="Mínimo 8 caracteres" maxlength="255">
                     <div class="error" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
                 </div>
                 <div class="campos">
@@ -58,19 +58,19 @@
 
             <div class="campos">
                 <label for="disponibilidad">Disponibilidad Horaria <abbr title="campo obligatorio">*</abbr></label>
-                <input type="text" id="disponibilidad" th:field="*{disponibilidad}" class="form-control" placeholder="Ej. Mañanas, Fines de semana...">
+                <input type="text" id="disponibilidad" th:field="*{disponibilidad}" class="form-control" placeholder="Ej. Mañanas, Fines de semana..." maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('disponibilidad')}" th:errors="*{disponibilidad}"></div>
             </div>
 
             <div class="campos">
                 <label for="formacionPrevia">Formación y Experiencia <abbr title="campo obligatorio">*</abbr></label>
-                <textarea id="formacionPrevia" th:field="*{formacionPrevia}" class="form-control" rows="3" placeholder="Describe brevemente tu formación y experiencia..."></textarea>
+                <textarea id="formacionPrevia" th:field="*{formacionPrevia}" class="form-control" rows="3" placeholder="Describe brevemente tu formación y experiencia..." maxlength="200"></textarea>
                 <div class="error" th:if="${#fields.hasErrors('formacionPrevia')}" th:errors="*{formacionPrevia}"></div>
             </div>
 
             <div class="campos">
                 <label for="municipio">Municipio <abbr title="campo obligatorio">*</abbr></label>
-                <input type="text" id="municipio" th:field="*{municipio}" class="form-control" placeholder="Ej. Valencia, Castellón...">
+                <input type="text" id="municipio" th:field="*{municipio}" class="form-control" placeholder="Ej. Valencia, Castellón..." maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}"></div>
             </div>
 

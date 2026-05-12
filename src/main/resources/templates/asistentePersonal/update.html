@@ -39,7 +39,7 @@
 
             <div class="info-group">
                 <span class="info-label">Nombre Completo</span>
-                <input type="text" th:field="*{nombre}" class="form-control" placeholder="Tu nombre completo" required>
+                <input type="text" th:field="*{nombre}" class="form-control" placeholder="Tu nombre completo" required maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
             </div>
 
@@ -55,19 +55,19 @@
 
             <div class="info-group">
                 <span class="info-label">Disponibilidad</span>
-                <textarea th:field="*{disponibilidad}" class="form-control" rows="3" placeholder="Describe tu disponibilidad horaria..."></textarea>
+                <textarea th:field="*{disponibilidad}" class="form-control" rows="3" placeholder="Describe tu disponibilidad horaria..." maxlength="100"></textarea>
                 <div class="error" th:if="${#fields.hasErrors('disponibilidad')}" th:errors="*{disponibilidad}"></div>
             </div>
 
             <div class="info-group">
                 <span class="info-label">Formación Previa</span>
-                <textarea th:field="*{formacionPrevia}" class="form-control" rows="4" placeholder="Describe tu formación y experiencia..."></textarea>
+                <textarea th:field="*{formacionPrevia}" class="form-control" rows="4" placeholder="Describe tu formación y experiencia..." maxlength="200"></textarea>
                 <div class="error" th:if="${#fields.hasErrors('formacionPrevia')}" th:errors="*{formacionPrevia}"></div>
             </div>
 
             <div class="info-group">
                 <span class="info-label">Municipio</span>
-                <input type="text" th:field="*{municipio}" class="form-control" placeholder="Tu municipio">
+                <input type="text" th:field="*{municipio}" class="form-control" placeholder="Tu municipio" maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}"></div>
             </div>
 

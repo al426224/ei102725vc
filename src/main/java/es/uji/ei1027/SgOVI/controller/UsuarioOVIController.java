@@ -92,9 +92,19 @@ public class UsuarioOVIController {
             return "usuarioOVI/update";
         }
         
+        UsuarioOVI original = usuarioOVIDao.getUsuario(usuario.getIdUsuario());
+        if (original != null) {
+            usuario.setDni(original.getDni());
+            usuario.setFechaNacimiento(original.getFechaNacimiento());
+            usuario.setEstado(original.getEstado());
+            usuario.setContrasena(original.getContrasena());
+            usuario.setFechaRegistro(original.getFechaRegistro());
+            usuario.setConsentimientoLOPD(original.isConsentimientoLOPD());
+        }
+        
         usuarioOVIDao.updateUsuario(usuario);
         redirectAttributes.addFlashAttribute("successMessage", "Usuario actualizado correctamente");
-        return "redirect:/usuarioOVI/list";
+        return "redirect:/usuarioOVI/perfil/" + usuario.getIdUsuario();
     }
 
     @GetMapping("/delete/{id}")

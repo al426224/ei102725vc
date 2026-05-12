@@ -36,6 +36,8 @@ public class FormadorEditarValidator implements Validator {
 
         if (formador.getEmail() == null || formador.getEmail().trim().isEmpty()) {
             errors.rejectValue("email", "obligatorio", "El correo electrónico es obligatorio.");
+        } else if (formador.getEmail().length() > 100) {
+            errors.rejectValue("email", "longitud", "El correo electrónico no puede superar los 100 caracteres.");
         } else {
             Formador existente = formadorDao.getFormadorByEmail(formador.getEmail());
             if (existente != null && !String.valueOf(existente.getIdFormador()).equals(idFormadorActual)) {

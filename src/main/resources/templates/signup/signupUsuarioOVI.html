@@ -30,26 +30,26 @@
 
             <div class="campos">
                 <label for="nombre">Nombre completo <abbr title="campo obligatorio">*</abbr></label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Tu nombre completo">
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Tu nombre completo" maxlength="100">
                 <div class="error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
             </div>
 
             <div class="campos-fila">
                 <div class="campos">
                     <label for="email">Email <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="tu@email.com">
+                    <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="tu@email.com" maxlength="100">
                     <div class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 </div>
                 <div class="campos">
                     <label for="telefono">Teléfono</label>
-                    <input type="text" id="telefono" th:field="*{telefono}" class="form-control" placeholder="600 000 000">
+                    <input type="text" id="telefono" th:field="*{telefono}" class="form-control" placeholder="600 000 000" maxlength="20">
                 </div>
             </div>
 
             <div class="campos-fila">
                 <div class="campos">
                     <label for="dni">DNI <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="text" id="dni" th:field="*{dni}" class="form-control" placeholder="12345678A">
+                    <input type="text" id="dni" th:field="*{dni}" class="form-control" placeholder="12345678A" maxlength="9">
                     <div class="error" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
                 </div>
                 <div class="campos">
@@ -61,13 +61,13 @@
 
             <div class="campos">
                 <label for="contrasena">Contraseña <abbr title="campo obligatorio">*</abbr></label>
-                <input type="password" id="contrasena" name="contrasena" th:value="${rawPassword}" class="form-control" placeholder="Mínimo 8 caracteres">
+                <input type="password" id="contrasena" name="contrasena" th:value="${rawPassword}" class="form-control" placeholder="Mínimo 8 caracteres" maxlength="255">
                 <div class="error" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
             </div>
 
             <div class="campos">
                 <label for="proyectoVida">Proyecto de Vida</label>
-                <textarea id="proyectoVida" th:field="*{proyectoVida}" class="form-control" rows="3" placeholder="Describe brevemente tus objetivos de vida independiente..."></textarea>
+                <textarea id="proyectoVida" th:field="*{proyectoVida}" class="form-control" rows="3" placeholder="Describe brevemente tus objetivos de vida independiente..." maxlength="1000"></textarea>
             </div>
 
             <div class="campos campos-checkbox">
