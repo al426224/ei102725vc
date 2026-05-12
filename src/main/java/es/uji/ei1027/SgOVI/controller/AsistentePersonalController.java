@@ -40,7 +40,7 @@ public class AsistentePersonalController {
         this.matchingService = matchingService;
     }
 
-@InitBinder
+    @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
@@ -72,8 +72,12 @@ public class AsistentePersonalController {
         }
 
         int propuestasRecibidas = propuestas.size();
-        int enContacto = (int) propuestas.stream().filter(p -> "contactado".equals(p.seleccion.getEstadoSeleccion())).count();
-        int aceptadas = (int) propuestas.stream().filter(p -> "aceptada".equals(p.seleccion.getEstadoSeleccion())).count();
+        int enContacto = 0, aceptadas = 0;
+        for (PropuestaInfo p : propuestas) {
+            String estado = p.seleccion.getEstadoSeleccion();
+            if ("contactado".equals(estado)) enContacto++;
+            else if ("aceptada".equals(estado)) aceptadas++;
+        }
 
         model.addAttribute("asistente", asistente);
         model.addAttribute("propuestas", propuestas);
@@ -123,8 +127,13 @@ public class AsistentePersonalController {
             return "redirect:/asistentePersonal/home";
         }
 
-        Seleccion seleccion = seleccionDao.getSeleccionesByAsistenteNoRechazada((Integer) session.getAttribute("userId"))
-                .stream().filter(s -> s.getIdSolicitud() == id).findFirst().orElse(null);
+        Seleccion seleccion = null;
+        for (Seleccion s : seleccionDao.getSeleccionesByAsistenteNoRechazada((Integer) session.getAttribute("userId"))) {
+            if (s.getIdSolicitud() == id) {
+                seleccion = s;
+                break;
+            }
+        }
         if (seleccion == null) {
             return "redirect:/asistentePersonal/home";
         }
@@ -193,7 +202,7 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-@GetMapping("/update/{id}")
+    @GetMapping("/update/{id}")
     public String updateAsistenteForm(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {

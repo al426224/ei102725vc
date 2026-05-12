@@ -19,16 +19,16 @@ public class UsuarioOVIDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(UsuarioOVIDao.class.getName());
 
-    public static final String TABLE_NAME = "usuariovi";
+    private static final String TABLE_NAME = "usuariovi";
     
-    public static final String GET_USUARIO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
-    public static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
-    public static final String GET_USUARIO_BY_DNI = "SELECT * FROM " + TABLE_NAME + " WHERE dni = ?";
-    public static final String ADD_USUARIO = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, fecha_registro, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_USUARIO = "DELETE FROM " + TABLE_NAME + " WHERE id_usuario = ?";
-    public static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
-    public static final String GET_USUARIOS = "SELECT * FROM " + TABLE_NAME;
-    public static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
+    private static final String GET_USUARIO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_usuario = ?";
+    private static final String GET_USUARIO_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    private static final String GET_USUARIO_BY_DNI = "SELECT * FROM " + TABLE_NAME + " WHERE dni = ?";
+    private static final String ADD_USUARIO = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, fecha_registro, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_USUARIO = "DELETE FROM " + TABLE_NAME + " WHERE id_usuario = ?";
+    private static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
+    private static final String GET_USUARIOS = "SELECT * FROM " + TABLE_NAME;
+    private static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -101,7 +101,7 @@ public class UsuarioOVIDao {
         }
     }
 
-public UsuarioOVI auth(String email, String password) {
+    public UsuarioOVI auth(String email, String password) {
         try {
             UsuarioOVI user = jdbcTemplate.queryForObject(GET_USUARIO_BY_EMAIL, new UsuarioOVIRowMapper(), email);
 

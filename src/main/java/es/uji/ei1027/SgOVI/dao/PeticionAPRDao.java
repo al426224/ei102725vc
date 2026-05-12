@@ -18,19 +18,19 @@ public class PeticionAPRDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(PeticionAPRDao.class.getName());
 
-    public static final String TABLE_NAME = "peticionapr";
+    private static final String TABLE_NAME = "peticionapr";
 
-    public static final String GET_PETICION_BY_ID = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
-    public static final String GET_PETICIONES_BY_USUARIO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? ORDER BY p.id_solicitud DESC";
-    public static final String GET_PETICIONES_BY_USUARIO_FILTRADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?";
-    public static final String GET_PETICIONES_BY_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.estado = ?";
-    public static final String GET_PETICIONES_BY_TIPO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.tipo_asistencia = ?";
-    public static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    public static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_solicitud = ?";
-    public static final String GET_PETICIONES = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario";
-    public static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? AND p.estado = ?";
-    public static final String GET_PETICION_WITH_USER = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
+    private static final String GET_PETICION_BY_ID = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
+    private static final String GET_PETICIONES_BY_USUARIO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? ORDER BY p.id_solicitud DESC";
+    private static final String GET_PETICIONES_BY_USUARIO_FILTRADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?";
+    private static final String GET_PETICIONES_BY_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.estado = ?";
+    private static final String GET_PETICIONES_BY_TIPO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.tipo_asistencia = ?";
+    private static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
+    private static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_solicitud = ?";
+    private static final String GET_PETICIONES = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario";
+    private static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? AND p.estado = ?";
+    private static final String GET_PETICION_WITH_USER = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

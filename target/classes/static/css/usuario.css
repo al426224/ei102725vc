@@ -2,7 +2,7 @@
 :root {
     --rosa-base: #f5e6e8;
     --rosa-medio: #e8c5ca;
-    --rosa-acento: #b5606e;
+    --rosa-acento: #a72925;
     --negro-texto: #1a1a1a;
     --blanco: #ffffff;
     --gris-suave: #fcf8f9;
@@ -708,13 +708,6 @@ body.sidebar-layout .sidebar-layout {
     text-decoration: underline;
 }
 
-.badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 50px;
-    font-size: 0.875rem;
-    font-weight: 600;
-}
 
 .bg-primary {
     background: var(--rosa-acento) !important;

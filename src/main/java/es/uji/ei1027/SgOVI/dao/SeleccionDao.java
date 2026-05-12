@@ -18,23 +18,23 @@ public class SeleccionDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(SeleccionDao.class.getName());
 
-    public static final String TABLE_NAME = "seleccion";
+    private static final String TABLE_NAME = "seleccion";
     
-    public static final String GET_SELECCION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
-    public static final String GET_SELECCIONES_BY_SOLICITUD = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? ORDER BY puntuacion_match DESC";
-    public static final String GET_SELECCIONES_BY_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
-    public static final String GET_SELECCIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_seleccion = ?";
-    public static final String GET_SELECCIONES_BY_SOLICITUD_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = ? ORDER BY puntuacion_match DESC";
-    public static final String ADD_SELECCION = "INSERT INTO " + TABLE_NAME + " (id_solicitud, id_asistente, estado_seleccion, puntuacion_match) VALUES (?, ?, ?, ?)";
-    public static final String DELETE_SELECCION = "DELETE FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
-    public static final String DELETE_SELECCIONES_BY_SOLICITUD = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
-    public static final String UPDATE_SELECCION = "UPDATE " + TABLE_NAME + " SET id_solicitud = ?, id_asistente = ?, estado_seleccion = ?, puntuacion_match = ? WHERE id_seleccion = ?";
-    public static final String GET_SELECCIONES = "SELECT * FROM " + TABLE_NAME;
-    public static final String EXISTS_SELECCION = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
-    public static final String GET_SELECCION_ACEPTADA = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'aceptada' LIMIT 1";
-    public static final String GET_SELECCION_BY_SOLICITUD_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND id_asistente = ? LIMIT 1";
-public static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM seleccion s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
-    public static final String UPDATE_PUNTUACION_MATCH = "UPDATE seleccion SET puntuacion_match = ? WHERE id_seleccion = ?";
+    private static final String GET_SELECCION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    private static final String GET_SELECCIONES_BY_SOLICITUD = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? ORDER BY puntuacion_match DESC";
+    private static final String GET_SELECCIONES_BY_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+    private static final String GET_SELECCIONES_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_seleccion = ?";
+    private static final String GET_SELECCIONES_BY_SOLICITUD_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = ? ORDER BY puntuacion_match DESC";
+    private static final String ADD_SELECCION = "INSERT INTO " + TABLE_NAME + " (id_solicitud, id_asistente, estado_seleccion, puntuacion_match) VALUES (?, ?, ?, ?)";
+    private static final String DELETE_SELECCION = "DELETE FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    private static final String DELETE_SELECCIONES_BY_SOLICITUD = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
+    private static final String UPDATE_SELECCION = "UPDATE " + TABLE_NAME + " SET id_solicitud = ?, id_asistente = ?, estado_seleccion = ?, puntuacion_match = ? WHERE id_seleccion = ?";
+    private static final String GET_SELECCIONES = "SELECT * FROM " + TABLE_NAME;
+    private static final String EXISTS_SELECCION = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
+    private static final String GET_SELECCION_ACEPTADA = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'aceptada' LIMIT 1";
+    private static final String GET_SELECCION_BY_SOLICITUD_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND id_asistente = ? LIMIT 1";
+    private static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM seleccion s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
+    private static final String UPDATE_PUNTUACION_MATCH = "UPDATE seleccion SET puntuacion_match = ? WHERE id_seleccion = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -91,7 +91,7 @@ public static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s
         jdbcTemplate.update(DELETE_SELECCION, id);
     }
 
-public List<Seleccion> getSelecciones() {
+    public List<Seleccion> getSelecciones() {
         try {
             return jdbcTemplate.query(GET_SELECCIONES, new SeleccionRowMapper());
         } catch (EmptyResultDataAccessException e) {
@@ -120,7 +120,7 @@ public List<Seleccion> getSelecciones() {
         }
     }
 
-public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
+    public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
         try {
             return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA, new SeleccionRowMapper(), idAsistente);
         } catch (EmptyResultDataAccessException e) {

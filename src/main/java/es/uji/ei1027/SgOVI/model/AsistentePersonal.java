@@ -8,7 +8,7 @@ public class AsistentePersonal {
     private String contrasena;
     private String tipoAsistente;
     private String estadoValidacion;
-private String formacionPrevia;
+    private String formacionPrevia;
     private String disponibilidad;
     private String municipio;
 
@@ -87,7 +87,7 @@ private String formacionPrevia;
         return disponibilidad;
     }
 
-public void setDisponibilidad(String disponibilidad) {
+    public void setDisponibilidad(String disponibilidad) {
         this.disponibilidad = disponibilidad;
     }
 

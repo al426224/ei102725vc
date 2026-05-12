@@ -19,17 +19,17 @@ public class AsistentePersonalDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(AsistentePersonalDao.class.getName());
 
-    public static final String TABLE_NAME = "asistentepersonal";
+    private static final String TABLE_NAME = "asistentepersonal";
     
-public static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
-    public static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
-    public static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ?";
-    public static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
-    public static final String GET_ASSISTENTS_COMPATIBLES = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ? AND estado_validacion = 'aceptado'";
-public static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad, municipio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
-    public static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ?, municipio = ? WHERE id_asistente = ?";
-    public static final String GET_ASSISTANTS = "SELECT * FROM " + TABLE_NAME;
+    private static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+    private static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    private static final String GET_ASSISTENT_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ?";
+    private static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
+    private static final String GET_ASSISTENTS_COMPATIBLES = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_asistente = ? AND estado_validacion = 'aceptado'";
+    private static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, tipo_asistente, estado_validacion, formacion_previa, disponibilidad, municipio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
+    private static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, tipo_asistente = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ?, municipio = ? WHERE id_asistente = ?";
+    private static final String GET_ASSISTANTS = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

@@ -17,15 +17,15 @@ public class ActividadFormacioDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(ActividadFormacioDao.class.getName());
 
-    public static final String TABLE_NAME = "actividadformacion";
+    private static final String TABLE_NAME = "actividadformacion";
     
-    public static final String GET_ACTIVIDAD_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_activitat = ?";
-    public static final String GET_ACTIVIDADES_BY_FORMADOR = "SELECT * FROM " + TABLE_NAME + " WHERE id_formador = ?";
-    public static final String GET_ACTIVIDADES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_evento = ?";
-    public static final String ADD_ACTIVIDAD = "INSERT INTO " + TABLE_NAME + " (id_formador, titulo, fecha_actividad, tipo_evento) VALUES (?, ?, ?, ?)";
-    public static final String DELETE_ACTIVIDAD = "DELETE FROM " + TABLE_NAME + " WHERE id_activitat = ?";
-    public static final String UPDATE_ACTIVIDAD = "UPDATE " + TABLE_NAME + " SET id_formador = ?, titulo = ?, fecha_actividad = ?, tipo_evento = ? WHERE id_activitat = ?";
-    public static final String GET_ACTIVIDADES = "SELECT * FROM " + TABLE_NAME;
+    private static final String GET_ACTIVIDAD_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_activitat = ?";
+    private static final String GET_ACTIVIDADES_BY_FORMADOR = "SELECT * FROM " + TABLE_NAME + " WHERE id_formador = ?";
+    private static final String GET_ACTIVIDADES_BY_TIPO = "SELECT * FROM " + TABLE_NAME + " WHERE tipo_evento = ?";
+    private static final String ADD_ACTIVIDAD = "INSERT INTO " + TABLE_NAME + " (id_formador, titulo, fecha_actividad, tipo_evento) VALUES (?, ?, ?, ?)";
+    private static final String DELETE_ACTIVIDAD = "DELETE FROM " + TABLE_NAME + " WHERE id_activitat = ?";
+    private static final String UPDATE_ACTIVIDAD = "UPDATE " + TABLE_NAME + " SET id_formador = ?, titulo = ?, fecha_actividad = ?, tipo_evento = ? WHERE id_activitat = ?";
+    private static final String GET_ACTIVIDADES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

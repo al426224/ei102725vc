@@ -16,10 +16,10 @@ public class TecnicoOVIDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(TecnicoOVIDao.class.getName());
 
-    public static final String TABLE_NAME = "tecnicoovi";
+    private static final String TABLE_NAME = "tecnicoovi";
     
-    public static final String GET_TECNICO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_tecnico = ?";
-    public static final String GET_TECNICO_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    private static final String GET_TECNICO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_tecnico = ?";
+    private static final String GET_TECNICO_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

@@ -19,15 +19,15 @@ public class FormadorDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(FormadorDao.class.getName());
 
-    public static final String TABLE_NAME = "formador";
+    private static final String TABLE_NAME = "formador";
     
-    public static final String GET_FORMADOR_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_formador = ?";
-    public static final String GET_FORMADOR_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
-    public static final String GET_FORMADORES_BY_ESPECIALIDAD = "SELECT * FROM " + TABLE_NAME + " WHERE especialidad = ?";
-    public static final String ADD_FORMADOR = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, especialidad, historialsesiones) VALUES (?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_FORMADOR = "DELETE FROM " + TABLE_NAME + " WHERE id_formador = ?";
-    public static final String UPDATE_FORMADOR = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, especialidad = ?, historialsesiones = ? WHERE id_formador = ?";
-    public static final String GET_FORMADORES = "SELECT * FROM " + TABLE_NAME;
+    private static final String GET_FORMADOR_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_formador = ?";
+    private static final String GET_FORMADOR_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
+    private static final String GET_FORMADORES_BY_ESPECIALIDAD = "SELECT * FROM " + TABLE_NAME + " WHERE especialidad = ?";
+    private static final String ADD_FORMADOR = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, especialidad, historialsesiones) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_FORMADOR = "DELETE FROM " + TABLE_NAME + " WHERE id_formador = ?";
+    private static final String UPDATE_FORMADOR = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, especialidad = ?, historialsesiones = ? WHERE id_formador = ?";
+    private static final String GET_FORMADORES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -61,7 +61,7 @@ public class FormadorDao {
         }
     }
 
-public void addFormador(Formador formador) {
+    public void addFormador(Formador formador) {
         jdbcTemplate.update(ADD_FORMADOR, formador.getNombre(), formador.getEmail(),
                 formador.getContrasena(), formador.getTelefono(), formador.getEspecialidad(), 
                 formador.getHistorialSesiones());
@@ -77,7 +77,7 @@ public void addFormador(Formador formador) {
         jdbcTemplate.update(DELETE_FORMADOR, id);
     }
 
-public List<Formador> getFormadores() {
+    public List<Formador> getFormadores() {
         try {
             return jdbcTemplate.query(GET_FORMADORES, new FormadorRowMapper());
         } catch (EmptyResultDataAccessException e) {
@@ -86,7 +86,7 @@ public List<Formador> getFormadores() {
         }
     }
 
-public Formador auth(String email, String password) {
+    public Formador auth(String email, String password) {
         try {
             Formador user = jdbcTemplate.queryForObject(GET_FORMADOR_BY_EMAIL, new FormadorRowMapper(), email);
 

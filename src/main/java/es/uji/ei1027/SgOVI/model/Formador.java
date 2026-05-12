@@ -12,7 +12,7 @@ public class Formador {
 
     public Formador() {}
 
-public Formador(int idFormador, String nombre, String email, String contrasena, String telefono,
+    public Formador(int idFormador, String nombre, String email, String contrasena, String telefono,
                     String especialidad, String historialSesiones) {
         this.idFormador = idFormador;
         this.nombre = nombre;

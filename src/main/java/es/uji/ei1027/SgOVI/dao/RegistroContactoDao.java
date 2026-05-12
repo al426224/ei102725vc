@@ -18,15 +18,15 @@ public class RegistroContactoDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(RegistroContactoDao.class.getName());
 
-    public static final String TABLE_NAME = "registrocontrato";
+    private static final String TABLE_NAME = "registrocontrato";
     
-    public static final String GET_REGISTRO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_reg = ?";
-    public static final String GET_REGISTROS_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
-    public static final String GET_REGISTROS_BY_RESULTADO = "SELECT * FROM " + TABLE_NAME + " WHERE resultado = ?";
-    public static final String ADD_REGISTRO = "INSERT INTO " + TABLE_NAME + " (id_seleccion, tipo_contrato, observaciones, resultado, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?)";
-    public static final String DELETE_REGISTRO = "DELETE FROM " + TABLE_NAME + " WHERE id_reg = ?";
-    public static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_fin = ? WHERE id_reg = ?";
-    public static final String GET_REGISTROS = "SELECT * FROM " + TABLE_NAME;
+    private static final String GET_REGISTRO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_reg = ?";
+    private static final String GET_REGISTROS_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    private static final String GET_REGISTROS_BY_RESULTADO = "SELECT * FROM " + TABLE_NAME + " WHERE resultado = ?";
+    private static final String ADD_REGISTRO = "INSERT INTO " + TABLE_NAME + " (id_seleccion, tipo_contrato, observaciones, resultado, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String DELETE_REGISTRO = "DELETE FROM " + TABLE_NAME + " WHERE id_reg = ?";
+    private static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_fin = ? WHERE id_reg = ?";
+    private static final String GET_REGISTROS = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

@@ -20,17 +20,17 @@ public class AsistenciaFormacionDao {
     private JdbcTemplate jdbcTemplate;
     private final Logger logger = Logger.getLogger(AsistenciaFormacionDao.class.getName());
 
-    public static final String TABLE_NAME = "assistenciaformacion";
+    private static final String TABLE_NAME = "assistenciaformacion";
     
-    public static final String GET_ASISTENTES_BY_ACTIVIDAD =
+    private static final String GET_ASISTENTES_BY_ACTIVIDAD =
             "SELECT a.* FROM asistentepersonal a JOIN " + TABLE_NAME + " af ON a.id_asistente = af.id_asistent WHERE af.id_activitat = ?";
 
-    public static final String GET_ACTIVIDADES_BY_ASISTENTE =
+    private static final String GET_ACTIVIDADES_BY_ASISTENTE =
             "SELECT af2.* FROM actividadformacion af2 JOIN " + TABLE_NAME + " af ON af2.id_activitat = af.id_activitat WHERE af.id_asistent = ?";
 
-    public static final String ADD_ASISTENCIA = "INSERT INTO " + TABLE_NAME + " (id_activitat, id_usuario, id_asistent) VALUES (?, ?, ?)";
-    public static final String DELETE_ASISTENCIA = "DELETE FROM " + TABLE_NAME + " WHERE id_activitat = ? AND (id_usuario = ? OR id_asistent = ?)";
-    public static final String EXISTS_ASISTENCIA = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_activitat = ? AND (id_usuario = ? OR id_asistent = ?)";
+    private static final String ADD_ASISTENCIA = "INSERT INTO " + TABLE_NAME + " (id_activitat, id_usuario, id_asistent) VALUES (?, ?, ?)";
+    private static final String DELETE_ASISTENCIA = "DELETE FROM " + TABLE_NAME + " WHERE id_activitat = ? AND (id_usuario = ? OR id_asistent = ?)";
+    private static final String EXISTS_ASISTENCIA = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_activitat = ? AND (id_usuario = ? OR id_asistent = ?)";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {

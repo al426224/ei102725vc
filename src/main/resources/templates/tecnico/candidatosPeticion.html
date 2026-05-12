@@ -24,7 +24,7 @@
 <main class="main-content">
     <header class="page-header">
         <div>
-            <span class="badge">TÉCNICO OVI</span>
+            <span class="profile-badge">TÉCNICO OVI</span>
         </div>
     </header>
 
@@ -48,7 +48,7 @@
         </div>
     </div>
 
-<div class="alert alert-info">
+    <div class="alert alert-info">
         Candidatos compatibles con esta solicitud segun tipo de asistencia. Ordenados por puntuacion de matching. Deselecciona los que no quieras proponer.
     </div>
 
@@ -69,7 +69,7 @@
                 <tbody>
                     <tr th:each="c : ${candidatos}">
                         <td>
-                            <input type="checkbox" name="candidatosSeleccionados" th:value="${c.asistente.idAsistente}" checked>
+                            <input type="checkbox" name="candidatosSeleccionados" th:value="${c.asistente.idAsistente}" checked title="Seleccionar candidato">
                         </td>
                         <td th:text="${c.asistente.nombre}"></td>
                         <td th:text="${c.asistente.municipio} ?: '-'"></td>

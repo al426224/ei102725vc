@@ -303,7 +303,7 @@ public class TecnicoController {
         for (AsistentePersonal a : todosAsistentes) {
             MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
             cs.setAsistente(a);
-            int puntuacion = calcularPuntuacionManual(peticion, a, cs);
+            int puntuacion = matchingService.calcularPuntuacion(peticion, a, cs);
             cs.setPuntuacion(puntuacion);
             candidatos.add(cs);
         }
@@ -324,46 +324,7 @@ public class TecnicoController {
         return "tecnico/candidatosPeticion";
     }
 
-private int calcularPuntuacionManual(PeticionAPR peticion, AsistentePersonal asistente, MatchingService.CandidatoSugerido cs) {
-        int puntos = 0;
 
-        if (peticion.getMunicipio() != null && !peticion.getMunicipio().isEmpty()
-                && asistente.getMunicipio() != null && !asistente.getMunicipio().isEmpty()) {
-            if (asistente.getMunicipio().equalsIgnoreCase(peticion.getMunicipio())) {
-                puntos += 40;
-            }
-        }
-
-        if (peticion.getPreferenciaGenero() != null && !peticion.getPreferenciaGenero().isEmpty()
-                && asistente.getNombre() != null) {
-            boolean hombre = !asistente.getNombre().contains(" ") && (
-                    asistente.getNombre().toLowerCase().endsWith("o") || asistente.getNombre().toLowerCase().endsWith("os")
-            );
-            boolean mujer = asistente.getNombre().toLowerCase().contains("a") && !hombre;
-
-            if (peticion.getPreferenciaGenero().equalsIgnoreCase("Hombre") && hombre) {
-                puntos += 30;
-            } else if (peticion.getPreferenciaGenero().equalsIgnoreCase("Mujer") && mujer) {
-                puntos += 30;
-            }
-        }
-
-        if (peticion.getIdiomasRequeridos() != null && !peticion.getIdiomasRequeridos().isEmpty()
-                && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
-            if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getIdiomasRequeridos().toLowerCase())) {
-                puntos += 20;
-            }
-        }
-
-        if (peticion.getTipoTareas() != null && !peticion.getTipoTareas().isEmpty()
-                && asistente.getFormacionPrevia() != null && !asistente.getFormacionPrevia().isEmpty()) {
-            if (asistente.getFormacionPrevia().toLowerCase().contains(peticion.getTipoTareas().toLowerCase())) {
-                puntos += 10;
-            }
-        }
-
-        return puntos;
-    }
 
 @PostMapping("/peticion/{id}/candidatos/guardar")
     public String guardarCandidatos(@PathVariable int id,
@@ -387,7 +348,7 @@ private int calcularPuntuacionManual(PeticionAPR peticion, AsistentePersonal asi
                 if (idsAsistentes.contains(a.getIdAsistente())) {
                     MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
                     cs.setAsistente(a);
-                    int puntuacion = calcularPuntuacionManual(peticion, a, cs);
+                    int puntuacion = matchingService.calcularPuntuacion(peticion, a, cs);
                     Seleccion s = new Seleccion();
                     s.setIdSolicitud(id);
                     s.setIdAsistente(a.getIdAsistente());
