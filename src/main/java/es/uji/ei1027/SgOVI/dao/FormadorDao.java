@@ -89,22 +89,13 @@ public class FormadorDao {
     public Formador auth(String email, String password) {
         try {
             Formador user = jdbcTemplate.queryForObject(GET_FORMADOR_BY_EMAIL, new FormadorRowMapper(), email);
-
-            if (user != null && user.getContrasena() != null && !user.getContrasena().isEmpty()) {
-                BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
-
-                try {
-                    if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
-                        user.setContrasena(null);
-                        return user;
-                    }
-                } catch (Exception e) {
-                    logger.warning("Error de encriptación: La contraseña en BD no tiene formato Jasypt. Intentando texto plano.");
-                }
-                
-                if (user.getContrasena().equals(password)) {
-                    return user;
-                }
+            if (user == null) {
+                return null;
+            }
+            BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+            if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
+                user.setContrasena(null);
+                return user;
             }
             return null;
         } catch (EmptyResultDataAccessException e) {

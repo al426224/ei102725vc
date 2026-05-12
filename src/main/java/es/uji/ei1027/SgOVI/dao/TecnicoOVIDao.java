@@ -2,6 +2,7 @@ package es.uji.ei1027.SgOVI.dao;
 
 import es.uji.ei1027.SgOVI.model.TecnicoOVI;
 import es.uji.ei1027.SgOVI.rowMapper.TecnicoOVIRowMapper;
+import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,7 +48,11 @@ public class TecnicoOVIDao {
     public TecnicoOVI auth(String email, String password) {
         try {
             TecnicoOVI user = jdbcTemplate.queryForObject(GET_TECNICO_BY_EMAIL, new TecnicoOVIRowMapper(), email);
-            if (user != null && user.getContrasena() != null && user.getContrasena().equals(password)) {
+            if (user == null) {
+                return null;
+            }
+            BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
+            if (passwordEncryptor.checkPassword(password, user.getContrasena())) {
                 user.setContrasena(null);
                 return user;
             }

@@ -3,85 +3,83 @@ package es.uji.ei1027.SgOVI.controller;
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.FormadorDao;
 import es.uji.ei1027.SgOVI.dao.TecnicoOVIDao;
+import es.uji.ei1027.SgOVI.dao.UserDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import jakarta.servlet.http.HttpSession;
-
-class UserValidator implements Validator {
-    @Override
-    public boolean supports(Class<?> cls) {
-        return Usuario.class.isAssignableFrom(cls);
-    }
-
-    @Override
-    public void validate(Object obj, Errors errors) {
-        Usuario user = (Usuario) obj;
-        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            errors.rejectValue("username", "username.empty", "El email no puede estar vacío");
-        }
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            errors.rejectValue("password", "password.empty", "La contraseña no puede estar vacía");
-        }
-    }
-}
 
 @Controller
 public class LoginController {
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private UsuarioOVIDao usuarioOVIDao;
-    
+
     @Autowired
     private AsistentePersonalDao asistentePersonalDao;
-    
+
     @Autowired
     private FormadorDao formadorDao;
-    
+
     @Autowired
     private TecnicoOVIDao tecnicoOVIDao;
 
     @RequestMapping("/login")
     public String login(Model model) {
-        model.addAttribute("userLogin", new Usuario());
+        model.addAttribute("user", new UserDetails());
         return "login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String checkLogin(@ModelAttribute("userLogin") Usuario usuario, BindingResult bindingResult, HttpSession session) {
+    public String checkLogin(@ModelAttribute("user") UserDetails user,
+                             BindingResult bindingResult, HttpSession session) {
         UserValidator userValidator = new UserValidator();
-        userValidator.validate(usuario, bindingResult);
+        userValidator.validate(user, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return "login";
         }
 
-        UsuarioOVI usuarioOVI = usuarioOVIDao.auth(usuario.getUsername(), usuario.getPassword());
-        if (usuarioOVI != null) {
-            if ("aceptado".equals(usuarioOVI.getEstado())) {
-                session.setAttribute("usuario", usuarioOVI);
+        UserDetails authenticatedUser = userDao.loadUserByUsername(
+                user.getUsername(), user.getPassword());
+
+        if (authenticatedUser == null) {
+            bindingResult.rejectValue("password", "badpw", "Contrasenya incorrecta");
+            return "login";
+        }
+
+        session.setAttribute("user", authenticatedUser);
+
+        UsuarioOVI uovi = usuarioOVIDao.getUsuarioByEmail(authenticatedUser.getUsername());
+        if (uovi != null) {
+            if ("aceptado".equals(uovi.getEstado())) {
+                session.setAttribute("usuario", uovi);
                 session.setAttribute("tipo", "usuarioOVI");
                 session.setAttribute("rol", Rol.USUARIOOVI);
                 return "redirect:/usuarioOVI/homeUsuarioOVI";
             }
-            if ("rechazado".equals(usuarioOVI.getEstado())) {
-                bindingResult.rejectValue("password", "CuentaRechazada", "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
+            if ("rechazado".equals(uovi.getEstado())) {
+                session.invalidate();
+                bindingResult.rejectValue("password", "CuentaRechazada",
+                        "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
             } else {
-                bindingResult.rejectValue("password", "CuentaPendiente", "Tu cuenta aún está pendiente de revisión. Espera a que un técnico la valide.");
+                session.invalidate();
+                bindingResult.rejectValue("password", "CuentaPendiente",
+                        "Tu cuenta aún está pendiente de revisión. Espera a que un técnico la valide.");
             }
             return "login";
         }
 
-        AsistentePersonal asistente = asistentePersonalDao.auth(usuario.getUsername(), usuario.getPassword());
+        AsistentePersonal asistente = asistentePersonalDao.getAsistenteByEmail(authenticatedUser.getUsername());
         if (asistente != null) {
             if ("aceptado".equals(asistente.getEstadoValidacion())) {
                 session.setAttribute("usuario", asistente);
@@ -91,14 +89,18 @@ public class LoginController {
                 return "redirect:/asistentePersonal/home";
             }
             if ("rechazado".equals(asistente.getEstadoValidacion())) {
-                bindingResult.rejectValue("password", "CuentaRechazada", "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
+                session.invalidate();
+                bindingResult.rejectValue("password", "CuentaRechazada",
+                        "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
             } else {
-                bindingResult.rejectValue("password", "CuentaPendiente", "Tu cuenta aún está pendiente de revisión. Espera a que un técnico la valide.");
+                session.invalidate();
+                bindingResult.rejectValue("password", "CuentaPendiente",
+                        "Tu cuenta aún está pendiente de revisión. Espera a que un técnico la valide.");
             }
             return "login";
         }
 
-        Formador formador = formadorDao.auth(usuario.getUsername(), usuario.getPassword());
+        Formador formador = formadorDao.getFormadorByEmail(authenticatedUser.getUsername());
         if (formador != null) {
             session.setAttribute("usuario", formador);
             session.setAttribute("tipo", "formador");
@@ -106,7 +108,7 @@ public class LoginController {
             return "redirect:/";
         }
 
-        TecnicoOVI tecnico = tecnicoOVIDao.auth(usuario.getUsername(), usuario.getPassword());
+        TecnicoOVI tecnico = tecnicoOVIDao.getTecnicoByEmail(authenticatedUser.getUsername());
         if (tecnico != null) {
             session.setAttribute("usuario", tecnico);
             session.setAttribute("tipo", "tecnicoovi");
@@ -114,8 +116,7 @@ public class LoginController {
             return "redirect:/tecnico/home";
         }
 
-        bindingResult.rejectValue("password", "IncorrectPassword", "Usuario o contraseña incorrectos");
-        return "login";
+        return "redirect:/";
     }
 
     @RequestMapping("/logout")

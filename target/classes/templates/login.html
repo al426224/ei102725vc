@@ -24,7 +24,7 @@
     </div>
 
     <div class="lado-derecho">
-        <form th:action="@{/login}" method="POST" class="formulario" th:object="${userLogin}">
+        <form th:action="@{/login}" method="POST" class="formulario" th:object="${user}">
             <p th:if="${param.registered}" style="color: #2e7d32; margin-bottom: 10px;">Registro completado. Ya puedes iniciar sesión.</p>
 
             <div class="campos">
