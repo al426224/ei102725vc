@@ -38,5 +38,9 @@ public class PeticionAPRSignupValidator implements Validator {
         if (peticionAPR.getFechaInicioPrevista() == null) {
             errors.rejectValue("fechaInicioPrevista", "obligatorio", "La fecha de inicio prevista es obligatoria.");
         }
+
+        if (peticionAPR.getDescripcion() != null && peticionAPR.getDescripcion().length() > 500) {
+            errors.rejectValue("descripcion", "longitud", "La descripcion no puede superar los 500 caracteres.");
+        }
     }
 }
