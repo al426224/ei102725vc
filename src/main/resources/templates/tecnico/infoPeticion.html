@@ -102,7 +102,8 @@
                       form="aprobarPeticionForm"
                       class="tecnico-observaciones"
                       rows="5"
-                      placeholder="Añade observaciones si lo necesitas"></textarea>
+                      placeholder="Añade observaciones si lo necesitas"
+                      maxlength="200"></textarea>
             <label for="aprobarPeticionToggle" class="btn btn-primary">Aprobar</label>
             <label for="rechazarPeticionToggle" class="btn btn-outline">Rechazar</label>
         </div>
@@ -139,7 +140,7 @@
         <div class="content-text">Confirma el rechazo de la solicitud e introduce el motivo.</div>
         <div class="content-buttons" style="display:block;">
             <form th:action="@{/tecnico/peticion/reject/{id}(id=${peticion.idSolicitud})}" method="post">
-                <textarea name="observaciones" class="tecnico-observaciones" rows="5" placeholder="Escribe aqui el motivo del rechazo..." required></textarea>
+                <textarea name="observaciones" class="tecnico-observaciones" rows="5" placeholder="Escribe aqui el motivo del rechazo..." required maxlength="500"></textarea>
                 <div class="mt-3 d-flex justify-content-center gap-3">
                     <label for="rechazarPeticionToggle" class="btn btn-outline">Volver</label>
                     <button type="submit" class="btn btn-primary">Confirmar rechazo</button>
