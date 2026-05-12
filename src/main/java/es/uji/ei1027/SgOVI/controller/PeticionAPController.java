@@ -7,7 +7,6 @@ import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
-import es.uji.ei1027.SgOVI.services.MatchingService;
 import es.uji.ei1027.SgOVI.validator.PeticionAPRSignupValidator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,24 +22,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/peticionAP")
 public class PeticionAPController {
 
-private final PeticionAPRDao peticionAPRDao;
+    private final PeticionAPRDao peticionAPRDao;
     private final SeleccionDao seleccionDao;
     private final AsistentePersonalDao asistentePersonalDao;
-    private final MatchingService matchingService;
     private final PeticionAPRSignupValidator validator = new PeticionAPRSignupValidator();
 
     @Autowired
-    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao, AsistentePersonalDao asistentePersonalDao, MatchingService matchingService) {
+    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao, AsistentePersonalDao asistentePersonalDao) {
         this.peticionAPRDao = peticionAPRDao;
         this.seleccionDao = seleccionDao;
         this.asistentePersonalDao = asistentePersonalDao;
-        this.matchingService = matchingService;
     }
 
     @InitBinder
@@ -136,7 +132,7 @@ private final PeticionAPRDao peticionAPRDao;
         return "redirect:/peticionAP/mis-solicitudes";
     }
 
-@GetMapping("/detalle/{id}")
+    @GetMapping("/detalle/{id}")
     public String detalleSolicitud(@PathVariable int id, HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -154,9 +150,12 @@ private final PeticionAPRDao peticionAPRDao;
             asistenteElegido = asistentePersonalDao.getAsistente(aceptada.getIdAsistente());
         }
 
+        List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta");
+
         model.addAttribute("peticionAP", peticion);
         model.addAttribute("usuario", usuario);
         model.addAttribute("asistenteElegido", asistenteElegido);
+        model.addAttribute("tieneCandidatos", !propuestas.isEmpty());
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",
@@ -168,7 +167,7 @@ private final PeticionAPRDao peticionAPRDao;
         return "peticionAP/detalle";
     }
 
-@GetMapping("/candidatos/{idSolicitud}")
+    @GetMapping("/candidatos/{idSolicitud}")
     public String verCandidatos(@PathVariable int idSolicitud, HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -184,38 +183,21 @@ private final PeticionAPRDao peticionAPRDao;
             return "redirect:/peticionAP/detalle/" + idSolicitud;
         }
 
-        Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(idSolicitud);
-        if (aceptada != null) {
+        if (seleccionDao.getSeleccionAceptadaPorSolicitud(idSolicitud) != null) {
             return "redirect:/peticionAP/detalle/" + idSolicitud;
         }
 
-        List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
-        List<Seleccion> aGuardar = new ArrayList<>();
-        int count = 0;
-        for (MatchingService.CandidatoSugerido cs : candidatos) {
-            if (count >= 10) break;
-            Seleccion s = new Seleccion();
-            s.setIdSolicitud(idSolicitud);
-            s.setIdAsistente(cs.getAsistente().getIdAsistente());
-            s.setEstadoSeleccion("propuesta");
-            s.setPuntuacionMatch(cs.getPuntuacion());
-            aGuardar.add(s);
-            count++;
+        List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(idSolicitud, "propuesta");
+        List<CandidatoOVI> candidatosData = new ArrayList<>();
+        for (Seleccion s : propuestas) {
+            AsistentePersonal a = asistentePersonalDao.getAsistente(s.getIdAsistente());
+            if (a != null) {
+                CandidatoOVI c = new CandidatoOVI();
+                c.setSeleccion(s);
+                c.setAsistente(a);
+                candidatosData.add(c);
+            }
         }
-
-        if (!aGuardar.isEmpty()) {
-            seleccionDao.guardarCandidatosSugeridos(idSolicitud, aGuardar);
-        }
-
-        List<CandidatoOVI> candidatosData = candidatos.stream().limit(10).map((csx) -> {
-            CandidatoOVI c = new CandidatoOVI();
-            Seleccion s = new Seleccion();
-            s.setIdAsistente(csx.getAsistente().getIdAsistente());
-            s.setPuntuacionMatch(csx.getPuntuacion());
-            c.setSeleccion(s);
-            c.setAsistente(csx.getAsistente());
-            return c;
-        }).collect(Collectors.toList());
 
         model.addAttribute("peticion", peticion);
         model.addAttribute("candidatos", candidatosData);
@@ -232,7 +214,10 @@ private final PeticionAPRDao peticionAPRDao;
     }
 
     @PostMapping("/candidatos/{id}/elegir")
-    public String elegirCandidato(@PathVariable int id, @RequestParam int asistenteSeleccionado, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String elegirCandidato(@PathVariable int id,
+                                  @RequestParam int asistenteSeleccionado,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
             return "redirect:/login";
@@ -247,29 +232,31 @@ private final PeticionAPRDao peticionAPRDao;
             return "redirect:/peticionAP/detalle/" + id;
         }
 
-        List<MatchingService.CandidatoSugerido> candidatos = matchingService.calcularCandidatos(peticion);
-        MatchingService.CandidatoSugerido elegido = candidatos.stream()
-                .filter(cs -> cs.getAsistente().getIdAsistente() == asistenteSeleccionado)
-                .findFirst().orElse(null);
+        Seleccion propuestaExistente = null;
+        for (Seleccion s : seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta")) {
+            if (s.getIdAsistente() == asistenteSeleccionado) {
+                propuestaExistente = s;
+                break;
+            }
+        }
 
-        if (elegido == null) {
+        if (propuestaExistente == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Asistente no encontrado entre los candidatos");
             return "redirect:/peticionAP/candidatos/" + id;
         }
 
-        Seleccion seleccion = new Seleccion();
-        seleccion.setIdSolicitud(id);
-        seleccion.setIdAsistente(asistenteSeleccionado);
-        seleccion.setEstadoSeleccion("aceptada");
-        seleccion.setPuntuacionMatch(elegido.getPuntuacion());
-        seleccionDao.guardarCandidatosSugeridos(id, Collections.singletonList(seleccion));
+        propuestaExistente.setEstadoSeleccion("aceptada");
+        seleccionDao.updateSeleccion(propuestaExistente);
 
         redirectAttributes.addFlashAttribute("successMessage", "Has elegido a tu asistente. La comunicacion y contratacion se realiza fuera del sistema.");
         return "redirect:/peticionAP/detalle/" + id;
     }
 
     @GetMapping("/candidato/{idAsistente}/detalle")
-    public String verDetalleCandidato(@PathVariable int idAsistente, @RequestParam int idSolicitud, HttpSession session, Model model) {
+    public String verDetalleCandidato(@PathVariable int idAsistente,
+                                       @RequestParam int idSolicitud,
+                                       HttpSession session,
+                                       Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
             return "redirect:/login";

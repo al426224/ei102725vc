@@ -113,7 +113,7 @@
                 <th:block th:if="${peticionAP.estado == 'en_revision'}">
                     <button type="button" class="btn btn-outline" data-bs-toggle="modal" data-bs-target="#cancelarModal">Cancelar Solicitud</button>
                 </th:block>
-                <th:block th:if="${peticionAP.estado == 'aprobada'}">
+                <th:block th:if="${peticionAP.estado == 'aprobada' and tieneCandidatos}">
                     <a th:href="@{/peticionAP/candidatos/{id}(id=${peticionAP.idSolicitud})}" class="btn btn-primary">Ver candidatos sugeridos</a>
                 </th:block>
             </th:block>

@@ -69,7 +69,7 @@
                 <tbody>
                     <tr th:each="c : ${candidatos}">
                         <td>
-                            <input type="checkbox" name="candidatosSeleccionados" th:value="${c.asistente.idAsistente}" checked title="Seleccionar candidato">
+                            <input type="checkbox" name="candidatosSeleccionados" th:value="${c.asistente.idAsistente}" th:checked="${#lists.contains(idsYaSeleccionados, c.asistente.idAsistente)}" title="Seleccionar candidato">
                         </td>
                         <td th:text="${c.asistente.nombre}"></td>
                         <td th:text="${c.asistente.municipio} ?: '-'"></td>

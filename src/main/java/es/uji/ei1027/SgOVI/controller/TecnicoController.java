@@ -321,6 +321,12 @@ public class TecnicoController {
                 "cerrada_contrato_finalizado", "Finalizada"
         ));
 
+        List<Seleccion> yaSeleccionados = seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta");
+        List<Integer> idsYaSeleccionados = yaSeleccionados.stream()
+                .map(Seleccion::getIdAsistente)
+                .toList();
+        model.addAttribute("idsYaSeleccionados", idsYaSeleccionados);
+
         return "tecnico/candidatosPeticion";
     }
 

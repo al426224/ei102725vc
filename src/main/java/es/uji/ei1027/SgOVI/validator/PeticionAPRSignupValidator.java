@@ -29,10 +29,14 @@ public class PeticionAPRSignupValidator implements Validator {
 
         if (peticionAPR.getMunicipio() == null || peticionAPR.getMunicipio().trim().isEmpty()) {
             errors.rejectValue("municipio", "obligatorio", "El municipio es obligatorio.");
+        } else if (peticionAPR.getMunicipio().length() > 100) {
+            errors.rejectValue("municipio", "longitud", "El municipio no puede superar los 100 caracteres.");
         }
 
         if (peticionAPR.getTipoTareas() == null || peticionAPR.getTipoTareas().trim().isEmpty()) {
             errors.rejectValue("tipoTareas", "obligatorio", "El tipo de tareas es obligatorio.");
+        } else if (peticionAPR.getTipoTareas().length() > 100) {
+            errors.rejectValue("tipoTareas", "longitud", "El tipo de tareas no puede superar los 100 caracteres.");
         }
 
         if (peticionAPR.getFechaInicioPrevista() == null) {
@@ -41,6 +45,10 @@ public class PeticionAPRSignupValidator implements Validator {
 
         if (peticionAPR.getDescripcion() != null && peticionAPR.getDescripcion().length() > 500) {
             errors.rejectValue("descripcion", "longitud", "La descripcion no puede superar los 500 caracteres.");
+        }
+
+        if (peticionAPR.getIdiomasRequeridos() != null && peticionAPR.getIdiomasRequeridos().length() > 100) {
+            errors.rejectValue("idiomasRequeridos", "longitud", "Los idiomas no pueden superar los 100 caracteres.");
         }
     }
 }

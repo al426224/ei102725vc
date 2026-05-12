@@ -30,6 +30,8 @@ public class FormadorEditarValidator implements Validator {
 
         if (formador.getNombre() == null || formador.getNombre().trim().isEmpty()) {
             errors.rejectValue("nombre", "obligatorio", "El nombre es obligatorio.");
+        } else if (formador.getNombre().length() > 100) {
+            errors.rejectValue("nombre", "longitud", "El nombre no puede superar los 100 caracteres.");
         }
 
         if (formador.getEmail() == null || formador.getEmail().trim().isEmpty()) {
@@ -41,13 +43,21 @@ public class FormadorEditarValidator implements Validator {
             }
         }
 
-        if (formador.getTelefono() != null && !formador.getTelefono().trim().isEmpty()
+        if (formador.getTelefono() != null && formador.getTelefono().length() > 20) {
+            errors.rejectValue("telefono", "longitud", "El telefono no puede superar los 20 caracteres.");
+        } else if (formador.getTelefono() != null && !formador.getTelefono().trim().isEmpty()
                 && !formador.getTelefono().matches("^[0-9]{9}$")) {
-            errors.rejectValue("telefono", "formato", "El teléfono debe tener exactamente 9 dígitos.");
+            errors.rejectValue("telefono", "formato", "El telefono debe tener exactamente 9 digitos.");
         }
 
         if (formador.getEspecialidad() == null || formador.getEspecialidad().trim().isEmpty()) {
             errors.rejectValue("especialidad", "obligatorio", "La especialidad es obligatoria.");
+        } else if (formador.getEspecialidad().length() > 100) {
+            errors.rejectValue("especialidad", "longitud", "La especialidad no puede superar los 100 caracteres.");
+        }
+
+        if (formador.getHistorialSesiones() != null && formador.getHistorialSesiones().length() > 100) {
+            errors.rejectValue("historialSesiones", "longitud", "El historial de sesiones no puede superar los 100 caracteres.");
         }
     }
 }

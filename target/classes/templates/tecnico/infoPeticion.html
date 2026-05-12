@@ -97,14 +97,17 @@
         <h2 class="tecnico-action-title">Gestión de solicitud</h2>
 
 <div class="tecnico-action-buttons" th:if="${peticion.estado == 'en_revision'}">
-            <form th:action="@{/tecnico/peticion/approve/{id}(id=${peticion.idSolicitud})}" method="post">
-                <textarea id="observaciones"
-                          name="observaciones"
-                          class="tecnico-observaciones"
-                          rows="5"
-                          placeholder="Añade observaciones si lo necesitas"></textarea>
-                <button type="submit" class="btn btn-primary">Aprobar</button>
-            </form>
+            <textarea id="observaciones"
+                      name="observaciones"
+                      class="tecnico-observaciones"
+                      rows="5"
+                      placeholder="Añade observaciones si lo necesitas"></textarea>
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#aprobarModal">
+                Aprobar
+            </button>
 
             <button type="button"
                     class="btn btn-outline"
@@ -142,6 +145,23 @@
                     <div class="form-actions" style="justify-content: center;">
                         <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Volver</button>
                         <button type="submit" class="btn btn-primary">Confirmar rechazo</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="aprobarModal" tabindex="-1" aria-hidden="true" th:if="${peticion.estado == 'en_revision'}">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form th:action="@{/tecnico/peticion/approve/{id}(id=${peticion.idSolicitud})}" method="post" id="aprobarForm">
+                <input type="hidden" name="observaciones" id="observacionesHidden">
+                <div class="modal-body text-center">
+                    <p class="mb-0">¿Estas seguro de que quieres aprobar esta solicitud?<br>Este cambio no se puede deshacer.</p>
+                    <div class="mt-4 d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Volver</button>
+                        <button type="submit" class="btn btn-primary" onclick="document.getElementById('observacionesHidden').value=document.getElementById('observaciones').value">Si, aprobar</button>
                     </div>
                 </div>
             </form>

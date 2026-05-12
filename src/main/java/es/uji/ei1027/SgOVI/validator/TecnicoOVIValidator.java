@@ -30,15 +30,19 @@ public class TecnicoOVIValidator implements Validator {
 
         if (tecnico.getNombre() == null || tecnico.getNombre().trim().isEmpty()) {
             errors.rejectValue("nombre", "obligatorio", "El nombre es obligatorio.");
+        } else if (tecnico.getNombre().length() > 100) {
+            errors.rejectValue("nombre", "longitud", "El nombre no puede superar los 100 caracteres.");
         }
 
         if (tecnico.getEmail() == null || tecnico.getEmail().trim().isEmpty()) {
-            errors.rejectValue("email", "obligatorio", "El correo electrónico es obligatorio.");
-        }
-        else {
+            errors.rejectValue("email", "obligatorio", "El correo electronico es obligatorio.");
+        } else {
+            if (tecnico.getEmail().length() > 100) {
+                errors.rejectValue("email", "longitud", "El correo electronico no puede superar los 100 caracteres.");
+            }
             TecnicoOVI existente = tecnicoOVIDao.getTecnicoByEmail(tecnico.getEmail());
             if (existente != null && !String.valueOf(existente.getIdTecnico()).equals(idTecnicoActual)) {
-                errors.rejectValue("email", "duplicado", "El correo electrónico ya está en uso por otro técnico.");
+                errors.rejectValue("email", "duplicado", "El correo electronico ya esta en uso por otro tecnico.");
             }
         }
     }

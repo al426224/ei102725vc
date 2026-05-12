@@ -30,27 +30,32 @@ public class UsuarioOVIEditarPerfilValidator implements Validator {
 
         if (usuarioOVI.getNombre() == null || usuarioOVI.getNombre().trim().isEmpty()) {
             errors.rejectValue("nombre", "obligatorio", "El nombre es obligatorio.");
+        } else if (usuarioOVI.getNombre().length() > 100) {
+            errors.rejectValue("nombre", "longitud", "El nombre no puede superar los 100 caracteres.");
         }
 
         if (usuarioOVI.getEmail() == null || usuarioOVI.getEmail().trim().isEmpty()) {
-            errors.rejectValue("email", "obligatorio", "El correo electrónico es obligatorio.");
-        }
-        else {
+            errors.rejectValue("email", "obligatorio", "El correo electronico es obligatorio.");
+        } else {
             UsuarioOVI existente = usuarioOVIDao.getUsuarioByEmail(usuarioOVI.getEmail());
 
             if (existente != null && !String.valueOf(existente.getIdUsuario()).equals(idUsuarioActual)) {
-                errors.rejectValue("email", "duplicado", "El correo electrónico ya está en uso por otro usuario.");
+                errors.rejectValue("email", "duplicado", "El correo electronico ya esta en uso por otro usuario.");
             }
         }
 
         if (usuarioOVI.getTelefono() == null || usuarioOVI.getTelefono().trim().isEmpty()) {
-            errors.rejectValue("telefono", "obligatorio", "El teléfono es obligatorio.");
+            errors.rejectValue("telefono", "obligatorio", "El telefono es obligatorio.");
+        } else if (usuarioOVI.getTelefono().length() > 20) {
+            errors.rejectValue("telefono", "longitud", "El telefono no puede superar los 20 caracteres.");
         } else if (!usuarioOVI.getTelefono().matches("^[0-9]{9}$")) {
-            errors.rejectValue("telefono", "formato", "El teléfono debe tener exactamente 9 dígitos.");
+            errors.rejectValue("telefono", "formato", "El telefono debe tener exactamente 9 digitos.");
         }
 
         if (usuarioOVI.getProyectoVida() == null || usuarioOVI.getProyectoVida().trim().isEmpty()) {
             errors.rejectValue("proyectoVida", "obligatorio", "El proyecto de vida es obligatorio.");
+        } else if (usuarioOVI.getProyectoVida().length() > 1000) {
+            errors.rejectValue("proyectoVida", "longitud", "El proyecto de vida no puede superar los 1000 caracteres.");
         }
     }
 }
