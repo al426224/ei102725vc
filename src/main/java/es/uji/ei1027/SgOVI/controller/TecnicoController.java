@@ -389,4 +389,5 @@ public class TecnicoController {
 
         return "redirect:/tecnico/peticion/" + id;
     }
+
 }

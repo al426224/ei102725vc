@@ -48,7 +48,7 @@
         Candidatos compatibles por edad con la persona usuaria de esta solicitud. Ordenados por puntuacion de matching. Deselecciona los que no quieras proponer.
     </div>
 
-    <form th:if="${not #lists.isEmpty(candidatos)}" th:action="@{/tecnico/peticion/{id}/candidatos/guardar(id=${peticion.idSolicitud})}" method="post">
+    <form id="guardarCandidatosForm" th:if="${not #lists.isEmpty(candidatos)}" th:action="@{/tecnico/peticion/{id}/candidatos/guardar(id=${peticion.idSolicitud})}" method="post">
         <div class="table-container">
             <table class="table table-hover mb-0">
                 <thead>
@@ -86,8 +86,19 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Guardar propuesta</button>
+            <label for="guardarCandidatosToggle" class="btn btn-primary">Guardar propuesta</label>
             <a th:href="@{/tecnico/peticion/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Volver</a>
+        </div>
+
+        <input type="checkbox" id="guardarCandidatosToggle" class="notice-toggle">
+        <div class="window-notice">
+            <div class="content">
+                <div class="content-text">¿Estas seguro de que quieres guardar esta propuesta de candidatos?<br>Este cambio no se puede deshacer.</div>
+                <div class="content-buttons">
+                    <label for="guardarCandidatosToggle" class="btn btn-outline">Volver</label>
+                    <button type="submit" class="btn btn-primary">Si, guardar</button>
+                </div>
+            </div>
         </div>
     </form>
 

@@ -101,12 +101,34 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                <button type="button" class="btn btn-primary" onclick="mostrarConfirmacion()">Enviar Solicitud</button>
                 <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="btn btn-outline">Cancelar</a>
+            </div>
+
+            <input type="checkbox" id="nuevaSolicitudToggle" class="notice-toggle">
+            <div class="window-notice">
+                <div class="content">
+                    <div class="content-text">¿Estas seguro/a de que quieres enviar esta solicitud?<br>¿Son todos los datos correctos?</div>
+                    <div class="content-buttons">
+                        <label for="nuevaSolicitudToggle" class="btn btn-outline">Volver</label>
+                        <button type="submit" class="btn btn-primary">Si, enviar</button>
+                    </div>
+                </div>
             </div>
         </form>
     </div>
 </main>
+
+<script>
+function mostrarConfirmacion() {
+    var form = document.getElementById('solicitudForm');
+    if (form.checkValidity()) {
+        document.getElementById('nuevaSolicitudToggle').checked = true;
+    } else {
+        form.reportValidity();
+    }
+}
+</script>
 
 </body>
 </html>

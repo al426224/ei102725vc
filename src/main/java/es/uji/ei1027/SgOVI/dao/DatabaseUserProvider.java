@@ -1,6 +1,7 @@
 package es.uji.ei1027.SgOVI.dao;
 
 import es.uji.ei1027.SgOVI.model.*;
+import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -8,9 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Repository
 public class DatabaseUserProvider implements UserDao {
+
+    private static final Logger logger = Logger.getLogger(DatabaseUserProvider.class.getName());
 
     @Autowired
     private UsuarioOVIDao usuarioOVIDao;
@@ -33,42 +37,43 @@ public class DatabaseUserProvider implements UserDao {
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
 
         UsuarioOVI usuarioOVI = usuarioOVIDao.getUsuarioByEmail(username.trim());
-        if (usuarioOVI != null) {
-            if (passwordEncryptor.checkPassword(password, usuarioOVI.getContrasena())) {
-                UserDetails safeUser = new UserDetails();
-                safeUser.setUsername(usuarioOVI.getEmail());
-                return safeUser;
-            }
+        if (usuarioOVI != null && checkPasswordSafe(passwordEncryptor, password, usuarioOVI.getContrasena())) {
+            UserDetails safeUser = new UserDetails();
+            safeUser.setUsername(usuarioOVI.getEmail());
+            return safeUser;
         }
 
         AsistentePersonal asistente = asistentePersonalDao.getAsistenteByEmail(username.trim());
-        if (asistente != null) {
-            if (passwordEncryptor.checkPassword(password, asistente.getContrasena())) {
-                UserDetails safeUser = new UserDetails();
-                safeUser.setUsername(asistente.getEmail());
-                return safeUser;
-            }
+        if (asistente != null && checkPasswordSafe(passwordEncryptor, password, asistente.getContrasena())) {
+            UserDetails safeUser = new UserDetails();
+            safeUser.setUsername(asistente.getEmail());
+            return safeUser;
         }
 
         Formador formador = formadorDao.getFormadorByEmail(username.trim());
-        if (formador != null) {
-            if (passwordEncryptor.checkPassword(password, formador.getContrasena())) {
-                UserDetails safeUser = new UserDetails();
-                safeUser.setUsername(formador.getEmail());
-                return safeUser;
-            }
+        if (formador != null && checkPasswordSafe(passwordEncryptor, password, formador.getContrasena())) {
+            UserDetails safeUser = new UserDetails();
+            safeUser.setUsername(formador.getEmail());
+            return safeUser;
         }
 
         TecnicoOVI tecnico = tecnicoOVIDao.getTecnicoByEmail(username.trim());
-        if (tecnico != null) {
-            if (passwordEncryptor.checkPassword(password, tecnico.getContrasena())) {
-                UserDetails safeUser = new UserDetails();
-                safeUser.setUsername(tecnico.getEmail());
-                return safeUser;
-            }
+        if (tecnico != null && password.equals(tecnico.getContrasena())) {
+            UserDetails safeUser = new UserDetails();
+            safeUser.setUsername(tecnico.getEmail());
+            return safeUser;
         }
 
         return null;
+    }
+
+    private boolean checkPasswordSafe(BasicPasswordEncryptor encryptor, String rawPassword, String storedPassword) {
+        try {
+            return encryptor.checkPassword(rawPassword, storedPassword);
+        } catch (EncryptionOperationNotPossibleException e) {
+            logger.warning("Password hash format not recognized for a user: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override

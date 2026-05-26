@@ -48,7 +48,7 @@
     </div>
 
     <div th:if="${not #lists.isEmpty(candidatos)}">
-        <form th:action="@{/peticionAP/candidatos/{id}/elegir(id=${peticion.idSolicitud})}" method="post">
+        <form id="confirmarSeleccionForm" th:action="@{/peticionAP/candidatos/{id}/elegir(id=${peticion.idSolicitud})}" method="post">
             <div class="table-container">
                 <table class="table table-hover mb-0">
                     <thead>
@@ -85,8 +85,19 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Confirmar seleccion</button>
+                    <label for="confirmarSeleccionToggle" class="btn btn-primary">Confirmar seleccion</label>
                     <a th:href="@{/peticionAP/detalle/{id}(id=${peticion.idSolicitud})}" class="btn btn-outline">Cancelar</a>
+                </div>
+
+                <input type="checkbox" id="confirmarSeleccionToggle" class="notice-toggle">
+                <div class="window-notice">
+                    <div class="content">
+                        <div class="content-text">¿Estas seguro/a de que quieres confirmar esta seleccion?<br>Este cambio no se puede deshacer.</div>
+                        <div class="content-buttons">
+                            <label for="confirmarSeleccionToggle" class="btn btn-outline">Volver</label>
+                            <button type="submit" class="btn btn-primary">Si, confirmar</button>
+                        </div>
+                    </div>
                 </div>
             </form>
     </div>

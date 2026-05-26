@@ -1024,10 +1024,15 @@ body.index-layout {
 }
 
 #aprobarUsuarioToggle:checked + .window-notice,
+#rechazarUsuarioToggle:checked + .window-notice,
 #aprobarAsistenteToggle:checked + .window-notice,
+#rechazarAsistenteToggle:checked + .window-notice,
 #cancelarSolicitudToggle:checked + .window-notice,
 #aprobarPeticionToggle:checked + .window-notice,
-#rechazarPeticionToggle:checked + .window-notice {
+#rechazarPeticionToggle:checked + .window-notice,
+#nuevaSolicitudToggle:checked + .window-notice,
+#guardarCandidatosToggle:checked + .window-notice,
+#confirmarSeleccionToggle:checked + .window-notice {
     display: flex;
 }
 
