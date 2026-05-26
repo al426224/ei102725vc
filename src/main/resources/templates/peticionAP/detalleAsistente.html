@@ -37,8 +37,8 @@
         </div>
 
         <div class="section-row">
-            <span class="info-label">Tipo de Asistente</span>
-            <span class="status-badge validado" th:text="${asistente.tipoAsistente}">PAP</span>
+            <span class="info-label">Fecha de nacimiento</span>
+            <span th:text="${asistente.fechaNacimiento != null} ? ${#temporals.format(asistente.fechaNacimiento, 'dd/MM/yyyy')} : '-'">-</span>
         </div>
 
 <div class="section-row">

@@ -1,12 +1,17 @@
 package es.uji.ei1027.SgOVI.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
+
 public class AsistentePersonal {
 
     private int idAsistente;
     private String nombre;
     private String email;
     private String contrasena;
-    private String tipoAsistente;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaNacimiento;
     private String estadoValidacion;
     private String formacionPrevia;
     private String disponibilidad;
@@ -14,13 +19,13 @@ public class AsistentePersonal {
 
     public AsistentePersonal() {}
 
-    public AsistentePersonal(int idAsistente, String nombre, String email, String contrasena, String tipoAsistente, 
+    public AsistentePersonal(int idAsistente, String nombre, String email, String contrasena, LocalDate fechaNacimiento,
                            String estadoValidacion, String formacionPrevia, String disponibilidad, String municipio) {
         this.idAsistente = idAsistente;
         this.nombre = nombre;
         this.email = email;
         this.contrasena = contrasena;
-        this.tipoAsistente = tipoAsistente;
+        this.fechaNacimiento = fechaNacimiento;
         this.estadoValidacion = estadoValidacion;
         this.formacionPrevia = formacionPrevia;
         this.disponibilidad = disponibilidad;
@@ -59,12 +64,12 @@ public class AsistentePersonal {
         this.contrasena = contrasena;
     }
 
-    public String getTipoAsistente() {
-        return tipoAsistente;
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setTipoAsistente(String tipoAsistente) {
-        this.tipoAsistente = tipoAsistente;
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public String getEstadoValidacion() {
@@ -106,7 +111,7 @@ public class AsistentePersonal {
                 ", nombre='" + nombre + '\'' +
                 ", email='" + email + '\'' +
                 ", contrasena='" + contrasena + '\'' +
-                ", tipoAsistente='" + tipoAsistente + '\'' +
+                ", fechaNacimiento=" + fechaNacimiento +
                 ", estadoValidacion='" + estadoValidacion + '\'' +
                 ", formacionPrevia='" + formacionPrevia + '\'' +
 ", disponibilidad='" + disponibilidad + '\'' +

@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/usuario.css}">
-    <title>Registro PAP/PATI - SgOVI</title>
+    <title>Registro Asistente Personal - SgOVI</title>
 </head>
 <body>
 <header class="header">
@@ -47,12 +47,9 @@
                     <div class="error" th:if="${#fields.hasErrors('contrasena')}" th:errors="*{contrasena}"></div>
                 </div>
                 <div class="campos">
-                    <label for="tipoAsistente">Tipo de Perfil <abbr title="campo obligatorio">*</abbr></label>
-                    <select id="tipoAsistente" th:field="*{tipoAsistente}" class="form-control">
-                        <option value="PAP">PAP (Asistente Personal)</option>
-                        <option value="PATI">PATI (Infantil)</option>
-                    </select>
-                    <div class="error" th:if="${#fields.hasErrors('tipoAsistente')}" th:errors="*{tipoAsistente}"></div>
+                    <label for="fechaNacimiento">Fecha de Nacimiento <abbr title="campo obligatorio">*</abbr></label>
+                    <input type="date" id="fechaNacimiento" th:field="*{fechaNacimiento}" class="form-control">
+                    <div class="error" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></div>
                 </div>
             </div>
 

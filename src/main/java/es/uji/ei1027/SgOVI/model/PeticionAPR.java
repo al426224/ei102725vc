@@ -9,7 +9,6 @@ public class PeticionAPR {
 
     private int idSolicitud;
     private int idUsuario;
-    private String tipoAsistencia;
     private String descripcion;
     private int horasSemanales;
     private String estado;
@@ -32,9 +31,6 @@ public class PeticionAPR {
 
     public int getIdUsuario() { return idUsuario; }
     public void setIdUsuario(int idUsuario) { this.idUsuario = idUsuario; }
-
-    public String getTipoAsistencia() { return tipoAsistencia; }
-    public void setTipoAsistencia(String tipoAsistencia) { this.tipoAsistencia = tipoAsistencia; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
@@ -90,7 +86,6 @@ public class PeticionAPR {
         return "PeticionAPR{" +
                 "idSolicitud=" + idSolicitud +
                 ", idUsuario=" + idUsuario +
-                ", tipoAsistencia='" + tipoAsistencia + '\'' +
                 ", horasSemanales=" + horasSemanales +
                 ", estado='" + estado + '\'' +
                 '}';

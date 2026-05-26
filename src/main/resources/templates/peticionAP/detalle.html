@@ -35,10 +35,6 @@
             <h3 class="section-title">Datos de la Solicitud</h3>
 
             <div class="section-row">
-                <span class="info-label">Tipo de asistencia:</span>
-                <span th:text="${peticionAP.tipoAsistencia}"></span>
-            </div>
-            <div class="section-row">
                 <span class="info-label">Horas semanales:</span>
                 <span th:text="${peticionAP.horasSemanales}"></span>
             </div>
@@ -100,8 +96,8 @@
                     <span th:text="${asistenteElegido.nombre}"></span>
                 </div>
                 <div class="section-row">
-                    <span class="info-label">Tipo:</span>
-                    <span class="status-badge validado" th:text="${asistenteElegido.tipoAsistente}"></span>
+                    <span class="info-label">Fecha nacimiento:</span>
+                    <span th:text="${asistenteElegido.fechaNacimiento != null} ? ${#temporals.format(asistenteElegido.fechaNacimiento, 'dd/MM/yyyy')} : '-'">-</span>
                 </div>
                 <div class="section-row" th:if="${asistenteElegido.disponibilidad}">
                     <span class="info-label">Disponibilidad:</span>

@@ -24,10 +24,9 @@ public class PeticionAPRDao {
     private static final String GET_PETICIONES_BY_USUARIO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? ORDER BY p.id_solicitud DESC";
     private static final String GET_PETICIONES_BY_USUARIO_FILTRADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ?";
     private static final String GET_PETICIONES_BY_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.estado = ?";
-    private static final String GET_PETICIONES_BY_TIPO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.tipo_asistencia = ?";
-    private static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, tipo_asistencia, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String ADD_PETICION = "INSERT INTO " + TABLE_NAME + " (id_usuario, descripcion, horas_semanales, estado, tiempo_preferido, tipo_tareas, municipio, fecha_inicio_prevista, preferencia_genero, preferencias, idiomas_requeridos) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_PETICION = "DELETE FROM " + TABLE_NAME + " WHERE id_solicitud = ?";
-    private static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, tipo_asistencia = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_solicitud = ?";
+    private static final String UPDATE_PETICION = "UPDATE " + TABLE_NAME + " SET id_usuario = ?, descripcion = ?, horas_semanales = ?, estado = ?, tiempo_preferido = ?, tipo_tareas = ?, municipio = ?, fecha_inicio_prevista = ?, preferencia_genero = ?, preferencias = ?, idiomas_requeridos = ?, observaciones_tecnico = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_solicitud = ?";
     private static final String GET_PETICIONES = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario";
     private static final String GET_PETICIONES_BY_USUARIO_AND_ESTADO = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_usuario = ? AND p.estado = ?";
     private static final String GET_PETICION_WITH_USER = "SELECT p.*, u.nombre AS nombre_usuario FROM " + TABLE_NAME + " p LEFT JOIN usuariovi u ON p.id_usuario = u.id_usuario WHERE p.id_solicitud = ?";
@@ -87,19 +86,9 @@ public class PeticionAPRDao {
         }
     }
 
-    public List<PeticionAPR> getPeticionesByTipo(String tipoAsistencia) {
-        try {
-            return jdbcTemplate.query(GET_PETICIONES_BY_TIPO, new PeticionAPRRowMapper(), tipoAsistencia);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron peticiones de tipo: " + tipoAsistencia);
-            return new ArrayList<>();
-        }
-    }
-
     public void addPeticion(PeticionAPR peticion) {
         jdbcTemplate.update(ADD_PETICION,
                 peticion.getIdUsuario(),
-                peticion.getTipoAsistencia(),
                 peticion.getDescripcion(),
                 peticion.getHorasSemanales(),
                 peticion.getEstado(),
@@ -115,7 +104,6 @@ public class PeticionAPRDao {
     public void updatePeticion(PeticionAPR peticion) {
         jdbcTemplate.update(UPDATE_PETICION,
                 peticion.getIdUsuario(),
-                peticion.getTipoAsistencia(),
                 peticion.getDescripcion(),
                 peticion.getHorasSemanales(),
                 peticion.getEstado(),

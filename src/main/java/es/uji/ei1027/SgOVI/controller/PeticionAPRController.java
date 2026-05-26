@@ -113,10 +113,4 @@ public class PeticionAPRController {
         return "peticionAPR/list";
     }
 
-    @RequestMapping(value = "/byTipo/{tipo}")
-    public String getPeticionesByTipo(Model model, @PathVariable String tipo) {
-        List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByTipo(tipo);
-        model.addAttribute("peticiones", peticiones);
-        return "peticionAPR/list";
-    }
 }

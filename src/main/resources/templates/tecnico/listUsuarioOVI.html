@@ -14,7 +14,7 @@
 
     <nav class="nav-menu">
         <a th:href="@{/tecnico/home}" class="nav-item active">Gestionar UsuarioOVI</a>
-        <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes Personales</a>
         <a th:href="@{/tecnico/peticiones}" class="nav-item">Solicitudes de Asistencia</a>
     </nav>
 
@@ -33,7 +33,7 @@
 
     <section class="welcome-card">
         <h1>Bienvenido, <span th:text="${tecnico.nombre}">Técnico</span></h1>
-        <p>Desde este panel puedes gestionar los usuarios OVI pendientes de validación, candidatos PAP/PATI y solicitudes de asistencia personal.</p>
+        <p>Desde este panel puedes gestionar los usuarios OVI pendientes de validación, asistentes personales y solicitudes de asistencia personal.</p>
     </section>
 
     <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></div>

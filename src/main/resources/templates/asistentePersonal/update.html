@@ -34,7 +34,6 @@
             <input type="hidden" th:field="*{idAsistente}">
             <input type="hidden" th:field="*{email}">
             <input type="hidden" th:field="*{contrasena}">
-            <input type="hidden" th:field="*{tipoAsistente}">
             <input type="hidden" th:field="*{estadoValidacion}">
 
             <div class="info-group">
@@ -49,8 +48,9 @@
             </div>
 
             <div class="info-group">
-                <span class="info-label">Tipo de Asistente</span>
-                <span class="info-value" th:text="${asistente.tipoAsistente}">PAP</span>
+                <span class="info-label">Fecha de Nacimiento</span>
+                <span class="info-value" th:text="${asistente.fechaNacimiento != null} ? ${#temporals.format(asistente.fechaNacimiento, 'dd/MM/yyyy')} : '-'">-</span>
+                <input type="hidden" th:field="*{fechaNacimiento}">
             </div>
 
             <div class="info-group">

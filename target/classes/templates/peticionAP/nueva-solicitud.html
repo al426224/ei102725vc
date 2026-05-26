@@ -31,16 +31,6 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="tipoAsistencia" class="form-label">Tipo de asistencia <abbr title="campo obligatorio">*</abbr></label>
-                    <select id="tipoAsistencia" class="form-control" th:field="*{tipoAsistencia}" required>
-                        <option value="">Selecciona tipo</option>
-                        <option value="PAP">PAP (mayores de edad)</option>
-                        <option value="PATI">PATI (menores de edad)</option>
-                    </select>
-                    <span th:if="${#fields.hasErrors('tipoAsistencia')}" th:errors="*{tipoAsistencia}" class="field-error"></span>
-                </div>
-
-                <div class="form-group">
                     <label for="horasSemanales" class="form-label">Horas semanales <abbr title="campo obligatorio">*</abbr></label>
                     <input type="number" id="horasSemanales" class="form-control" th:field="*{horasSemanales}" min="1" max="168" required>
                     <span th:if="${#fields.hasErrors('horasSemanales')}" th:errors="*{horasSemanales}" class="field-error"></span>

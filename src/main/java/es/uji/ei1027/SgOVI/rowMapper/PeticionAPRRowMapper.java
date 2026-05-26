@@ -13,7 +13,6 @@ public class PeticionAPRRowMapper implements RowMapper<PeticionAPR> {
         PeticionAPR peticion = new PeticionAPR();
         peticion.setIdSolicitud(rs.getInt("id_solicitud"));
         peticion.setIdUsuario(rs.getInt("id_usuario"));
-        peticion.setTipoAsistencia(rs.getString("tipo_asistencia"));
         peticion.setDescripcion(rs.getString("descripcion"));
         peticion.setHorasSemanales(rs.getInt("horas_semanales"));
         peticion.setEstado(rs.getString("estado"));

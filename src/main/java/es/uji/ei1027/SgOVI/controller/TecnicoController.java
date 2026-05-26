@@ -10,6 +10,7 @@ import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.TecnicoOVI;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.services.EdadCompatibilidadService;
 import es.uji.ei1027.SgOVI.services.MatchingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +36,20 @@ public class TecnicoController {
     private final PeticionAPRDao peticionAPRDao;
     private final SeleccionDao seleccionDao;
     private final MatchingService matchingService;
+    private final EdadCompatibilidadService edadCompatibilidadService;
 
     @Autowired
     public TecnicoController(TecnicoOVIDao tecnicoOVIDao, UsuarioOVIDao usuarioOVIDao,
-                              AsistentePersonalDao asistentePersonalDao, PeticionAPRDao peticionAPRDao,
-                              SeleccionDao seleccionDao, MatchingService matchingService) {
+                               AsistentePersonalDao asistentePersonalDao, PeticionAPRDao peticionAPRDao,
+                               SeleccionDao seleccionDao, MatchingService matchingService,
+                               EdadCompatibilidadService edadCompatibilidadService) {
         this.tecnicoOVIDao = tecnicoOVIDao;
         this.usuarioOVIDao = usuarioOVIDao;
         this.asistentePersonalDao = asistentePersonalDao;
         this.peticionAPRDao = peticionAPRDao;
         this.seleccionDao = seleccionDao;
         this.matchingService = matchingService;
+        this.edadCompatibilidadService = edadCompatibilidadService;
     }
 
     @RequestMapping(value = "/home")
@@ -300,10 +304,14 @@ public class TecnicoController {
             return "redirect:/tecnico/peticion/" + id;
         }
 
-        List<AsistentePersonal> todosAsistentes = asistentePersonalDao.getCandidatosCompatibles(peticion.getTipoAsistencia());
+        UsuarioOVI usuarioPeticion = usuarioOVIDao.getUsuario(peticion.getIdUsuario());
+        List<AsistentePersonal> todosAsistentes = asistentePersonalDao.getCandidatosCompatibles();
         List<MatchingService.CandidatoSugerido> candidatos = new java.util.ArrayList<>();
 
         for (AsistentePersonal a : todosAsistentes) {
+            if (!edadCompatibilidadService.sonCompatiblesPorEdad(usuarioPeticion, a)) {
+                continue;
+            }
             MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
             cs.setAsistente(a);
             int puntuacion = matchingService.calcularPuntuacion(peticion, a, cs);
@@ -349,12 +357,16 @@ public class TecnicoController {
             return "redirect:/tecnico/peticiones";
         }
 
-        List<AsistentePersonal> todosAsistentes = asistentePersonalDao.getCandidatosCompatibles(peticion.getTipoAsistencia());
+        UsuarioOVI usuarioPeticion = usuarioOVIDao.getUsuario(peticion.getIdUsuario());
+        List<AsistentePersonal> todosAsistentes = asistentePersonalDao.getCandidatosCompatibles();
         List<Seleccion> aGuardar = new ArrayList<>();
 
         if (idsAsistentes != null) {
             for (AsistentePersonal a : todosAsistentes) {
                 if (idsAsistentes.contains(a.getIdAsistente())) {
+                    if (!edadCompatibilidadService.sonCompatiblesPorEdad(usuarioPeticion, a)) {
+                        continue;
+                    }
                     MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
                     cs.setAsistente(a);
                     int puntuacion = matchingService.calcularPuntuacion(peticion, a, cs);

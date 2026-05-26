@@ -21,10 +21,6 @@ public class PeticionAPRSignupValidator implements Validator {
     }
 
     private void validatePeticionAPR(PeticionAPR peticionAPR, Errors errors) {
-        if (peticionAPR.getTipoAsistencia() == null || peticionAPR.getTipoAsistencia().trim().isEmpty()) {
-            errors.rejectValue("tipoAsistencia", "obligatorio", "El tipo de asistencia es obligatorio.");
-        }
-
         if (peticionAPR.getHorasSemanales() <= 0) {
             errors.rejectValue("horasSemanales", "obligatorio", "Las horas semanales son obligatorias.");
         }

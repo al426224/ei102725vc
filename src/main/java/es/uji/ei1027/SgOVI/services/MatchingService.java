@@ -4,6 +4,7 @@ import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.Seleccion;
+import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,17 +16,23 @@ import java.util.List;
 public class MatchingService {
 
     private final AsistentePersonalDao asistentePersonalDao;
+    private final EdadCompatibilidadService edadCompatibilidadService;
 
     @Autowired
-    public MatchingService(AsistentePersonalDao asistentePersonalDao) {
+    public MatchingService(AsistentePersonalDao asistentePersonalDao,
+                           EdadCompatibilidadService edadCompatibilidadService) {
         this.asistentePersonalDao = asistentePersonalDao;
+        this.edadCompatibilidadService = edadCompatibilidadService;
     }
 
-    public List<CandidatoSugerido> calcularCandidatos(PeticionAPR peticion) {
-        List<AsistentePersonal> candidatos = asistentePersonalDao.getCandidatosCompatibles(peticion.getTipoAsistencia());
+    public List<CandidatoSugerido> calcularCandidatos(PeticionAPR peticion, UsuarioOVI usuario) {
+        List<AsistentePersonal> candidatos = asistentePersonalDao.getCandidatosCompatibles();
         List<CandidatoSugerido> resultado = new ArrayList<>();
 
         for (AsistentePersonal a : candidatos) {
+            if (!edadCompatibilidadService.sonCompatiblesPorEdad(usuario, a)) {
+                continue;
+            }
             CandidatoSugerido cs = new CandidatoSugerido();
             cs.setAsistente(a);
             cs.setPuntuacion(calcularPuntuacion(peticion, a, cs));

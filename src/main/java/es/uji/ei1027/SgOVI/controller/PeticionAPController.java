@@ -3,6 +3,7 @@ package es.uji.ei1027.SgOVI.controller;
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
+import es.uji.ei1027.SgOVI.services.EdadCompatibilidadService;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.Seleccion;
@@ -30,13 +31,17 @@ public class PeticionAPController {
     private final PeticionAPRDao peticionAPRDao;
     private final SeleccionDao seleccionDao;
     private final AsistentePersonalDao asistentePersonalDao;
+    private final EdadCompatibilidadService edadCompatibilidadService;
     private final PeticionAPRSignupValidator validator = new PeticionAPRSignupValidator();
 
     @Autowired
-    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao, AsistentePersonalDao asistentePersonalDao) {
+    public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao,
+                                AsistentePersonalDao asistentePersonalDao,
+                                EdadCompatibilidadService edadCompatibilidadService) {
         this.peticionAPRDao = peticionAPRDao;
         this.seleccionDao = seleccionDao;
         this.asistentePersonalDao = asistentePersonalDao;
+        this.edadCompatibilidadService = edadCompatibilidadService;
     }
 
     @InitBinder
@@ -191,7 +196,7 @@ public class PeticionAPController {
         List<CandidatoOVI> candidatosData = new ArrayList<>();
         for (Seleccion s : propuestas) {
             AsistentePersonal a = asistentePersonalDao.getAsistente(s.getIdAsistente());
-            if (a != null) {
+            if (a != null && edadCompatibilidadService.sonCompatiblesPorEdad(usuario, a)) {
                 CandidatoOVI c = new CandidatoOVI();
                 c.setSeleccion(s);
                 c.setAsistente(a);
@@ -245,6 +250,12 @@ public class PeticionAPController {
             return "redirect:/peticionAP/candidatos/" + id;
         }
 
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(asistenteSeleccionado);
+        if (asistente == null || !edadCompatibilidadService.sonCompatiblesPorEdad(usuario, asistente)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "El asistente seleccionado no es compatible por edad");
+            return "redirect:/peticionAP/candidatos/" + id;
+        }
+
         propuestaExistente.setEstadoSeleccion("aceptada");
         seleccionDao.updateSeleccion(propuestaExistente);
 
@@ -273,6 +284,9 @@ public class PeticionAPController {
 
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(idAsistente);
         if (asistente == null) {
+            return "redirect:/peticionAP/candidatos/" + idSolicitud;
+        }
+        if (!edadCompatibilidadService.sonCompatiblesPorEdad(usuario, asistente)) {
             return "redirect:/peticionAP/candidatos/" + idSolicitud;
         }
 

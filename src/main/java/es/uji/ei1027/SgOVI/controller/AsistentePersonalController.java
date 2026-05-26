@@ -306,13 +306,6 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @RequestMapping(value = "/byTipo/{tipo}")
-    public String getAsistentesByTipo(Model model, @PathVariable String tipo) {
-        List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentesByTipo(tipo);
-        model.addAttribute("asistentes", asistentes);
-        return "asistentePersonal/list";
-    }
-
     @RequestMapping(value = "/byEstado/{estado}")
     public String getAsistentesByEstado(Model model, @PathVariable String estado) {
         List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentesByEstado(estado);

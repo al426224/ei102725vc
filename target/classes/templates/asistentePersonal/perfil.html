@@ -42,8 +42,8 @@
             </div>
 
             <div class="info-group">
-                <span class="info-label">Tipo de Asistente</span>
-                <span class="info-value" th:text="${asistente.tipoAsistente}">PAP</span>
+                <span class="info-label">Fecha de Nacimiento</span>
+                <span class="info-value" th:text="${asistente.fechaNacimiento != null} ? ${#temporals.format(asistente.fechaNacimiento, 'dd/MM/yyyy')} : '-'">-</span>
             </div>
 
             <div class="info-group">
@@ -69,7 +69,7 @@
         <div class="profile-actions">
             <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
             <p class="perfil-nombre" th:text="${asistente.nombre}">Nombre</p>
-            <p class="perfil-rol" th:text="${asistente.tipoAsistente}">PAP</p>
+            <p class="perfil-rol">Asistente personal</p>
 
             <a th:if="${asistente.estadoValidacion == 'aceptado'}" th:href="@{/asistentePersonal/update/{id}(id=${asistente.idAsistente})}" class="btn btn-primary">Editar</a>
         </div>

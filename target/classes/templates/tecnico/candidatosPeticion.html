@@ -14,7 +14,7 @@
 
     <nav class="nav-menu">
         <a th:href="@{/tecnico/home}" class="nav-item">Gestionar UsuarioOVI</a>
-        <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/asistentes}" class="nav-item">Gestionar Asistentes Personales</a>
         <a th:href="@{/tecnico/peticiones}" class="nav-item active">Solicitudes de Asistencia</a>
     </nav>
 
@@ -42,14 +42,10 @@
             <span class="info-label">Usuario:</span>
             <span th:text="${peticion.nombreUsuario} ?: 'No disponible'"></span>
         </div>
-        <div class="section-row" style="border: none; padding: 0.3rem 0;">
-            <span class="info-label">Tipo de asistencia:</span>
-            <span th:text="${peticion.tipoAsistencia}"></span>
-        </div>
     </div>
 
     <div class="alert alert-info">
-        Candidatos compatibles con esta solicitud segun tipo de asistencia. Ordenados por puntuacion de matching. Deselecciona los que no quieras proponer.
+        Candidatos compatibles por edad con la persona usuaria de esta solicitud. Ordenados por puntuacion de matching. Deselecciona los que no quieras proponer.
     </div>
 
     <form th:if="${not #lists.isEmpty(candidatos)}" th:action="@{/tecnico/peticion/{id}/candidatos/guardar(id=${peticion.idSolicitud})}" method="post">

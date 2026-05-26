@@ -5,6 +5,8 @@ import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 public class AsistentePersonalSignupValidator implements Validator {
     private final AsistentePersonalDao asistentePersonalDao;
 
@@ -47,8 +49,10 @@ public class AsistentePersonalSignupValidator implements Validator {
             errors.rejectValue("contrasena", "longitud", "La contrasena no puede superar los 255 caracteres.");
         }
 
-        if (asistente.getTipoAsistente() == null || asistente.getTipoAsistente().trim().isEmpty()) {
-            errors.rejectValue("tipoAsistente", "obligatorio", "El tipo de asistente es obligatorio.");
+        if (asistente.getFechaNacimiento() == null) {
+            errors.rejectValue("fechaNacimiento", "obligatorio", "La fecha de nacimiento es obligatoria.");
+        } else if (asistente.getFechaNacimiento().isAfter(LocalDate.now())) {
+            errors.rejectValue("fechaNacimiento", "invalida", "La fecha de nacimiento no puede ser futura.");
         }
 
         if (asistente.getFormacionPrevia() == null || asistente.getFormacionPrevia().trim().isEmpty()) {

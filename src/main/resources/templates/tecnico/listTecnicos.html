@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionar Asistentes PAP/PATI - SgOVI</title>
+    <title>Gestionar Asistentes Personales - SgOVI</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" th:href="@{/css/usuario.css}">
 </head>
@@ -14,7 +14,7 @@
 
     <nav class="nav-menu">
         <a th:href="@{/tecnico/home}" class="nav-item">Gestionar UsuarioOVI</a>
-        <a th:href="@{/tecnico/asistentes}" class="nav-item active">Gestionar Asistentes PAP/PATI</a>
+        <a th:href="@{/tecnico/asistentes}" class="nav-item active">Gestionar Asistentes Personales</a>
         <a th:href="@{/tecnico/peticiones}" class="nav-item">Solicitudes de Asistencia</a>
     </nav>
 
@@ -34,7 +34,7 @@
     <div th:if="${successMessage}" th:text="${successMessage}" class="alert alert-success"></div>
     <div th:if="${errorMessage}" th:text="${errorMessage}" class="alert alert-danger"></div>
 
-    <h1 class="page-title">Asistentes PAP/PATI</h1>
+    <h1 class="page-title">Asistentes Personales</h1>
 
     <form th:action="@{/tecnico/asistentes}" method="get" class="filter-bar">
         <div class="filter-row">
@@ -57,7 +57,7 @@
                 <tr>
                     <th scope="col">Nombre</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Tipo</th>
+                    <th scope="col">Edad</th>
                     <th scope="col">Municipio</th>
                     <th scope="col">Disponibilidad</th>
                     <th scope="col">Estado</th>
@@ -71,7 +71,7 @@
                 <tr th:each="a : ${asistentes}">
                     <td th:text="${a.nombre}"></td>
                     <td th:text="${a.email}"></td>
-                    <td th:text="${a.tipoAsistente}"></td>
+                    <td th:text="${a.fechaNacimiento != null ? (#temporals.format(a.fechaNacimiento, 'dd/MM/yyyy') + ' (' + T(java.time.Period).between(a.fechaNacimiento, T(java.time.LocalDate).now()).getYears() + ' años)') : '-'}"></td>
                     <td th:text="${a.municipio} ?: '-'"></td>
                     <td th:text="${a.disponibilidad}"></td>
                     <td>

@@ -28,10 +28,6 @@
     <div class="detail-card mb-4">
         <h3 class="section-title">Solicitud</h3>
         <div class="section-row">
-            <span class="info-label">Tipo de asistencia:</span>
-            <span th:text="${peticion.tipoAsistencia}"></span>
-        </div>
-        <div class="section-row">
             <span class="info-label">Horas semanales:</span>
             <span th:text="${peticion.horasSemanales} + ' h/semana'"></span>
         </div>
@@ -60,7 +56,7 @@
                                 <th style="width: 40px;"></th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Municipio</th>
-                                <th scope="col">Tipo</th>
+                                <th scope="col">Edad</th>
                                 <th scope="col">Disponibilidad</th>
                                 <th scope="col">Formacion</th>
                                 <th scope="col">Puntuacion</th>
@@ -74,9 +70,7 @@
                                 </td>
                                 <td th:text="${c.asistente.nombre}"></td>
                                 <td th:text="${c.asistente.municipio} ?: '-'"></td>
-                                <td>
-                                    <span class="status-badge validado" th:text="${c.asistente.tipoAsistente}"></span>
-                                </td>
+                                <td th:text="${c.asistente.fechaNacimiento != null ? T(java.time.Period).between(c.asistente.fechaNacimiento, T(java.time.LocalDate).now()).getYears() + ' años' : '-'}"></td>
                                 <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
                                 <td th:text="${#strings.length(c.asistente.formacionPrevia) > 40} ? ${#strings.substring(c.asistente.formacionPrevia, 0, 37)} + '...' : ${c.asistente.formacionPrevia}"></td>
                                 <td>
