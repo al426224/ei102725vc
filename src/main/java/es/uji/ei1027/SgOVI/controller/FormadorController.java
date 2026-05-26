@@ -40,19 +40,19 @@ public class FormadorController {
         return (redirectUrl != null) ? "redirect:" + redirectUrl : "redirect:" + defaultUrl;
     }
 
-    @GetMapping("/list")
+    @RequestMapping(value = "/list")
     public String listFormadores(Model model) {
         List<Formador> formadores = formadorDao.getFormadores();
         model.addAttribute("formadores", formadores);
         return "formador/list";
     }
 
-    @GetMapping("/search")
+    @RequestMapping(value = "/search")
     public String searchForm(Model model) {
         return "formador/search";
     }
 
-    @PostMapping("/search")
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String processSearch(@RequestParam String tipo, @RequestParam String valor, Model model, RedirectAttributes redirectAttributes) {
         Formador formador = null;
         
@@ -71,13 +71,13 @@ public class FormadorController {
         return "formador/search";
     }
 
-    @GetMapping("/update/{id}")
+    @RequestMapping(value = "/update/{id}")
     public String editFormador(Model model, @PathVariable int id) {
         model.addAttribute("formador", formadorDao.getFormador(id));
         return "formador/update";
     }
 
-    @PostMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String processUpdateSubmit(@ModelAttribute("formador") @Validated Formador formador, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         FormadorEditarValidator validator = new FormadorEditarValidator(formadorDao, String.valueOf(formador.getIdFormador()));
         validator.validate(formador, bindingResult);
@@ -91,14 +91,14 @@ public class FormadorController {
         return "redirect:/formador/list";
     }
 
-    @GetMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}")
     public String deleteFormador(@PathVariable int id, RedirectAttributes redirectAttributes) {
         formadorDao.deleteFormador(id);
         redirectAttributes.addFlashAttribute("successMessage", "Formador eliminado correctamente");
         return "redirect:/formador/list";
     }
 
-    @GetMapping("/perfil/{id}")
+    @RequestMapping(value = "/perfil/{id}")
     public String perfilFormador(Model model, @PathVariable int id) {
         Formador formador = formadorDao.getFormador(id);
 
@@ -110,7 +110,7 @@ public class FormadorController {
         return "formador/perfil";
     }
 
-    @GetMapping("/homeFormador")
+    @RequestMapping(value = "/homeFormador")
     public String homeFormador(HttpSession session, Model model) {
         Formador formador = (Formador) session.getAttribute("usuario");
 

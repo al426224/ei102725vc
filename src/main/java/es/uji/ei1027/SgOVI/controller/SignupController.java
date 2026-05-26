@@ -36,12 +36,12 @@ public class SignupController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @GetMapping
+    @RequestMapping
     public String showTipoRegistro() {
         return "signup/signup";
     }
 
-    @GetMapping("/registerUsuarioOVI")
+    @RequestMapping(value = "/registerUsuarioOVI")
     public String showRegisterUsuarioOVIForm(Model model) {
         model.addAttribute("usuarioOVI", new UsuarioOVI());
         model.addAttribute("rawPassword", "");
@@ -49,13 +49,13 @@ public class SignupController {
     }
 
 
-    @GetMapping("/registerAsistentePersonal")
+    @RequestMapping(value = "/registerAsistentePersonal")
     public String showRegisterAsistentePersonalForm(Model model) {
         model.addAttribute("asistente", new AsistentePersonal());
         return "signup/signupAsistentePersonal";
     }
 
-    @PostMapping("/registerAsistentePersonal")
+    @RequestMapping(value = "/registerAsistentePersonal", method = RequestMethod.POST)
     public String registerAsistentePersonal(@ModelAttribute("asistente") AsistentePersonal asistente,
                                              BindingResult bindingResult, Model model) {
         AsistentePersonalSignupValidator validator = new AsistentePersonalSignupValidator(asistentePersonalDao);
@@ -73,7 +73,7 @@ public class SignupController {
         return "redirect:/login?registered";
     }
 
-    @PostMapping("/registerUsuarioOVI")
+    @RequestMapping(value = "/registerUsuarioOVI", method = RequestMethod.POST)
     public String registerUsuarioOVI(@ModelAttribute("usuarioOVI") @Validated UsuarioOVI usuarioOVI,
                                        BindingResult bindingResult, Model model) {
 

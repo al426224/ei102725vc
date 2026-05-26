@@ -15,11 +15,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class TecnicoController {
         this.matchingService = matchingService;
     }
 
-    @GetMapping("/home")
+    @RequestMapping(value = "/home")
     public String homeTecnico(@RequestParam(value = "estado", required = false) String estado,
                                HttpSession session, Model model) {
         Object usuario = session.getAttribute("usuario");
@@ -70,7 +69,7 @@ public class TecnicoController {
         return "tecnico/listUsuarioOVI";
     }
 
-    @GetMapping("/usuario/{id}")
+    @RequestMapping(value = "/usuario/{id}")
     public String verUsuario(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -86,7 +85,7 @@ public class TecnicoController {
         return "tecnico/infoUsuarioOVI";
     }
 
-    @PostMapping("/usuario/approve/{id}")
+    @RequestMapping(value = "/usuario/approve/{id}", method = RequestMethod.POST)
     public String approveUsuario(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -103,7 +102,7 @@ public class TecnicoController {
     }
 
 
-    @PostMapping("/usuario/reject/{id}")
+    @RequestMapping(value = "/usuario/reject/{id}", method = RequestMethod.POST)
     public String rejectUsuario(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -119,7 +118,7 @@ public class TecnicoController {
         return "redirect:/tecnico/home";
     }
 
-    @GetMapping("/asistentes")
+    @RequestMapping(value = "/asistentes")
     public String listAsistentes(@RequestParam(value = "estado", required = false) String estado,
                                  HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
@@ -139,7 +138,7 @@ public class TecnicoController {
         return "tecnico/listTecnicos";
     }
 
-    @GetMapping("/peticiones")
+    @RequestMapping(value = "/peticiones")
     public String listPeticiones(@RequestParam(value = "estado", required = false) String estado,
                                  HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
@@ -167,7 +166,7 @@ public class TecnicoController {
         return "tecnico/listPeticiones";
     }
 
-    @GetMapping("/asistente/{id}")
+    @RequestMapping(value = "/asistente/{id}")
     public String verAsistente(@PathVariable int id, @RequestParam(required = false) Integer idSolicitud, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -186,7 +185,7 @@ public class TecnicoController {
         return "tecnico/infoAsistente";
     }
 
-    @PostMapping("/asistente/approve/{id}")
+    @RequestMapping(value = "/asistente/approve/{id}", method = RequestMethod.POST)
     public String approveAsistente(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -203,7 +202,7 @@ public class TecnicoController {
     }
 
 
-    @PostMapping("/asistente/reject/{id}")
+    @RequestMapping(value = "/asistente/reject/{id}", method = RequestMethod.POST)
     public String rejectAsistente(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -219,7 +218,7 @@ public class TecnicoController {
         return "redirect:/tecnico/asistentes";
     }
 
-    @GetMapping("/peticion/{id}")
+    @RequestMapping(value = "/peticion/{id}")
     public String verPeticion(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -243,7 +242,7 @@ public class TecnicoController {
         return "tecnico/infoPeticion";
     }
 
-@PostMapping("/peticion/approve/{id}")
+@RequestMapping(value = "/peticion/approve/{id}", method = RequestMethod.POST)
     public String approvePeticion(@PathVariable int id,
                                   @RequestParam(value = "observaciones", required = false) String observaciones,
                                   HttpSession session, RedirectAttributes redirectAttributes) {
@@ -264,7 +263,7 @@ public class TecnicoController {
     }
 
 
-@PostMapping("/peticion/reject/{id}")
+@RequestMapping(value = "/peticion/reject/{id}", method = RequestMethod.POST)
     public String rejectPeticion(@PathVariable int id,
                                   @RequestParam(value = "observaciones", required = false) String observaciones,
                                   HttpSession session, RedirectAttributes redirectAttributes) {
@@ -285,7 +284,7 @@ public class TecnicoController {
     }
 
 
-@GetMapping("/peticion/{id}/candidatos")
+@RequestMapping(value = "/peticion/{id}/candidatos")
     public String verCandidatos(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -336,7 +335,7 @@ public class TecnicoController {
 
 
 
-@PostMapping("/peticion/{id}/candidatos/guardar")
+@RequestMapping(value = "/peticion/{id}/candidatos/guardar", method = RequestMethod.POST)
     public String guardarCandidatos(@PathVariable int id,
                                      @RequestParam(value = "candidatosSeleccionados", required = false) List<Integer> idsAsistentes,
                                      HttpSession session, RedirectAttributes redirectAttributes) {

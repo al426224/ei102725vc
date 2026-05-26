@@ -36,20 +36,20 @@ public class RegistroContactoController {
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
     }
 
-    @GetMapping("/list")
+    @RequestMapping(value = "/list")
     public String listRegistros(Model model) {
         List<RegistroContacto> registros = registroContactoDao.getRegistros();
         model.addAttribute("registros", registros);
         return "registroContacto/list";
     }
 
-    @GetMapping("/add")
+    @RequestMapping(value = "/add")
     public String addRegistroForm(Model model) {
         model.addAttribute("registroContacto", new RegistroContacto());
         return "registroContacto/add";
     }
 
-    @PostMapping("/add")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addRegistro(@ModelAttribute("registroContacto") @Validated RegistroContacto registro,
                                 BindingResult bindingResult, Model model,
                                 RedirectAttributes redirectAttributes) {
@@ -73,13 +73,13 @@ public class RegistroContactoController {
         return "redirect:/registroContacto/list";
     }
 
-    @GetMapping("/update/{id}")
+    @RequestMapping(value = "/update/{id}")
     public String updateRegistroForm(Model model, @PathVariable int id) {
         model.addAttribute("registroContacto", registroContactoDao.getRegistro(id));
         return "registroContacto/update";
     }
 
-    @PostMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateRegistro(@ModelAttribute("registroContacto") @Validated RegistroContacto registro,
                                    BindingResult bindingResult, Model model,
                                    RedirectAttributes redirectAttributes) {
@@ -96,28 +96,28 @@ public class RegistroContactoController {
         return "redirect:/registroContacto/list";
     }
 
-    @GetMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}")
     public String deleteRegistro(@PathVariable int id, RedirectAttributes redirectAttributes) {
         registroContactoDao.deleteRegistro(id);
         redirectAttributes.addFlashAttribute("successMessage", "Registro eliminado correctamente");
         return "redirect:/registroContacto/list";
     }
 
-    @GetMapping("/bySeleccion/{idSeleccion}")
+    @RequestMapping(value = "/bySeleccion/{idSeleccion}")
     public String getRegistrosBySeleccion(Model model, @PathVariable int idSeleccion) {
         List<RegistroContacto> registros = registroContactoDao.getRegistrosBySeleccion(idSeleccion);
         model.addAttribute("registros", registros);
         return "registroContacto/list";
     }
 
-    @GetMapping("/byResultado/{resultado}")
+    @RequestMapping(value = "/byResultado/{resultado}")
     public String getRegistrosByResultado(Model model, @PathVariable String resultado) {
         List<RegistroContacto> registros = registroContactoDao.getRegistrosByResultado(resultado);
         model.addAttribute("registros", registros);
         return "registroContacto/list";
     }
 
-    @PostMapping("/finalize/{id}")
+    @RequestMapping(value = "/finalize/{id}", method = RequestMethod.POST)
     public String finalizeRegistro(@PathVariable int id, RedirectAttributes redirectAttributes) {
         RegistroContacto registro = registroContactoDao.getRegistro(id);
         if (registro != null) {
@@ -129,7 +129,7 @@ public class RegistroContactoController {
         return "redirect:/registroContacto/list";
     }
 
-    @PostMapping("/cancel/{id}")
+    @RequestMapping(value = "/cancel/{id}", method = RequestMethod.POST)
     public String cancelRegistro(@PathVariable int id, RedirectAttributes redirectAttributes) {
         RegistroContacto registro = registroContactoDao.getRegistro(id);
         if (registro != null) {

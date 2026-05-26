@@ -35,20 +35,20 @@ public class SeleccionController {
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
     }
 
-    @GetMapping("/list")
+    @RequestMapping(value = "/list")
     public String listSelecciones(Model model) {
         List<Seleccion> selecciones = seleccionDao.getSelecciones();
         model.addAttribute("selecciones", selecciones);
         return "seleccion/list";
     }
 
-    @GetMapping("/add")
+    @RequestMapping(value = "/add")
     public String addSeleccionForm(Model model) {
         model.addAttribute("seleccion", new Seleccion());
         return "seleccion/add";
     }
 
-    @PostMapping("/add")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addSeleccion(@ModelAttribute("seleccion") @Validated Seleccion seleccion,
                               BindingResult bindingResult, Model model,
                               RedirectAttributes redirectAttributes) {
@@ -72,13 +72,13 @@ public class SeleccionController {
         return "redirect:/seleccion/list";
     }
 
-    @GetMapping("/update/{id}")
+    @RequestMapping(value = "/update/{id}")
     public String updateSeleccionForm(Model model, @PathVariable int id) {
         model.addAttribute("seleccion", seleccionDao.getSeleccion(id));
         return "seleccion/update";
     }
 
-    @PostMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateSeleccion(@ModelAttribute("seleccion") @Validated Seleccion seleccion,
                                 BindingResult bindingResult, Model model,
                                 RedirectAttributes redirectAttributes) {
@@ -95,14 +95,14 @@ public class SeleccionController {
         return "redirect:/seleccion/list";
     }
 
-    @GetMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}")
     public String deleteSeleccion(@PathVariable int id, RedirectAttributes redirectAttributes) {
         seleccionDao.deleteSeleccion(id);
         redirectAttributes.addFlashAttribute("successMessage", "Selección eliminada correctamente");
         return "redirect:/seleccion/list";
     }
 
-    @PostMapping("/accept/{id}")
+    @RequestMapping(value = "/accept/{id}", method = RequestMethod.POST)
     public String acceptSeleccion(@PathVariable int id, RedirectAttributes redirectAttributes) {
         Seleccion seleccion = seleccionDao.getSeleccion(id);
         if (seleccion != null) {
@@ -113,7 +113,7 @@ public class SeleccionController {
         return "redirect:/seleccion/list";
     }
 
-    @PostMapping("/reject/{id}")
+    @RequestMapping(value = "/reject/{id}", method = RequestMethod.POST)
     public String rejectSeleccion(@PathVariable int id, RedirectAttributes redirectAttributes) {
         Seleccion seleccion = seleccionDao.getSeleccion(id);
         if (seleccion != null) {
@@ -124,14 +124,14 @@ public class SeleccionController {
         return "redirect:/seleccion/list";
     }
 
-    @GetMapping("/bySolicitud/{idSolicitud}")
+    @RequestMapping(value = "/bySolicitud/{idSolicitud}")
     public String getSeleccionesBySolicitud(Model model, @PathVariable int idSolicitud) {
         List<Seleccion> selecciones = seleccionDao.getSeleccionesBySolicitud(idSolicitud);
         model.addAttribute("selecciones", selecciones);
         return "seleccion/list";
     }
 
-    @GetMapping("/byAsistente/{idAsistente}")
+    @RequestMapping(value = "/byAsistente/{idAsistente}")
     public String getSeleccionesByAsistente(Model model, @PathVariable int idAsistente) {
         List<Seleccion> selecciones = seleccionDao.getSeleccionesByAsistente(idAsistente);
         model.addAttribute("selecciones", selecciones);

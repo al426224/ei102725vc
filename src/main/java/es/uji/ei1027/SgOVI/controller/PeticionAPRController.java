@@ -35,20 +35,20 @@ public class PeticionAPRController {
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
     }
 
-    @GetMapping("/list")
+    @RequestMapping(value = "/list")
     public String listPeticiones(Model model) {
         List<PeticionAPR> peticiones = peticionAPRDao.getPeticiones();
         model.addAttribute("peticiones", peticiones);
         return "peticionAPR/list";
     }
 
-    @GetMapping("/add")
+    @RequestMapping(value = "/add")
     public String addPeticionForm(Model model) {
         model.addAttribute("peticionAPR", new PeticionAPR());
         return "peticionAPR/add";
     }
 
-    @PostMapping("/add")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addPeticion(@ModelAttribute("peticionAPR") @Validated PeticionAPR peticionAPR,
                                BindingResult bindingResult, Model model,
                                RedirectAttributes redirectAttributes) {
@@ -69,13 +69,13 @@ public class PeticionAPRController {
         return "redirect:/peticionAPR/list";
     }
 
-    @GetMapping("/update/{id}")
+    @RequestMapping(value = "/update/{id}")
     public String updatePeticionForm(Model model, @PathVariable int id) {
         model.addAttribute("peticionAPR", peticionAPRDao.getPeticion(id));
         return "peticionAPR/update";
     }
 
-    @PostMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updatePeticion(@ModelAttribute("peticionAPR") @Validated PeticionAPR peticionAPR,
                                    BindingResult bindingResult, Model model,
                                    RedirectAttributes redirectAttributes) {
@@ -92,28 +92,28 @@ public class PeticionAPRController {
         return "redirect:/peticionAPR/list";
     }
 
-    @GetMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}")
     public String deletePeticion(@PathVariable int id, RedirectAttributes redirectAttributes) {
         peticionAPRDao.deletePeticion(id);
         redirectAttributes.addFlashAttribute("successMessage", "Petición eliminada correctamente");
         return "redirect:/peticionAPR/list";
     }
 
-    @GetMapping("/byUsuario/{idUsuario}")
+    @RequestMapping(value = "/byUsuario/{idUsuario}")
     public String getPeticionesByUsuario(Model model, @PathVariable int idUsuario) {
         List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByUsuario(idUsuario);
         model.addAttribute("peticiones", peticiones);
         return "peticionAPR/list";
     }
 
-    @GetMapping("/byEstado/{estado}")
+    @RequestMapping(value = "/byEstado/{estado}")
     public String getPeticionesByEstado(Model model, @PathVariable String estado) {
         List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByEstado(estado);
         model.addAttribute("peticiones", peticiones);
         return "peticionAPR/list";
     }
 
-    @GetMapping("/byTipo/{tipo}")
+    @RequestMapping(value = "/byTipo/{tipo}")
     public String getPeticionesByTipo(Model model, @PathVariable String tipo) {
         List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByTipo(tipo);
         model.addAttribute("peticiones", peticiones);

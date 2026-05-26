@@ -44,19 +44,19 @@ public class UsuarioOVIController {
         return (redirectUrl != null) ? "redirect:" + redirectUrl : "redirect:" + defaultUrl;
     }
 
-    @GetMapping("/list")
+    @RequestMapping(value = "/list")
     public String listUsuarios(Model model) {
         List<UsuarioOVI> usuarios = usuarioOVIDao.getUsuarios();
         model.addAttribute("usuarios", usuarios);
         return "usuarioOVI/list";
     }
 
-    @GetMapping("/search")
+    @RequestMapping(value = "/search")
     public String searchForm(Model model) {
         return "usuarioOVI/search";
     }
 
-    @PostMapping("/search")
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String processSearch(@RequestParam String tipo, @RequestParam String valor, Model model, RedirectAttributes redirectAttributes) {
         UsuarioOVI usuario = null;
         
@@ -77,13 +77,13 @@ public class UsuarioOVIController {
         return "usuarioOVI/search";
     }
 
-    @GetMapping("/update/{id}")
+    @RequestMapping(value = "/update/{id}")
     public String editUsuario(Model model, @PathVariable int id) {
         model.addAttribute("usuario", usuarioOVIDao.getUsuario(id));
         return "usuarioOVI/update";
     }
 
-@PostMapping("/update")
+@RequestMapping(value = "/update", method = RequestMethod.POST)
     public String processUpdateSubmit(@ModelAttribute("usuario") @Validated UsuarioOVI usuario, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         UsuarioOVIEditarPerfilValidator validator = new UsuarioOVIEditarPerfilValidator(usuarioOVIDao, String.valueOf(usuario.getIdUsuario()));
         validator.validate(usuario, bindingResult);
@@ -107,14 +107,14 @@ public class UsuarioOVIController {
         return "redirect:/usuarioOVI/perfil/" + usuario.getIdUsuario();
     }
 
-    @GetMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}")
     public String deleteUsuario(@PathVariable int id, Model model, RedirectAttributes redirectAttributes) {
         usuarioOVIDao.deleteUsuario(id);
         redirectAttributes.addFlashAttribute("successMessage", "Usuario eliminado correctamente");
         return "redirect:/usuarioOVI/list";
     }
 
-    @GetMapping("/perfil/{id}")
+    @RequestMapping(value = "/perfil/{id}")
     public String perfilUsuario(Model model, @PathVariable int id) {
         UsuarioOVI usuario = usuarioOVIDao.getUsuario(id);
 
@@ -126,7 +126,7 @@ public class UsuarioOVIController {
         return "usuarioOVI/perfilUsuarioOVI";
     }
 
-    @GetMapping("/homeUsuarioOVI")
+    @RequestMapping(value = "/homeUsuarioOVI")
     public String homeUsuarioOVI(HttpSession session, Model model) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
 

@@ -44,7 +44,7 @@ public class PeticionAPController {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @GetMapping("/mis-solicitudes")
+    @RequestMapping(value = "/mis-solicitudes")
     public String misSolicitudes(@RequestParam(value = "estado", required = false) String estado,
                                  @RequestParam(value = "ordenar", required = false) String ordenar,
                                  HttpSession session, Model model) {
@@ -69,7 +69,7 @@ public class PeticionAPController {
         return "peticionAP/mis-solicitudes";
     }
 
-    @PostMapping("/cancelar/{id}")
+    @RequestMapping(value = "/cancelar/{id}", method = RequestMethod.POST)
     public String cancelarSolicitud(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -93,7 +93,7 @@ public class PeticionAPController {
         return "redirect:/peticionAP/mis-solicitudes";
     }
 
-    @GetMapping("/nueva")
+    @RequestMapping(value = "/nueva")
     public String nuevaSolicitudForm(HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -104,7 +104,7 @@ public class PeticionAPController {
         return "peticionAP/nueva-solicitud";
     }
 
-    @PostMapping("/nueva")
+    @RequestMapping(value = "/nueva", method = RequestMethod.POST)
     public String crearSolicitud(@ModelAttribute("peticionAP") PeticionAPR peticionAP,
                                  BindingResult bindingResult,
                                  HttpSession session,
@@ -132,7 +132,7 @@ public class PeticionAPController {
         return "redirect:/peticionAP/mis-solicitudes";
     }
 
-    @GetMapping("/detalle/{id}")
+    @RequestMapping(value = "/detalle/{id}")
     public String detalleSolicitud(@PathVariable int id, HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -167,7 +167,7 @@ public class PeticionAPController {
         return "peticionAP/detalle";
     }
 
-    @GetMapping("/candidatos/{idSolicitud}")
+    @RequestMapping(value = "/candidatos/{idSolicitud}")
     public String verCandidatos(@PathVariable int idSolicitud, HttpSession session, Model model) {
         UsuarioOVI usuario = getUsuarioSesion(session);
         if (usuario == null) {
@@ -213,7 +213,7 @@ public class PeticionAPController {
         return "peticionAP/candidatos";
     }
 
-    @PostMapping("/candidatos/{id}/elegir")
+    @RequestMapping(value = "/candidatos/{id}/elegir", method = RequestMethod.POST)
     public String elegirCandidato(@PathVariable int id,
                                   @RequestParam int asistenteSeleccionado,
                                   HttpSession session,
@@ -252,7 +252,7 @@ public class PeticionAPController {
         return "redirect:/peticionAP/detalle/" + id;
     }
 
-    @GetMapping("/candidato/{idAsistente}/detalle")
+    @RequestMapping(value = "/candidato/{idAsistente}/detalle")
     public String verDetalleCandidato(@PathVariable int idAsistente,
                                        @RequestParam int idSolicitud,
                                        HttpSession session,

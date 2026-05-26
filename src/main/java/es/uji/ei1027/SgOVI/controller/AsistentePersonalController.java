@@ -46,7 +46,7 @@ public class AsistentePersonalController {
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
     }
 
-    @GetMapping("/home")
+    @RequestMapping(value = "/home")
     public String homeAsistente(HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
@@ -97,7 +97,7 @@ public class AsistentePersonalController {
         }
     }
 
-    @GetMapping("/perfil/{id}")
+    @RequestMapping(value = "/perfil/{id}")
     public String perfilAsistente(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
@@ -115,7 +115,7 @@ public class AsistentePersonalController {
         return "asistentePersonal/perfil";
     }
 
-    @GetMapping("/propuesta/{id}")
+    @RequestMapping(value = "/propuesta/{id}")
     public String verPropuesta(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
@@ -144,19 +144,19 @@ public class AsistentePersonalController {
         return "asistentePersonal/propuesta";
     }
 
-    @GetMapping("/list")
+    @RequestMapping(value = "/list")
     public String listAsistentes(Model model) {
         List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentes();
         model.addAttribute("asistentes", asistentes);
         return "asistentePersonal/list";
     }
 
-    @GetMapping("/search")
+    @RequestMapping(value = "/search")
     public String searchForm(Model model) {
         return "asistentePersonal/search";
     }
 
-    @PostMapping("/search")
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String processSearch(@RequestParam String tipo, @RequestParam String valor, Model model, RedirectAttributes redirectAttributes) {
         AsistentePersonal asistente = null;
         
@@ -175,13 +175,13 @@ public class AsistentePersonalController {
         return "asistentePersonal/search";
     }
 
-    @GetMapping("/add")
+    @RequestMapping(value = "/add")
     public String addAsistenteForm(Model model) {
         model.addAttribute("asistentePersonal", new AsistentePersonal());
         return "asistentePersonal/add";
     }
 
-    @PostMapping("/add")
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public String addAsistente(@ModelAttribute("asistentePersonal") @Validated AsistentePersonal asistente,
                                BindingResult bindingResult, Model model,
                                RedirectAttributes redirectAttributes) {
@@ -202,7 +202,7 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @GetMapping("/update/{id}")
+    @RequestMapping(value = "/update/{id}")
     public String updateAsistenteForm(@PathVariable int id, HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
@@ -225,7 +225,7 @@ public class AsistentePersonalController {
         return "asistentePersonal/update";
     }
 
-    @PostMapping("/update")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateAsistente(@ModelAttribute("asistente") AsistentePersonal asistente,
                                   BindingResult bindingResult, HttpSession session,
                                   Model model, RedirectAttributes redirectAttributes) {
@@ -255,7 +255,7 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/perfil/" + asistente.getIdAsistente();
     }
 
-    @GetMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}")
     public String deleteAsistente(@PathVariable int id, RedirectAttributes redirectAttributes) {
         asistentePersonalDao.deleteAsistente(id);
         redirectAttributes.addFlashAttribute("successMessage", "Asistente eliminado correctamente");
@@ -264,13 +264,13 @@ public class AsistentePersonalController {
 
 
 
-    @GetMapping("/validar/{id}")
+    @RequestMapping(value = "/validar/{id}")
     public String validarAsistenteForm(Model model, @PathVariable int id) {
         model.addAttribute("asistentePersonal", asistentePersonalDao.getAsistente(id));
         return "asistentePersonal/validar";
     }
 
-    @PostMapping("/validar")
+    @RequestMapping(value = "/validar", method = RequestMethod.POST)
     public String validarAsistente(@ModelAttribute("asistentePersonal") @Validated AsistentePersonal asistente,
                                   BindingResult bindingResult, Model model,
                                   RedirectAttributes redirectAttributes) {
@@ -284,7 +284,7 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @PostMapping("/approve/{id}")
+    @RequestMapping(value = "/approve/{id}", method = RequestMethod.POST)
     public String approveAsistente(@PathVariable int id, RedirectAttributes redirectAttributes) {
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
@@ -295,7 +295,7 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @PostMapping("/reject/{id}")
+    @RequestMapping(value = "/reject/{id}", method = RequestMethod.POST)
     public String rejectAsistente(@PathVariable int id, RedirectAttributes redirectAttributes) {
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
@@ -306,14 +306,14 @@ public class AsistentePersonalController {
         return "redirect:/asistentePersonal/list";
     }
 
-    @GetMapping("/byTipo/{tipo}")
+    @RequestMapping(value = "/byTipo/{tipo}")
     public String getAsistentesByTipo(Model model, @PathVariable String tipo) {
         List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentesByTipo(tipo);
         model.addAttribute("asistentes", asistentes);
         return "asistentePersonal/list";
     }
 
-    @GetMapping("/byEstado/{estado}")
+    @RequestMapping(value = "/byEstado/{estado}")
     public String getAsistentesByEstado(Model model, @PathVariable String estado) {
         List<AsistentePersonal> asistentes = asistentePersonalDao.getAsistentesByEstado(estado);
         model.addAttribute("asistentes", asistentes);

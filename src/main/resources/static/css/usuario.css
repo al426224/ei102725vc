@@ -475,7 +475,6 @@ body.sidebar-layout .sidebar-layout {
 }
 
 .section-row span:last-child {
-    flex: 1;
     min-width: 0;
     text-align: right;
 }
