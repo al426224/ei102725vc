@@ -31,17 +31,23 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="horasSemanales" class="form-label">Horas semanales <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="number" id="horasSemanales" class="form-control" th:field="*{horasSemanales}" min="1" max="168" required>
-                    <span th:if="${#fields.hasErrors('horasSemanales')}" th:errors="*{horasSemanales}" class="field-error"></span>
+                    <label for="fechaInicioPrevista" class="form-label">Fecha de inicio prevista <abbr title="campo obligatorio">*</abbr></label>
+                    <input type="date" id="fechaInicioPrevista" class="form-control" th:field="*{fechaInicioPrevista}" required>
+                    <span th:if="${#fields.hasErrors('fechaInicioPrevista')}" th:errors="*{fechaInicioPrevista}" class="field-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="municipio" class="form-label">Municipio <abbr title="campo obligatorio">*</abbr></label>
+                    <input type="text" id="municipio" class="form-control" th:field="*{municipio}" placeholder="Ej: Castello de la Plana" required maxlength="100">
+                    <span th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}" class="field-error"></span>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="tiempoPreferido" class="form-label">Tiempo preferido <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="text" id="tiempoPreferido" class="form-control" th:field="*{tiempoPreferido}" placeholder="Ej: Mananas de 9h a 13h" required maxlength="500">
-                    <span th:if="${#fields.hasErrors('tiempoPreferido')}" th:errors="*{tiempoPreferido}" class="field-error"></span>
+                    <label for="horasSemanales" class="form-label">Horas semanales <abbr title="campo obligatorio">*</abbr></label>
+                    <input type="number" id="horasSemanales" class="form-control" th:field="*{horasSemanales}" min="1" max="168" required>
+                    <span th:if="${#fields.hasErrors('horasSemanales')}" th:errors="*{horasSemanales}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
@@ -60,18 +66,10 @@
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="municipio" class="form-label">Municipio <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="text" id="municipio" class="form-control" th:field="*{municipio}" placeholder="Ej: Castello de la Plana" required maxlength="100">
-                    <span th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}" class="field-error"></span>
-                </div>
-
-                <div class="form-group">
-                    <label for="fechaInicioPrevista" class="form-label">Fecha de inicio prevista <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="date" id="fechaInicioPrevista" class="form-control" th:field="*{fechaInicioPrevista}" required>
-                    <span th:if="${#fields.hasErrors('fechaInicioPrevista')}" th:errors="*{fechaInicioPrevista}" class="field-error"></span>
-                </div>
+            <div class="form-group">
+                <label for="tiempoPreferido" class="form-label">Tiempo preferido <abbr title="campo obligatorio">*</abbr></label>
+                <input type="text" id="tiempoPreferido" class="form-control" th:field="*{tiempoPreferido}" placeholder="Ej: Mananas de 9h a 13h" required maxlength="500">
+                <span th:if="${#fields.hasErrors('tiempoPreferido')}" th:errors="*{tiempoPreferido}" class="field-error"></span>
             </div>
 
             <div class="form-group">
