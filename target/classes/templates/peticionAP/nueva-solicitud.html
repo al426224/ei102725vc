@@ -9,18 +9,7 @@
 </head>
 <body class="sidebar-layout">
 
-<aside class="sidebar">
-    <div class="brand">SgOVI Panel</div>
-
-    <nav class="nav-menu">
-        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">Dashboard</a>
-        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item">Mis Solicitudes</a>
-        <a th:href="@{/peticionAP/nueva}" class="nav-item active">Nueva Solicitud</a>
-        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">Mi Perfil</a>
-    </nav>
-
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
-</aside>
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='nueva')}"></div>
 
 <main class="main-content">
     <h1 class="page-title">Nueva Solicitud de Asistencia</h1>
@@ -32,13 +21,13 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="fechaInicioPrevista" class="form-label">Fecha de inicio prevista <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="date" id="fechaInicioPrevista" class="form-control" th:field="*{fechaInicioPrevista}" required>
+                    <input type="date" id="fechaInicioPrevista" class="form-control" th:field="*{fechaInicioPrevista}">
                     <span th:if="${#fields.hasErrors('fechaInicioPrevista')}" th:errors="*{fechaInicioPrevista}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="municipio" class="form-label">Municipio <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="text" id="municipio" class="form-control" th:field="*{municipio}" placeholder="Ej: Castello de la Plana" required maxlength="100">
+                    <input type="text" id="municipio" class="form-control" th:field="*{municipio}" placeholder="Ej: Castello de la Plana" maxlength="100">
                     <span th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}" class="field-error"></span>
                 </div>
             </div>
@@ -46,29 +35,28 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="horasSemanales" class="form-label">Horas semanales <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="number" id="horasSemanales" class="form-control" th:field="*{horasSemanales}" min="1" max="168" required>
+                    <input type="number" id="horasSemanales" class="form-control" th:field="*{horasSemanales}" min="1" max="168">
                     <span th:if="${#fields.hasErrors('horasSemanales')}" th:errors="*{horasSemanales}" class="field-error"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="tipoTareas" class="form-label">Tipo de tareas <abbr title="campo obligatorio">*</abbr></label>
-                    <select id="tipoTareas" class="form-control" th:field="*{tipoTareas}" required>
+                    <select id="tipoTareas" class="form-control" th:field="*{tipoTareas}">
                         <option value="">Selecciona tipo de tarea</option>
-                        <option value="acompanyament educatiu">Acompanyamiento educativo</option>
-                        <option value="acompanyament laboral">Acompanyamiento laboral</option>
-                        <option value="cura personal">Cuidado personal</option>
-                        <option value="mobilitat">Movilidad</option>
-                        <option value="domicili">Asistencia en domicilio</option>
-                        <option value="oci temps lliure">Ocio y tiempo libre</option>
-                        <option value="altres">Otros</option>
+                        <option value="Acompanyamiento educativo">Acompañamiento educativo</option>
+                        <option value="Acompanyamiento laboral">Acompañamiento laboral</option>
+                        <option value="Cuidado personal">Cuidado personal</option>
+                        <option value="Movilidad">Movilidad</option>
+                        <option value="Asistencia en domicilio">Asistencia en domicilio</option>
+                        <option value="Ocio y tiempo libre">Ocio y tiempo libre</option>
+                        <option value="Otros">Otros</option>
                     </select>
-                    <span th:if="${#fields.hasErrors('tipoTareas')}" th:errors="*{tipoTareas}" class="field-error"></span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="tiempoPreferido" class="form-label">Tiempo preferido <abbr title="campo obligatorio">*</abbr></label>
-                <input type="text" id="tiempoPreferido" class="form-control" th:field="*{tiempoPreferido}" placeholder="Ej: Mananas de 9h a 13h" required maxlength="500">
+                <input type="text" id="tiempoPreferido" class="form-control" th:field="*{tiempoPreferido}" placeholder="Ej: Mananas de 9h a 13h" maxlength="500">
                 <span th:if="${#fields.hasErrors('tiempoPreferido')}" th:errors="*{tiempoPreferido}" class="field-error"></span>
             </div>
 
@@ -84,9 +72,9 @@
                     <label for="preferenciaGenero" class="form-label">Genero preferido</label>
                     <select id="preferenciaGenero" class="form-control" th:field="*{preferenciaGenero}">
                         <option value="">Sin preferencia</option>
-                        <option value="hombre">Hombre</option>
-                        <option value="mujer">Mujer</option>
-                        <option value="otro">Otro</option>
+                        <option value="Hombre">Hombre</option>
+                        <option value="Mujer">Mujer</option>
+                        <option value="Otro">Otro</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -101,7 +89,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" onclick="mostrarConfirmacion()">Enviar Solicitud</button>
+                <label for="nuevaSolicitudToggle" class="btn btn-primary">Enviar Solicitud</label>
                 <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="btn btn-outline">Cancelar</a>
             </div>
 
@@ -111,24 +99,13 @@
                     <div class="content-text">¿Estas seguro/a de que quieres enviar esta solicitud?<br>¿Son todos los datos correctos?</div>
                     <div class="content-buttons">
                         <label for="nuevaSolicitudToggle" class="btn btn-outline">Volver</label>
-                        <button type="submit" class="btn btn-primary">Si, enviar</button>
+                        <button type="submit" class="btn btn-primary" formnovalidate>Si, enviar</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </main>
-
-<script>
-function mostrarConfirmacion() {
-    var form = document.getElementById('solicitudForm');
-    if (form.checkValidity()) {
-        document.getElementById('nuevaSolicitudToggle').checked = true;
-    } else {
-        form.reportValidity();
-    }
-}
-</script>
 
 </body>
 </html>

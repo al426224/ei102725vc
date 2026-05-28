@@ -46,11 +46,7 @@ public class PeticionAPR {
 
     public String getTipoTareas() { return tipoTareas; }
     public void setTipoTareas(String tipoTareas) {
-        if (tipoTareas != null && !tipoTareas.isEmpty()) {
-            this.tipoTareas = tipoTareas.substring(0, 1).toUpperCase() + tipoTareas.substring(1);
-        } else {
-            this.tipoTareas = tipoTareas;
-        }
+        this.tipoTareas = tipoTareas;
     }
 
     public String getMunicipio() { return municipio; }

@@ -31,16 +31,18 @@ public class PeticionAPRSignupValidator implements Validator {
             errors.rejectValue("municipio", "longitud", "El municipio no puede superar los 100 caracteres.");
         }
 
-        if (peticionAPR.getTipoTareas() == null || peticionAPR.getTipoTareas().trim().isEmpty()) {
-            errors.rejectValue("tipoTareas", "obligatorio", "El tipo de tareas es obligatorio.");
-        } else if (peticionAPR.getTipoTareas().length() > 100) {
-            errors.rejectValue("tipoTareas", "longitud", "El tipo de tareas no puede superar los 100 caracteres.");
-        }
-
         if (peticionAPR.getFechaInicioPrevista() == null) {
             errors.rejectValue("fechaInicioPrevista", "obligatorio", "La fecha de inicio prevista es obligatoria.");
         } else if (peticionAPR.getFechaInicioPrevista().isBefore(LocalDate.now())) {
             errors.rejectValue("fechaInicioPrevista", "formato", "La fecha de inicio debe ser hoy o posterior.");
+        }
+
+        if (peticionAPR.getTipoTareas() == null || peticionAPR.getTipoTareas().trim().isEmpty()) {
+            errors.rejectValue("tipoTareas", "obligatorio", "El tipo de tareas es obligatorio.");
+        }
+
+        if (peticionAPR.getTiempoPreferido() == null || peticionAPR.getTiempoPreferido().trim().isEmpty()) {
+            errors.rejectValue("tiempoPreferido", "obligatorio", "El tiempo preferido es obligatorio.");
         }
 
         if (peticionAPR.getDescripcion() != null && peticionAPR.getDescripcion().length() > 500) {

@@ -9,16 +9,7 @@
 </head>
 <body class="sidebar-layout">
 
-<aside class="sidebar">
-    <div class="brand">SgOVI Panel</div>
-
-    <nav class="nav-menu">
-        <a th:href="@{/asistentePersonal/home}" class="nav-item">Dashboard</a>
-        <a th:href="@{/asistentePersonal/perfil/{id}(id=${asistente.idAsistente})}" class="nav-item active">Mi Perfil</a>
-    </nav>
-
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
-</aside>
+<div th:replace="~{fragments/sidebar-asistente :: sidebar(activePage='perfil')}"></div>
 
 <main class="main-content">
     <header class="page-header">

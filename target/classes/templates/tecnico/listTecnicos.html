@@ -9,17 +9,7 @@
 </head>
 <body class="sidebar-layout">
 
-<aside class="sidebar">
-    <div class="brand">SgOVI Panel</div>
-
-    <nav class="nav-menu">
-        <a th:href="@{/tecnico/home}" class="nav-item">Gestionar UsuarioOVI</a>
-        <a th:href="@{/tecnico/asistentes}" class="nav-item active">Gestionar Asistentes Personales</a>
-        <a th:href="@{/tecnico/peticiones}" class="nav-item">Solicitudes de Asistencia</a>
-    </nav>
-
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>
-</aside>
+<div th:replace="~{fragments/sidebar-tecnico :: sidebar(activePage='asistentes')}"></div>
 
 <main class="main-content">
     <header class="page-header">

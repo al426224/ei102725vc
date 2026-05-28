@@ -9,18 +9,7 @@
 </head>
 <body class="sidebar-layout">
 
-<aside class="sidebar">
-    <div class="brand">SgOVI Panel</div>
-
-    <nav class="nav-menu">
-        <a th:href="@{/usuarioOVI/homeUsuarioOVI}" class="nav-item">Dashboard</a>
-        <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item active">Mis Solicitudes</a>
-        <a th:href="@{/peticionAP/nueva}" class="nav-item">Nueva Solicitud</a>
-        <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item">Mi Perfil</a>
-    </nav>
-
-    <a th:href="@{/logout}" class="logout-btn">Cerrar Sesion</a>
-</aside>
+<div th:replace="~{fragments/sidebar :: sidebar(activePage='solicitudes')}"></div>
 
 <main class="main-content">
     <h1 class="page-title">Detalle de Solicitud</h1>
@@ -94,10 +83,6 @@
                 <div class="section-row">
                     <span class="info-label">Nombre:</span>
                     <span th:text="${asistenteElegido.nombre}"></span>
-                </div>
-                <div class="section-row">
-                    <span class="info-label">Fecha nacimiento:</span>
-                    <span th:text="${asistenteElegido.fechaNacimiento != null} ? ${#temporals.format(asistenteElegido.fechaNacimiento, 'dd/MM/yyyy')} : '-'">-</span>
                 </div>
                 <div class="section-row" th:if="${asistenteElegido.disponibilidad}">
                     <span class="info-label">Disponibilidad:</span>
