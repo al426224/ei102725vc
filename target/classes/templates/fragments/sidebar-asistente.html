@@ -4,6 +4,7 @@
     <nav class="nav-menu">
         <a th:href="@{/asistentePersonal/home}" class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active'">Dashboard</a>
         <a th:href="@{/asistentePersonal/perfil/{id}(id=${asistente.idAsistente})}" class="nav-item" th:classappend="${activePage == 'perfil'} ? 'active'">Mi Perfil</a>
+        <a th:href="@{/asistentePersonal/mensajes}" class="nav-item" th:classappend="${activePage == 'mensajes'} ? 'active'">Mensajes</a>
     </nav>
 
     <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>

@@ -143,4 +143,15 @@ public class UsuarioOVIController {
         model.addAttribute("asistentesAsignados", 0);
         return "usuarioOVI/home";
     }
+
+    @RequestMapping(value = "/mensajes")
+    public String mensajes(HttpSession session, Model model) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("tipo", "usuarioOVI");
+        return "mensajes/mensajes";
+    }
 }

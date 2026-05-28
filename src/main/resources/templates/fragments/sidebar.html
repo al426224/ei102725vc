@@ -6,6 +6,7 @@
         <a th:href="@{/peticionAP/mis-solicitudes}" class="nav-item" th:classappend="${activePage == 'solicitudes'} ? 'active'">Mis Solicitudes</a>
         <a th:href="@{/peticionAP/nueva}" class="nav-item" th:classappend="${activePage == 'nueva'} ? 'active'">Nueva Solicitud</a>
         <a th:href="@{/usuarioOVI/perfil/{id}(id=${usuario.idUsuario})}" class="nav-item" th:classappend="${activePage == 'perfil'} ? 'active'">Mi Perfil</a>
+        <a th:href="@{/usuarioOVI/mensajes}" class="nav-item" th:classappend="${activePage == 'mensajes'} ? 'active'">Mensajes</a>
     </nav>
 
     <a th:href="@{/logout}" class="logout-btn">Cerrar Sesión</a>

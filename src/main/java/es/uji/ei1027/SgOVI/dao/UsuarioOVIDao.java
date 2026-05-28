@@ -26,7 +26,7 @@ public class UsuarioOVIDao {
     private static final String GET_USUARIO_BY_DNI = "SELECT * FROM " + TABLE_NAME + " WHERE dni = ?";
     private static final String ADD_USUARIO = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, telefono, fecha_registro, consentimiento_lopd, dni, fecha_nacimiento, proyecto_vida, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_USUARIO = "DELETE FROM " + TABLE_NAME + " WHERE id_usuario = ?";
-    private static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ? WHERE id_usuario = ?";
+    private static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_usuario = ?";
     private static final String GET_USUARIOS = "SELECT * FROM " + TABLE_NAME;
     private static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
 
@@ -72,7 +72,8 @@ public class UsuarioOVIDao {
     public void updateUsuario(UsuarioOVI usuario) {
         jdbcTemplate.update(UPDATE_USUARIO, usuario.getNombre(), usuario.getEmail(), usuario.getContrasena(),
                 usuario.getTelefono(), usuario.isConsentimientoLOPD(), usuario.getDni(), 
-                usuario.getFechaNacimiento(), usuario.getProyectoVida(), usuario.getEstado(), 
+                usuario.getFechaNacimiento(), usuario.getProyectoVida(), usuario.getEstado(),
+                usuario.getMotivoRechazo(), usuario.getFechaRevision(),
                 usuario.getIdUsuario());
     }
 

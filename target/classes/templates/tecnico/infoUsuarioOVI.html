@@ -50,6 +50,15 @@
                     Proyecto de vida...
                 </p>
             </div>
+
+            <div class="info-group" th:if="${usuario.estado == 'rechazado'}">
+                <span class="info-label">Motivo del rechazo</span>
+                <span class="info-value" th:text="${usuario.motivoRechazo} ?: '-'"></span>
+            </div>
+            <div class="info-group" th:if="${usuario.estado == 'rechazado' and usuario.fechaRevision != null}">
+                <span class="info-label">Fecha de revision</span>
+                <span class="info-value" th:text="${#temporals.format(usuario.fechaRevision, 'dd/MM/yyyy')}"></span>
+            </div>
         </div>
 
         <div class="profile-actions">
@@ -87,11 +96,14 @@
 <input th:if="${usuario.estado == 'pendiente'}" type="checkbox" id="rechazarUsuarioToggle" class="notice-toggle">
 <div th:if="${usuario.estado == 'pendiente'}" class="window-notice">
     <div class="content">
-        <div class="content-text">¿Estas seguro de que quieres rechazar este usuario?<br>Este cambio no se puede deshacer.</div>
-        <div class="content-buttons">
-            <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarUsuarioToggle').checked = false">Volver</button>
-            <form th:action="@{/tecnico/usuario/reject/{id}(id=${usuario.idUsuario})}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-primary">Si, rechazar</button>
+        <div class="content-text">Confirma el rechazo del usuario e introduce el motivo.</div>
+        <div class="content-buttons" style="display:block;">
+            <form th:action="@{/tecnico/usuario/reject/{id}(id=${usuario.idUsuario})}" method="post">
+                <textarea name="observaciones" class="tecnico-observaciones" rows="5" placeholder="Escribe aqui el motivo del rechazo..." required maxlength="500"></textarea>
+                <div class="mt-3 d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarUsuarioToggle').checked = false">Volver</button>
+                    <button type="submit" class="btn btn-primary">Confirmar rechazo</button>
+                </div>
             </form>
         </div>
     </div>

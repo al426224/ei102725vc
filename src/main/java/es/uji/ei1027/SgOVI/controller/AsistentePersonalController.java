@@ -312,4 +312,14 @@ public class AsistentePersonalController {
         model.addAttribute("asistentes", asistentes);
         return "asistentePersonal/list";
     }
+
+    @RequestMapping(value = "/mensajes")
+    public String mensajes(HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        model.addAttribute("tipo", "asistentePersonal");
+        return "mensajes/mensajes";
+    }
 }

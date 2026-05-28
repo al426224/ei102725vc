@@ -19,6 +19,8 @@ public class UsuarioOVI {
     private LocalDate fechaNacimiento;
     private String proyectoVida;
     private String estado;
+    private String motivoRechazo;
+    private LocalDate fechaRevision;
 
     public UsuarioOVI() {}
 
@@ -123,6 +125,22 @@ public class UsuarioOVI {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getMotivoRechazo() {
+        return motivoRechazo;
+    }
+
+    public void setMotivoRechazo(String motivoRechazo) {
+        this.motivoRechazo = motivoRechazo;
+    }
+
+    public LocalDate getFechaRevision() {
+        return fechaRevision;
+    }
+
+    public void setFechaRevision(LocalDate fechaRevision) {
+        this.fechaRevision = fechaRevision;
     }
 
     @Override

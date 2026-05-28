@@ -107,7 +107,9 @@ public class TecnicoController {
 
 
     @RequestMapping(value = "/usuario/reject/{id}", method = RequestMethod.POST)
-    public String rejectUsuario(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String rejectUsuario(@PathVariable int id,
+                                @RequestParam(value = "observaciones", required = false) String observaciones,
+                                HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
             return "redirect:/login";
@@ -116,6 +118,8 @@ public class TecnicoController {
         UsuarioOVI usuario = usuarioOVIDao.getUsuario(id);
         if (usuario != null) {
             usuario.setEstado("rechazado");
+            usuario.setMotivoRechazo(observaciones);
+            usuario.setFechaRevision(java.time.LocalDate.now());
             usuarioOVIDao.updateUsuario(usuario);
             redirectAttributes.addFlashAttribute("successMessage", "Usuario rechazado");
         }
@@ -209,7 +213,9 @@ public class TecnicoController {
 
 
     @RequestMapping(value = "/asistente/reject/{id}", method = RequestMethod.POST)
-    public String rejectAsistente(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String rejectAsistente(@PathVariable int id,
+                                  @RequestParam(value = "observaciones", required = false) String observaciones,
+                                  HttpSession session, RedirectAttributes redirectAttributes) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
             return "redirect:/login";
@@ -218,6 +224,8 @@ public class TecnicoController {
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
             asistente.setEstadoValidacion("rechazado");
+            asistente.setMotivoRechazo(observaciones);
+            asistente.setFechaRevision(java.time.LocalDate.now());
             asistentePersonalDao.updateAsistente(asistente);
             redirectAttributes.addFlashAttribute("successMessage", "Asistente rechazado");
         }

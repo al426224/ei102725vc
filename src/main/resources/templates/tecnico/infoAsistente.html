@@ -45,6 +45,15 @@
                     Formacion...
                 </p>
             </div>
+
+            <div class="info-group" th:if="${asistente.estadoValidacion == 'rechazado'}">
+                <span class="info-label">Motivo del rechazo</span>
+                <span class="info-value" th:text="${asistente.motivoRechazo} ?: '-'"></span>
+            </div>
+            <div class="info-group" th:if="${asistente.estadoValidacion == 'rechazado' and asistente.fechaRevision != null}">
+                <span class="info-label">Fecha de revision</span>
+                <span class="info-value" th:text="${#temporals.format(asistente.fechaRevision, 'dd/MM/yyyy')}"></span>
+            </div>
         </div>
 
         <div class="profile-actions">
@@ -86,11 +95,14 @@
 <input th:if="${asistente.estadoValidacion == 'pendiente'}" type="checkbox" id="rechazarAsistenteToggle" class="notice-toggle">
 <div th:if="${asistente.estadoValidacion == 'pendiente'}" class="window-notice">
     <div class="content">
-        <div class="content-text">¿Estas seguro de que quieres rechazar este asistente?<br>Este cambio no se puede deshacer.</div>
-        <div class="content-buttons">
-            <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarAsistenteToggle').checked = false">Volver</button>
-            <form th:action="@{/tecnico/asistente/reject/{id}(id=${asistente.idAsistente})}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-primary">Si, rechazar</button>
+        <div class="content-text">Confirma el rechazo del asistente e introduce el motivo.</div>
+        <div class="content-buttons" style="display:block;">
+            <form th:action="@{/tecnico/asistente/reject/{id}(id=${asistente.idAsistente})}" method="post">
+                <textarea name="observaciones" class="tecnico-observaciones" rows="5" placeholder="Escribe aqui el motivo del rechazo..." required maxlength="500"></textarea>
+                <div class="mt-3 d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarAsistenteToggle').checked = false">Volver</button>
+                    <button type="submit" class="btn btn-primary">Confirmar rechazo</button>
+                </div>
             </form>
         </div>
     </div>

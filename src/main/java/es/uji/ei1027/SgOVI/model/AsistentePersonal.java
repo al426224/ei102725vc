@@ -16,6 +16,8 @@ public class AsistentePersonal {
     private String formacionPrevia;
     private String disponibilidad;
     private String municipio;
+    private String motivoRechazo;
+    private LocalDate fechaRevision;
 
     public AsistentePersonal() {}
 
@@ -102,6 +104,22 @@ public class AsistentePersonal {
 
     public void setMunicipio(String municipio) {
         this.municipio = municipio;
+    }
+
+    public String getMotivoRechazo() {
+        return motivoRechazo;
+    }
+
+    public void setMotivoRechazo(String motivoRechazo) {
+        this.motivoRechazo = motivoRechazo;
+    }
+
+    public LocalDate getFechaRevision() {
+        return fechaRevision;
+    }
+
+    public void setFechaRevision(LocalDate fechaRevision) {
+        this.fechaRevision = fechaRevision;
     }
 
     @Override

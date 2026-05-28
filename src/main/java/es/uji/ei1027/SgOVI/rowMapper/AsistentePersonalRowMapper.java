@@ -21,6 +21,10 @@ public class AsistentePersonalRowMapper implements RowMapper<AsistentePersonal> 
         asistent.setFormacionPrevia(rs.getString("formacion_previa"));
         asistent.setDisponibilidad(rs.getString("disponibilidad"));
         asistent.setMunicipio(rs.getString("municipio"));
+        asistent.setMotivoRechazo(rs.getString("motivo_rechazo"));
+        if (rs.getDate("fecha_revision") != null) {
+            asistent.setFechaRevision(rs.getDate("fecha_revision").toLocalDate());
+        }
         return asistent;
     }
 }
