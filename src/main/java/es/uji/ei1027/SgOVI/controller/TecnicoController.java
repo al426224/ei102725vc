@@ -11,6 +11,7 @@ import es.uji.ei1027.SgOVI.model.TecnicoOVI;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.services.EdadCompatibilidadService;
+import es.uji.ei1027.SgOVI.services.EmailService;
 import es.uji.ei1027.SgOVI.services.MatchingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,14 @@ public class TecnicoController {
     private final SeleccionDao seleccionDao;
     private final MatchingService matchingService;
     private final EdadCompatibilidadService edadCompatibilidadService;
+    private final EmailService emailService;
 
     @Autowired
     public TecnicoController(TecnicoOVIDao tecnicoOVIDao, UsuarioOVIDao usuarioOVIDao,
                                AsistentePersonalDao asistentePersonalDao, PeticionAPRDao peticionAPRDao,
                                SeleccionDao seleccionDao, MatchingService matchingService,
-                               EdadCompatibilidadService edadCompatibilidadService) {
+                               EdadCompatibilidadService edadCompatibilidadService,
+                               EmailService emailService) {
         this.tecnicoOVIDao = tecnicoOVIDao;
         this.usuarioOVIDao = usuarioOVIDao;
         this.asistentePersonalDao = asistentePersonalDao;
@@ -50,6 +53,7 @@ public class TecnicoController {
         this.seleccionDao = seleccionDao;
         this.matchingService = matchingService;
         this.edadCompatibilidadService = edadCompatibilidadService;
+        this.emailService = emailService;
     }
 
     @RequestMapping(value = "/home")
@@ -100,6 +104,8 @@ public class TecnicoController {
         if (usuario != null) {
             usuario.setEstado("aceptado");
             usuarioOVIDao.updateUsuario(usuario);
+            emailService.sendEmail(usuario.getEmail(), "Solicitud aprobada",
+                    "Hola " + usuario.getNombre() + ",\n\nSu solicitud ha sido aprobada.\n\nUn cordial saludo,\nEl equipo de SgOVI");
             redirectAttributes.addFlashAttribute("successMessage", "Usuario aprobado correctamente");
         }
         return "redirect:/tecnico/home";
@@ -121,6 +127,9 @@ public class TecnicoController {
             usuario.setMotivoRechazo(observaciones);
             usuario.setFechaRevision(java.time.LocalDate.now());
             usuarioOVIDao.updateUsuario(usuario);
+            String motivo = (observaciones != null && !observaciones.isEmpty()) ? "\nMotivo: " + observaciones : "";
+            emailService.sendEmail(usuario.getEmail(), "Solicitud rechazada",
+                    "Hola " + usuario.getNombre() + ",\n\nSu solicitud ha sido rechazada." + motivo + "\n\nUn cordial saludo,\nEl equipo de SgOVI");
             redirectAttributes.addFlashAttribute("successMessage", "Usuario rechazado");
         }
         return "redirect:/tecnico/home";
@@ -206,6 +215,8 @@ public class TecnicoController {
         if (asistente != null) {
             asistente.setEstadoValidacion("aceptado");
             asistentePersonalDao.updateAsistente(asistente);
+            emailService.sendEmail(asistente.getEmail(), "Validacion aprobada",
+                    "Hola " + asistente.getNombre() + ",\n\nSu validacion como asistente personal ha sido aprobada.\n\nUn cordial saludo,\nEl equipo de SgOVI");
             redirectAttributes.addFlashAttribute("successMessage", "Asistente aprobado correctamente");
         }
         return "redirect:/tecnico/asistentes";
@@ -227,6 +238,9 @@ public class TecnicoController {
             asistente.setMotivoRechazo(observaciones);
             asistente.setFechaRevision(java.time.LocalDate.now());
             asistentePersonalDao.updateAsistente(asistente);
+            String motivo = (observaciones != null && !observaciones.isEmpty()) ? "\nMotivo: " + observaciones : "";
+            emailService.sendEmail(asistente.getEmail(), "Validacion rechazada",
+                    "Hola " + asistente.getNombre() + ",\n\nSu validacion como asistente personal ha sido rechazada." + motivo + "\n\nUn cordial saludo,\nEl equipo de SgOVI");
             redirectAttributes.addFlashAttribute("successMessage", "Asistente rechazado");
         }
         return "redirect:/tecnico/asistentes";
@@ -280,6 +294,12 @@ public class TecnicoController {
             peticion.setObservacionesTecnico(observaciones);
             peticion.setFechaRevision(java.time.LocalDate.now());
             peticionAPRDao.updatePeticion(peticion);
+            UsuarioOVI usuarioPeticion = usuarioOVIDao.getUsuario(peticion.getIdUsuario());
+            String emailTo = (usuarioPeticion != null) ? usuarioPeticion.getEmail() : null;
+            if (emailTo != null) {
+                emailService.sendEmail(emailTo, "Peticion APR aprobada",
+                        "Hola " + peticion.getNombreUsuario() + ",\n\nSu peticion APR ha sido aprobada.\n\nUn cordial saludo,\nEl equipo de SgOVI");
+            }
             redirectAttributes.addFlashAttribute("successMessage", "Solicitud aprobada correctamente");
         }
         return "redirect:/tecnico/peticiones";
@@ -301,6 +321,13 @@ public class TecnicoController {
             peticion.setMotivoRechazo(observaciones);
             peticion.setFechaRevision(java.time.LocalDate.now());
             peticionAPRDao.updatePeticion(peticion);
+            UsuarioOVI usuarioPeticion = usuarioOVIDao.getUsuario(peticion.getIdUsuario());
+            String emailTo = (usuarioPeticion != null) ? usuarioPeticion.getEmail() : null;
+            if (emailTo != null) {
+                String motivo = (observaciones != null && !observaciones.isEmpty()) ? "\nMotivo: " + observaciones : "";
+                emailService.sendEmail(emailTo, "Peticion APR rechazada",
+                        "Hola " + peticion.getNombreUsuario() + ",\n\nSu peticion APR ha sido rechazada." + motivo + "\n\nUn cordial saludo,\nEl equipo de SgOVI");
+            }
             redirectAttributes.addFlashAttribute("successMessage", "Solicitud rechazada");
         }
         return "redirect:/tecnico/peticiones";
