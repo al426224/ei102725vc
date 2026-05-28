@@ -65,7 +65,7 @@ public class PeticionAPRDao {
         }
 
         if ("fechaInicio".equals(ordenar)) {
-            sql += " ORDER BY p.fecha_inicio_prevista ASC NULLS LAST";
+            sql += " ORDER BY CASE WHEN p.fecha_inicio_prevista >= CURRENT_DATE THEN 0 ELSE 1 END, ABS(p.fecha_inicio_prevista - CURRENT_DATE) NULLS LAST";
         } else {
             sql += " ORDER BY p.id_solicitud DESC";
         }
@@ -151,14 +151,30 @@ public class PeticionAPRDao {
         }
     }
 
-    public List<PeticionAPR> getPeticionesByEstadoFiltrado(String estado) {
-        if (estado == null || estado.isEmpty()) {
-            return getPeticiones();
+    public List<PeticionAPR> getPeticionesByEstadoFiltrado(String estado, String nombre) {
+        String sql = GET_PETICIONES;
+        List<Object> params = new ArrayList<>();
+        List<String> conditions = new ArrayList<>();
+
+        if (estado != null && !estado.isEmpty()) {
+            conditions.add("p.estado = ?");
+            params.add(estado);
         }
+
+        if (nombre != null && !nombre.isEmpty()) {
+            conditions.add("LOWER(u.nombre) LIKE LOWER(?)");
+            params.add("%" + nombre + "%");
+        }
+
+        if (!conditions.isEmpty()) {
+            sql += " WHERE " + String.join(" AND ", conditions);
+        }
+
+        sql += " ORDER BY p.id_solicitud DESC";
+
         try {
-            return jdbcTemplate.query(GET_PETICIONES_BY_ESTADO, new PeticionAPRRowMapper(), estado);
+            return jdbcTemplate.query(sql, new PeticionAPRRowMapper(), params.toArray());
         } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron peticiones con estado: " + estado);
             return new ArrayList<>();
         }
     }

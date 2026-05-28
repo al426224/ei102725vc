@@ -42,7 +42,7 @@
                 <table class="table table-hover mb-0">
                     <thead>
                             <tr>
-                                <th style="width: 40px;"></th>
+                                <th scope="col" style="width: 40px;"><span class="visually-hidden">Seleccionar</span></th>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Municipio</th>
                                 <th scope="col">Edad</th>
@@ -55,7 +55,8 @@
                         <tbody>
                             <tr th:each="c : ${candidatos}">
                                 <td>
-                                    <input type="radio" name="asistenteSeleccionado" th:value="${c.asistente.idAsistente}" required>
+                                    <input type="radio" name="asistenteSeleccionado" th:id="|candidato_${c.asistente.idAsistente}|" th:value="${c.asistente.idAsistente}" required>
+                                    <label class="visually-hidden" th:for="|candidato_${c.asistente.idAsistente}|" th:text="|Seleccionar a ${c.asistente.nombre}|"></label>
                                 </td>
                                 <td th:text="${c.asistente.nombre}"></td>
                                 <td th:text="${c.asistente.municipio} ?: '-'"></td>
@@ -83,7 +84,7 @@
                     <div class="content">
                         <div class="content-text">¿Estas seguro/a de que quieres confirmar esta seleccion?<br>Este cambio no se puede deshacer.</div>
                         <div class="content-buttons">
-                            <label for="confirmarSeleccionToggle" class="btn btn-outline">Volver</label>
+                            <button type="button" class="btn btn-outline" onclick="document.getElementById('confirmarSeleccionToggle').checked = false">Volver</button>
                             <button type="submit" class="btn btn-primary">Si, confirmar</button>
                         </div>
                     </div>

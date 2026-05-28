@@ -43,7 +43,7 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th style="width: 50px;"></th>
+                        <th scope="col" style="width: 50px;"><span class="visually-hidden">Seleccionar</span></th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Municipio</th>
                         <th scope="col">Disponibilidad</th>
@@ -55,14 +55,15 @@
                 <tbody>
                     <tr th:each="c : ${candidatos}">
                         <td>
-                            <input type="checkbox" name="candidatosSeleccionados" th:value="${c.asistente.idAsistente}" th:checked="${#lists.contains(idsYaSeleccionados, c.asistente.idAsistente)}" title="Seleccionar candidato">
+                            <input type="checkbox" name="candidatosSeleccionados" th:id="|candidato_${c.asistente.idAsistente}|" th:value="${c.asistente.idAsistente}" th:checked="${#lists.contains(idsYaSeleccionados, c.asistente.idAsistente)}">
+                            <label class="visually-hidden" th:for="|candidato_${c.asistente.idAsistente}|" th:text="|Seleccionar a ${c.asistente.nombre}|"></label>
                         </td>
                         <td th:text="${c.asistente.nombre}"></td>
                         <td th:text="${c.asistente.municipio} ?: '-'"></td>
                         <td th:text="${c.asistente.disponibilidad} ?: '-'"></td>
                         <td>
                             <span th:each="etiqueta : ${c.etiquetas}" class="badge me-1 mb-1" style="background: var(--rosa-base); color: var(--rosa-acento); font-size: 0.7rem;" th:text="${etiqueta}"></span>
-                            <span th:if="${#lists.isEmpty(c.etiquetas)}" style="color: #999; font-size: 0.85rem;">Sin coincidencias claras</span>
+                            <span th:if="${#lists.isEmpty(c.etiquetas)}" style="color: #575757; font-size: 0.85rem;">Sin coincidencias claras</span>
                         </td>
                         <td>
                             <span class="status-badge" th:classappend="${c.puntuacion >= 80 ? 'mejor-opcion' : (c.puntuacion >= 60 ? 'aprobado' : (c.puntuacion >= 40 ? 'en_revision' : 'cancelada'))}" th:text="${c.puntuacion} + ' pts'"></span>
@@ -85,7 +86,7 @@
             <div class="content">
                 <div class="content-text">¿Estas seguro de que quieres guardar esta propuesta de candidatos?<br>Este cambio no se puede deshacer.</div>
                 <div class="content-buttons">
-                    <label for="guardarCandidatosToggle" class="btn btn-outline">Volver</label>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('guardarCandidatosToggle').checked = false">Volver</button>
                     <button type="submit" class="btn btn-primary">Si, guardar</button>
                 </div>
             </div>

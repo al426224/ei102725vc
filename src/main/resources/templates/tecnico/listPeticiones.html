@@ -28,6 +28,10 @@
     <form th:action="@{/tecnico/peticiones}" method="get" class="filter-bar">
         <div class="filter-row">
             <div class="filter-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" th:value="${nombreSeleccionado}" placeholder="Buscar por nombre">
+            </div>
+            <div class="filter-group">
                 <label for="estado">Estado:</label>
                 <select id="estado" name="estado" class="form-control">
                     <option value="" th:selected="${estadoSeleccionado == '' or estadoSeleccionado == null}">Todos</option>

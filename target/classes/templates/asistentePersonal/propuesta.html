@@ -55,14 +55,14 @@
             <span class="status-badge" th:classappend="${seleccion.estadoSeleccion == 'propuesta' ? 'pendiente' : (seleccion.estadoSeleccion == 'contactado' ? 'en_revision' : (seleccion.estadoSeleccion == 'aceptada' ? 'aprobada' : 'cancelada'))}" th:text="${seleccion.estadoSeleccion}"></span>
         </div>
 
-        <div th:if="${peticion.descripcion}" class="info-group">
-            <span class="info-label">Descripción</span>
-            <p class="info-value info-texto-libre" th:text="${peticion.descripcion}"></p>
+        <div th:if="${peticion.descripcion}" class="section-row">
+            <span class="info-label">Descripción:</span>
+            <span th:text="${peticion.descripcion}"></span>
         </div>
 
-        <div th:if="${peticion.preferencias}" class="info-group">
-            <span class="info-label">Preferencias del usuario</span>
-            <p class="info-value info-texto-libre" th:text="${peticion.preferencias}"></p>
+        <div th:if="${peticion.preferencias}" class="section-row">
+            <span class="info-label">Preferencias del usuario:</span>
+            <span th:text="${peticion.preferencias}"></span>
         </div>
 
         <div class="form-actions">

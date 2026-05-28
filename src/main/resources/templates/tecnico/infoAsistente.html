@@ -75,7 +75,7 @@
     <div class="content">
         <div class="content-text">¿Estas seguro de que quieres aprobar este asistente?<br>Este cambio no se puede deshacer.</div>
         <div class="content-buttons">
-            <label for="aprobarAsistenteToggle" class="btn btn-outline">Volver</label>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('aprobarAsistenteToggle').checked = false">Volver</button>
             <form th:action="@{/tecnico/asistente/approve/{id}(id=${asistente.idAsistente})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-primary">Si, aprobar</button>
             </form>
@@ -88,7 +88,7 @@
     <div class="content">
         <div class="content-text">¿Estas seguro de que quieres rechazar este asistente?<br>Este cambio no se puede deshacer.</div>
         <div class="content-buttons">
-            <label for="rechazarAsistenteToggle" class="btn btn-outline">Volver</label>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarAsistenteToggle').checked = false">Volver</button>
             <form th:action="@{/tecnico/asistente/reject/{id}(id=${asistente.idAsistente})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-primary">Si, rechazar</button>
             </form>

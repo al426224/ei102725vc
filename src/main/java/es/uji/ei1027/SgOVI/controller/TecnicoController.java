@@ -144,6 +144,7 @@ public class TecnicoController {
 
     @RequestMapping(value = "/peticiones")
     public String listPeticiones(@RequestParam(value = "estado", required = false) String estado,
+                                 @RequestParam(value = "nombre", required = false) String nombre,
                                  HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"tecnicoovi".equals(tipo)) {
@@ -155,9 +156,10 @@ public class TecnicoController {
             model.addAttribute("tecnico", (TecnicoOVI) usuario);
         }
 
-        List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByEstadoFiltrado(estado);
+        List<PeticionAPR> peticiones = peticionAPRDao.getPeticionesByEstadoFiltrado(estado, nombre);
         model.addAttribute("peticiones", peticiones);
         model.addAttribute("estadoSeleccionado", estado);
+        model.addAttribute("nombreSeleccionado", nombre);
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",
@@ -234,7 +236,16 @@ public class TecnicoController {
             return "redirect:/tecnico/peticiones";
         }
 
+        Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(id);
+        AsistentePersonal asistenteElegido = null;
+        if (aceptada != null) {
+            asistenteElegido = asistentePersonalDao.getAsistente(aceptada.getIdAsistente());
+        }
+        List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta");
+
         model.addAttribute("peticion", peticion);
+        model.addAttribute("asistenteElegido", asistenteElegido);
+        model.addAttribute("tieneCandidatos", !propuestas.isEmpty());
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",
                 "aprobada", "Aprobada",

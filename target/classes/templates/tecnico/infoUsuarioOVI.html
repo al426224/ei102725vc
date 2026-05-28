@@ -76,7 +76,7 @@
     <div class="content">
         <div class="content-text">¿Estas seguro de que quieres aprobar este usuario?<br>Este cambio no se puede deshacer.</div>
         <div class="content-buttons">
-            <label for="aprobarUsuarioToggle" class="btn btn-outline">Volver</label>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('aprobarUsuarioToggle').checked = false">Volver</button>
             <form th:action="@{/tecnico/usuario/approve/{id}(id=${usuario.idUsuario})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-primary">Si, aprobar</button>
             </form>
@@ -89,7 +89,7 @@
     <div class="content">
         <div class="content-text">¿Estas seguro de que quieres rechazar este usuario?<br>Este cambio no se puede deshacer.</div>
         <div class="content-buttons">
-            <label for="rechazarUsuarioToggle" class="btn btn-outline">Volver</label>
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarUsuarioToggle').checked = false">Volver</button>
             <form th:action="@{/tecnico/usuario/reject/{id}(id=${usuario.idUsuario})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-primary">Si, rechazar</button>
             </form>
