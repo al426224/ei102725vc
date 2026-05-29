@@ -3,6 +3,8 @@ package es.uji.ei1027.SgOVI.controller;
 import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.validator.RegistroContactoValidator;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
@@ -139,5 +142,37 @@ public class RegistroContactoController {
             redirectAttributes.addFlashAttribute("successMessage", "Registro cancelado correctamente");
         }
         return "redirect:/registroContacto/list";
+    }
+
+    @RequestMapping(value = "/pdf/{idRegistro}")
+    public void downloadPdf(@PathVariable int idRegistro, HttpSession session, HttpServletResponse response) {
+        if (session.getAttribute("usuario") == null || session.getAttribute("tipo") == null) {
+            try { response.sendError(HttpServletResponse.SC_UNAUTHORIZED); } catch (Exception ignored) {}
+            return;
+        }
+        try {
+            RegistroContacto contrato = registroContactoDao.getRegistro(idRegistro);
+            if (contrato == null || contrato.getPdfData() == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            byte[] pdfBytes = contrato.getPdfData();
+            String filename = contrato.getRutaPdf() != null ? contrato.getRutaPdf() : "contrato_" + idRegistro + ".pdf";
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+            response.setContentLength(pdfBytes.length);
+
+            try (OutputStream os = response.getOutputStream()) {
+                os.write(pdfBytes);
+                os.flush();
+            }
+        } catch (Exception e) {
+            logger.severe("Error al descargar PDF: " + e.getMessage());
+            try {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            } catch (Exception ignored) {}
+        }
     }
 }

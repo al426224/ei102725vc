@@ -1032,7 +1032,8 @@ body.index-layout {
 #rechazarPeticionToggle:checked + .window-notice,
 #nuevaSolicitudToggle:checked + .window-notice,
 #guardarCandidatosToggle:checked + .window-notice,
-#confirmarSeleccionToggle:checked + .window-notice {
+#confirmarSeleccionToggle:checked + .window-notice,
+#crearContratoToggle:checked + .window-notice {
     display: flex;
 }
 

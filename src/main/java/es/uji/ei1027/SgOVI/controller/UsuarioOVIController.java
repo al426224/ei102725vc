@@ -1,8 +1,14 @@
 package es.uji.ei1027.SgOVI.controller;
 
+import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
+import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
+import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
+import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
+import es.uji.ei1027.SgOVI.model.RegistroContacto;
+import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.validator.UsuarioOVIEditarPerfilValidator;
 import jakarta.servlet.http.HttpSession;
@@ -17,8 +23,11 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/usuarioOVI")
@@ -26,12 +35,37 @@ public class UsuarioOVIController {
 
     private final UsuarioOVIDao usuarioOVIDao;
     private final PeticionAPRDao peticionAPRDao;
+    private final RegistroContactoDao registroContactoDao;
+    private final SeleccionDao seleccionDao;
+    private final AsistentePersonalDao asistentePersonalDao;
     private final Logger logger = Logger.getLogger(UsuarioOVIController.class.getName());
 
     @Autowired
-    public UsuarioOVIController(UsuarioOVIDao usuarioOVIDao, PeticionAPRDao peticionAPRDao) {
+    public UsuarioOVIController(UsuarioOVIDao usuarioOVIDao, PeticionAPRDao peticionAPRDao,
+                                RegistroContactoDao registroContactoDao,
+                                SeleccionDao seleccionDao,
+                                AsistentePersonalDao asistentePersonalDao) {
         this.usuarioOVIDao = usuarioOVIDao;
         this.peticionAPRDao = peticionAPRDao;
+        this.registroContactoDao = registroContactoDao;
+        this.seleccionDao = seleccionDao;
+        this.asistentePersonalDao = asistentePersonalDao;
+    }
+
+    public static class ContratoInfo {
+        private final RegistroContacto contrato;
+        private final String nombreAsistente;
+        private final String emailAsistente;
+
+        public ContratoInfo(RegistroContacto contrato, String nombreAsistente, String emailAsistente) {
+            this.contrato = contrato;
+            this.nombreAsistente = nombreAsistente;
+            this.emailAsistente = emailAsistente;
+        }
+
+        public RegistroContacto getContrato() { return contrato; }
+        public String getNombreAsistente() { return nombreAsistente; }
+        public String getEmailAsistente() { return emailAsistente; }
     }
 
     @InitBinder
@@ -153,5 +187,55 @@ public class UsuarioOVIController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("tipo", "usuarioOVI");
         return "mensajes/mensajes";
+    }
+
+    @RequestMapping(value = "/contratos")
+    public String contratos(HttpSession session, Model model) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        List<RegistroContacto> contratos = registroContactoDao.getRegistrosByUsuarioOVI(usuario.getIdUsuario());
+
+        List<Integer> idsSeleccion = contratos.stream()
+                .map(RegistroContacto::getIdSeleccion).distinct().collect(Collectors.toList());
+        List<Seleccion> selecciones = idsSeleccion.isEmpty()
+                ? new ArrayList<>() : seleccionDao.getSelecciones(idsSeleccion);
+        Map<Integer, Seleccion> seleccionMap = selecciones.stream()
+                .collect(Collectors.toMap(Seleccion::getIdSeleccion, s -> s));
+
+        List<Integer> idsAsistente = selecciones.stream()
+                .map(Seleccion::getIdAsistente).distinct().collect(Collectors.toList());
+        List<AsistentePersonal> asistentes = idsAsistente.isEmpty()
+                ? new ArrayList<>() : asistentePersonalDao.getAsistentes(idsAsistente);
+        Map<Integer, AsistentePersonal> asistenteMap = asistentes.stream()
+                .collect(Collectors.toMap(AsistentePersonal::getIdAsistente, a -> a));
+
+        List<ContratoInfo> contratosActivos = new ArrayList<>();
+        List<ContratoInfo> contratosFinalizados = new ArrayList<>();
+        for (RegistroContacto c : contratos) {
+            String nombreAsistente = "";
+            String emailAsistente = "";
+            Seleccion s = seleccionMap.get(c.getIdSeleccion());
+            if (s != null) {
+                AsistentePersonal a = asistenteMap.get(s.getIdAsistente());
+                if (a != null) {
+                    nombreAsistente = a.getNombre();
+                    emailAsistente = a.getEmail() != null ? a.getEmail() : "";
+                }
+            }
+            ContratoInfo info = new ContratoInfo(c, nombreAsistente, emailAsistente);
+            if ("finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
+                contratosFinalizados.add(info);
+            } else {
+                contratosActivos.add(info);
+            }
+        }
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("contratosActivos", contratosActivos);
+        model.addAttribute("contratosFinalizados", contratosFinalizados);
+        return "usuarioOVI/contratos";
     }
 }

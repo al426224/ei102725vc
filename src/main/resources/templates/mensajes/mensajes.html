@@ -12,15 +12,8 @@
 <div th:replace="${tipo == 'asistentePersonal'} ? ~{fragments/sidebar-asistente :: sidebar(activePage='mensajes')} : ~{fragments/sidebar :: sidebar(activePage='mensajes')}"></div>
 
 <main class="main-content">
-    <header class="page-header">
-        <div>
-            <span class="profile-badge" th:text="${tipo == 'asistentePersonal'} ? 'ASISTENTE PERSONAL' : 'USUARIO OVI'"></span>
-        </div>
-    </header>
-
     <h1 class="page-title">Mensajes</h1>
-
-    <p class="text-muted">Aquí podrás gestionar tus mensajes. Próximamente disponible.</p>
+    <div class="empty-state">No tienes mensajes.</div>
 </main>
 
 </body>

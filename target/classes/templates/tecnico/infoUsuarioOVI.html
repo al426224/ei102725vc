@@ -59,6 +59,36 @@
                 <span class="info-label">Fecha de revision</span>
                 <span class="info-value" th:text="${#temporals.format(usuario.fechaRevision, 'dd/MM/yyyy')}"></span>
             </div>
+
+            <div th:if="${usuario.estado == 'aceptado'}" class="mt-4">
+                <h4 class="section-subtitle">Contratos Activos</h4>
+                <div th:if="${#lists.isEmpty(contratosActivos)}" class="text-muted">No tiene contratos activos.</div>
+                <div th:each="c : ${contratosActivos}" class="card mb-2 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Tipo:</strong> <span th:text="${c.tipoContrato}"></span><br>
+                            <strong>Inicio:</strong> <span th:text="${#temporals.format(c.fechaInicio, 'dd/MM/yyyy')}"></span><br>
+                            <strong th:if="${c.fechaFin != null}">Fin:</strong> <span th:if="${c.fechaFin != null}" th:text="${#temporals.format(c.fechaFin, 'dd/MM/yyyy')}"></span><br>
+                            <strong>Estado:</strong> <span class="badge bg-success">Activo</span>
+                        </div>
+                        <a th:href="@{/registroContacto/pdf/{id}(id=${c.idReg})}" class="btn btn-primary btn-sm">Descargar PDF</a>
+                    </div>
+                </div>
+
+                <h4 class="section-subtitle mt-3">Contratos Finalizados</h4>
+                <div th:if="${#lists.isEmpty(contratosFinalizados)}" class="text-muted">No tiene contratos finalizados.</div>
+                <div th:each="c : ${contratosFinalizados}" class="card mb-2 p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>Tipo:</strong> <span th:text="${c.tipoContrato}"></span><br>
+                            <strong>Inicio:</strong> <span th:text="${#temporals.format(c.fechaInicio, 'dd/MM/yyyy')}"></span><br>
+                            <strong th:if="${c.fechaFin != null}">Fin:</strong> <span th:if="${c.fechaFin != null}" th:text="${#temporals.format(c.fechaFin, 'dd/MM/yyyy')}"></span><br>
+                            <strong>Resultado:</strong> <span th:text="${c.resultado}" class="badge bg-secondary"></span>
+                        </div>
+                        <a th:href="@{/registroContacto/pdf/{id}(id=${c.idReg})}" class="btn btn-primary btn-sm">Descargar PDF</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="profile-actions">

@@ -4,6 +4,8 @@ import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 public class RegistroContactoValidator implements Validator {
 
     @Override
@@ -25,24 +27,26 @@ public class RegistroContactoValidator implements Validator {
 
         if (registro.getTipoContrato() == null || registro.getTipoContrato().trim().isEmpty()) {
             errors.rejectValue("tipoContrato", "obligatorio", "El tipo de contrato es obligatorio.");
-        } else if (registro.getTipoContrato().length() > 20) {
-            errors.rejectValue("tipoContrato", "longitud", "El tipo de contrato no puede superar los 20 caracteres.");
+        } else if (registro.getTipoContrato().length() > 200) {
+            errors.rejectValue("tipoContrato", "longitud", "El tipo de contrato no puede superar los 200 caracteres.");
         }
 
         if (registro.getFechaInicio() == null) {
-            errors.rejectValue("fechaInicio", "obligatoria", "La fecha de inicio es obligatoria.");
+            errors.rejectValue("fechaInicio", "obligatorio", "La fecha de inicio es obligatoria.");
         }
 
-        if (registro.getObservaciones() == null || registro.getObservaciones().trim().isEmpty()) {
-            errors.rejectValue("observaciones", "obligatorio", "Las observaciones son obligatorias.");
-        } else if (registro.getObservaciones().length() > 200) {
-            errors.rejectValue("observaciones", "longitud", "Las observaciones no pueden superar los 200 caracteres.");
+        if (registro.getFechaFin() == null) {
+            errors.rejectValue("fechaFin", "obligatorio", "La fecha de fin es obligatoria.");
+        } else if (registro.getFechaInicio() != null && registro.getFechaFin().isBefore(registro.getFechaInicio())) {
+            errors.rejectValue("fechaFin", "formato", "La fecha de fin debe ser posterior a la fecha de inicio.");
         }
 
-        if (registro.getResultado() == null || registro.getResultado().trim().isEmpty()) {
-            errors.rejectValue("resultado", "obligatorio", "El resultado es obligatorio.");
-        } else if (registro.getResultado().length() > 50) {
-            errors.rejectValue("resultado", "longitud", "El resultado no puede superar los 50 caracteres.");
+        if (registro.getPdfData() == null || registro.getPdfData().length == 0) {
+            errors.rejectValue("pdfData", "obligatorio", "El archivo PDF del contrato es obligatorio.");
+        }
+
+        if (registro.getObservaciones() != null && registro.getObservaciones().length() > 500) {
+            errors.rejectValue("observaciones", "longitud", "Las observaciones no pueden superar los 500 caracteres.");
         }
     }
 }

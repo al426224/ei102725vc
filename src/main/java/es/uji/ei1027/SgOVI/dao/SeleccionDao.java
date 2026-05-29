@@ -41,6 +41,22 @@ public class SeleccionDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public List<Seleccion> getSelecciones(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        StringBuilder sql = new StringBuilder("SELECT * FROM seleccion WHERE id_seleccion IN (");
+        for (int i = 0; i < ids.size(); i++) {
+            sql.append(i > 0 ? ",?" : "?");
+        }
+        sql.append(")");
+        try {
+            return jdbcTemplate.query(sql.toString(), new SeleccionRowMapper(), ids.toArray());
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
     public Seleccion getSeleccion(int id) {
         try {
             return jdbcTemplate.queryForObject(GET_SELECCION_BY_ID, new SeleccionRowMapper(), id);

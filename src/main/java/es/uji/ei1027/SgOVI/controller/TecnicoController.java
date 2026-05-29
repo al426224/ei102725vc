@@ -2,11 +2,13 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
+import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.dao.TecnicoOVIDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
+import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.TecnicoOVI;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
@@ -39,13 +41,15 @@ public class TecnicoController {
     private final MatchingService matchingService;
     private final EdadCompatibilidadService edadCompatibilidadService;
     private final EmailService emailService;
+    private final RegistroContactoDao registroContactoDao;
 
     @Autowired
     public TecnicoController(TecnicoOVIDao tecnicoOVIDao, UsuarioOVIDao usuarioOVIDao,
                                AsistentePersonalDao asistentePersonalDao, PeticionAPRDao peticionAPRDao,
                                SeleccionDao seleccionDao, MatchingService matchingService,
                                EdadCompatibilidadService edadCompatibilidadService,
-                               EmailService emailService) {
+                               EmailService emailService,
+                               RegistroContactoDao registroContactoDao) {
         this.tecnicoOVIDao = tecnicoOVIDao;
         this.usuarioOVIDao = usuarioOVIDao;
         this.asistentePersonalDao = asistentePersonalDao;
@@ -54,6 +58,7 @@ public class TecnicoController {
         this.matchingService = matchingService;
         this.edadCompatibilidadService = edadCompatibilidadService;
         this.emailService = emailService;
+        this.registroContactoDao = registroContactoDao;
     }
 
     @RequestMapping(value = "/home")
@@ -89,7 +94,20 @@ public class TecnicoController {
             return "redirect:/tecnico/home";
         }
 
+        List<RegistroContacto> contratos = registroContactoDao.getRegistrosByUsuarioOVI(id);
+        List<RegistroContacto> contratosActivos = new ArrayList<>();
+        List<RegistroContacto> contratosFinalizados = new ArrayList<>();
+        for (RegistroContacto c : contratos) {
+            if ("finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
+                contratosFinalizados.add(c);
+            } else {
+                contratosActivos.add(c);
+            }
+        }
+
         model.addAttribute("usuario", usuario);
+        model.addAttribute("contratosActivos", contratosActivos);
+        model.addAttribute("contratosFinalizados", contratosFinalizados);
         return "tecnico/infoUsuarioOVI";
     }
 
@@ -260,13 +278,19 @@ public class TecnicoController {
 
         Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(id);
         AsistentePersonal asistenteElegido = null;
+        RegistroContacto contrato = null;
         if (aceptada != null) {
             asistenteElegido = asistentePersonalDao.getAsistente(aceptada.getIdAsistente());
+            List<RegistroContacto> registros = registroContactoDao.getRegistrosBySeleccion(aceptada.getIdSeleccion());
+            if (!registros.isEmpty()) {
+                contrato = registros.get(0);
+            }
         }
         List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta");
 
         model.addAttribute("peticion", peticion);
         model.addAttribute("asistenteElegido", asistenteElegido);
+        model.addAttribute("contrato", contrato);
         model.addAttribute("tieneCandidatos", !propuestas.isEmpty());
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",

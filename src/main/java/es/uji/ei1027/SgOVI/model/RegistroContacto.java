@@ -11,11 +11,14 @@ public class RegistroContacto {
     private String observaciones;
     private String resultado;
     private LocalDate fechaFin;
+    private String rutaPdf;
+    private byte[] pdfData;
 
     public RegistroContacto() {}
 
     public RegistroContacto(int idReg, int idSeleccion, String tipoContrato, 
-                          LocalDate fechaInicio, String observaciones, String resultado, LocalDate fechaFin) {
+                          LocalDate fechaInicio, String observaciones, String resultado, LocalDate fechaFin,
+                          String rutaPdf, byte[] pdfData) {
         this.idReg = idReg;
         this.idSeleccion = idSeleccion;
         this.tipoContrato = tipoContrato;
@@ -23,6 +26,8 @@ public class RegistroContacto {
         this.observaciones = observaciones;
         this.resultado = resultado;
         this.fechaFin = fechaFin;
+        this.rutaPdf = rutaPdf;
+        this.pdfData = pdfData;
     }
 
     public int getIdReg() {
@@ -81,6 +86,22 @@ public class RegistroContacto {
         this.fechaFin = fechaFin;
     }
 
+    public String getRutaPdf() {
+        return rutaPdf;
+    }
+
+    public void setRutaPdf(String rutaPdf) {
+        this.rutaPdf = rutaPdf;
+    }
+
+    public byte[] getPdfData() {
+        return pdfData;
+    }
+
+    public void setPdfData(byte[] pdfData) {
+        this.pdfData = pdfData;
+    }
+
     @Override
     public String toString() {
         return "RegistroContacto{" +
@@ -91,6 +112,7 @@ public class RegistroContacto {
                 ", observaciones='" + observaciones + '\'' +
                 ", resultado='" + resultado + '\'' +
                 ", fechaFin=" + fechaFin +
+                ", rutaPdf='" + rutaPdf + '\'' +
                 '}';
     }
 }

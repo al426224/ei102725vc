@@ -35,6 +35,22 @@ public class AsistentePersonalDao {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public List<AsistentePersonal> getAsistentes(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        StringBuilder sql = new StringBuilder("SELECT * FROM asistentepersonal WHERE id_asistente IN (");
+        for (int i = 0; i < ids.size(); i++) {
+            sql.append(i > 0 ? ",?" : "?");
+        }
+        sql.append(")");
+        try {
+            return jdbcTemplate.query(sql.toString(), new AsistentePersonalRowMapper(), ids.toArray());
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
     public AsistentePersonal getAsistente(int id) {
         try {
             return jdbcTemplate.queryForObject(GET_ASSISTENT_BY_ID, new AsistentePersonalRowMapper(), id);

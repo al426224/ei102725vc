@@ -2,14 +2,21 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
+import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
+import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.services.EdadCompatibilidadService;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
+import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
 import es.uji.ei1027.SgOVI.validator.PeticionAPRSignupValidator;
+import es.uji.ei1027.SgOVI.validator.RegistroContactoValidator;
+
+import java.time.LocalDate;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
@@ -32,16 +39,23 @@ public class PeticionAPController {
     private final SeleccionDao seleccionDao;
     private final AsistentePersonalDao asistentePersonalDao;
     private final EdadCompatibilidadService edadCompatibilidadService;
+    private final RegistroContactoDao registroContactoDao;
+    private final UsuarioOVIDao usuarioOVIDao;
     private final PeticionAPRSignupValidator validator = new PeticionAPRSignupValidator();
+    private final RegistroContactoValidator registroContactoValidator = new RegistroContactoValidator();
 
     @Autowired
     public PeticionAPController(PeticionAPRDao peticionAPRDao, SeleccionDao seleccionDao,
                                 AsistentePersonalDao asistentePersonalDao,
-                                EdadCompatibilidadService edadCompatibilidadService) {
+                                EdadCompatibilidadService edadCompatibilidadService,
+                                RegistroContactoDao registroContactoDao,
+                                UsuarioOVIDao usuarioOVIDao) {
         this.peticionAPRDao = peticionAPRDao;
         this.seleccionDao = seleccionDao;
         this.asistentePersonalDao = asistentePersonalDao;
         this.edadCompatibilidadService = edadCompatibilidadService;
+        this.registroContactoDao = registroContactoDao;
+        this.usuarioOVIDao = usuarioOVIDao;
     }
 
     @InitBinder
@@ -157,9 +171,14 @@ public class PeticionAPController {
 
         List<Seleccion> propuestas = seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta");
 
+        List<RegistroContacto> registros = registroContactoDao.getRegistrosBySeleccion(
+                aceptada != null ? aceptada.getIdSeleccion() : 0);
+        RegistroContacto contrato = (registros != null && !registros.isEmpty()) ? registros.get(0) : null;
+
         model.addAttribute("peticionAP", peticion);
         model.addAttribute("usuario", usuario);
         model.addAttribute("asistenteElegido", asistenteElegido);
+        model.addAttribute("contrato", contrato);
         model.addAttribute("tieneCandidatos", !propuestas.isEmpty());
         model.addAttribute("estadoLabels", Map.of(
                 "en_revision", "En revision",
@@ -237,6 +256,10 @@ public class PeticionAPController {
             return "redirect:/peticionAP/detalle/" + id;
         }
 
+        if (seleccionDao.getSeleccionAceptadaPorSolicitud(id) != null) {
+            return "redirect:/peticionAP/candidatos/" + id + "/contrato";
+        }
+
         Seleccion propuestaExistente = null;
         for (Seleccion s : seleccionDao.getSeleccionesBySolicitudAndEstado(id, "propuesta")) {
             if (s.getIdAsistente() == asistenteSeleccionado) {
@@ -259,7 +282,111 @@ public class PeticionAPController {
         propuestaExistente.setEstadoSeleccion("aceptada");
         seleccionDao.updateSeleccion(propuestaExistente);
 
-        redirectAttributes.addFlashAttribute("successMessage", "Has elegido a tu asistente. La comunicacion y contratacion se realiza fuera del sistema.");
+        return "redirect:/peticionAP/candidatos/" + id + "/contrato";
+    }
+
+    @RequestMapping(value = "/candidatos/{id}/contrato", method = RequestMethod.GET)
+    public String mostrarFormularioContrato(@PathVariable int id, HttpSession session, Model model) {
+        UsuarioOVI usuario = getUsuarioSesion(session);
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
+        if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(id);
+        if (aceptada == null) {
+            return "redirect:/peticionAP/candidatos/" + id;
+        }
+
+        List<RegistroContacto> existentes = registroContactoDao.getRegistrosBySeleccion(aceptada.getIdSeleccion());
+        if (!existentes.isEmpty()) {
+            return "redirect:/peticionAP/detalle/" + id;
+        }
+
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(aceptada.getIdAsistente());
+
+        RegistroContacto registroContacto = new RegistroContacto();
+        registroContacto.setIdSeleccion(aceptada.getIdSeleccion());
+        model.addAttribute("peticion", peticion);
+        model.addAttribute("asistente", asistente);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("registroContacto", registroContacto);
+        model.addAttribute("idSeleccion", aceptada.getIdSeleccion());
+        return "peticionAP/contrato-form";
+    }
+
+    @RequestMapping(value = "/candidatos/{id}/contrato", method = RequestMethod.POST)
+    public String crearContrato(@PathVariable int id,
+                                @ModelAttribute("registroContacto") RegistroContacto registroContacto,
+                                BindingResult bindingResult,
+                                @RequestParam("archivo") MultipartFile archivo,
+                                HttpSession session,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+        UsuarioOVI usuario = getUsuarioSesion(session);
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(id);
+        if (peticion == null || peticion.getIdUsuario() != usuario.getIdUsuario()) {
+            return "redirect:/peticionAP/mis-solicitudes";
+        }
+
+        if (!"aprobada".equals(peticion.getEstado())) {
+            return "redirect:/peticionAP/detalle/" + id;
+        }
+
+        Seleccion aceptada = seleccionDao.getSeleccionAceptadaPorSolicitud(id);
+        if (aceptada == null || aceptada.getIdSeleccion() != registroContacto.getIdSeleccion()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: seleccion no valida");
+            return "redirect:/peticionAP/candidatos/" + id;
+        }
+
+        List<RegistroContacto> existentes = registroContactoDao.getRegistrosBySeleccion(registroContacto.getIdSeleccion());
+        if (!existentes.isEmpty()) {
+            return "redirect:/peticionAP/detalle/" + id;
+        }
+
+        registroContacto.setResultado("En curso");
+        try {
+            if (!archivo.isEmpty()) {
+                registroContacto.setPdfData(archivo.getBytes());
+                registroContacto.setRutaPdf(archivo.getOriginalFilename());
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al procesar el archivo: " + e.getMessage());
+            return "redirect:/peticionAP/candidatos/" + id + "/contrato";
+        }
+
+        registroContactoValidator.validate(registroContacto, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("registroContacto", registroContacto);
+            model.addAttribute("peticion", peticion);
+            model.addAttribute("asistente", asistentePersonalDao.getAsistente(aceptada.getIdAsistente()));
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("idSeleccion", registroContacto.getIdSeleccion());
+            return "peticionAP/contrato-form";
+        }
+
+        try {
+            registroContactoDao.addRegistro(registroContacto);
+
+            peticion.setEstado("cerrada_contrato");
+            peticionAPRDao.updatePeticion(peticion);
+
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Contrato creado correctamente con " + asistentePersonalDao.getAsistente(aceptada.getIdAsistente()).getNombre());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error al crear el contrato: " + e.getMessage());
+            return "redirect:/peticionAP/candidatos/" + id + "/contrato";
+        }
         return "redirect:/peticionAP/detalle/" + id;
     }
 

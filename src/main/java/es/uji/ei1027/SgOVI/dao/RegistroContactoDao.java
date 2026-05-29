@@ -5,9 +5,11 @@ import es.uji.ei1027.SgOVI.rowMapper.RegistroContactoRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,10 +25,12 @@ public class RegistroContactoDao {
     private static final String GET_REGISTRO_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_reg = ?";
     private static final String GET_REGISTROS_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
     private static final String GET_REGISTROS_BY_RESULTADO = "SELECT * FROM " + TABLE_NAME + " WHERE resultado = ?";
-    private static final String ADD_REGISTRO = "INSERT INTO " + TABLE_NAME + " (id_seleccion, tipo_contrato, observaciones, resultado, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String ADD_REGISTRO = "INSERT INTO " + TABLE_NAME + " (id_seleccion, tipo_contrato, observaciones, resultado, fecha_inicio, fecha_fin, ruta_pdf, pdf_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_REGISTRO = "DELETE FROM " + TABLE_NAME + " WHERE id_reg = ?";
-    private static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_fin = ? WHERE id_reg = ?";
+    private static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_fin = ?, ruta_pdf = ?, pdf_data = ? WHERE id_reg = ?";
     private static final String GET_REGISTROS = "SELECT * FROM " + TABLE_NAME;
+    private static final String GET_REGISTROS_BY_USUARIO = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE p.id_usuario = ? ORDER BY rc.fecha_inicio DESC";
+    private static final String GET_REGISTROS_BY_ASISTENTE = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion WHERE s.id_asistente = ? ORDER BY rc.fecha_inicio DESC";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -63,17 +67,38 @@ public class RegistroContactoDao {
     public void addRegistro(RegistroContacto registro) {
         jdbcTemplate.update(ADD_REGISTRO, registro.getIdSeleccion(), registro.getTipoContrato(), 
                 registro.getObservaciones(), registro.getResultado(), registro.getFechaInicio(), 
-                registro.getFechaFin());
+                registro.getFechaFin(), registro.getRutaPdf(),
+                new SqlParameterValue(Types.BINARY, registro.getPdfData()));
     }
 
     public void updateRegistro(RegistroContacto registro) {
         jdbcTemplate.update(UPDATE_REGISTRO, registro.getTipoContrato(), 
-                registro.getObservaciones(), registro.getResultado(), registro.getFechaFin(), 
+                registro.getObservaciones(), registro.getResultado(), registro.getFechaFin(),
+                registro.getRutaPdf(),
+                new SqlParameterValue(Types.BINARY, registro.getPdfData()),
                 registro.getIdReg());
     }
 
     public void deleteRegistro(int id) {
         jdbcTemplate.update(DELETE_REGISTRO, id);
+    }
+
+    public List<RegistroContacto> getRegistrosByUsuarioOVI(int idUsuario) {
+        try {
+            return jdbcTemplate.query(GET_REGISTROS_BY_USUARIO, new RegistroContactoRowMapper(), idUsuario);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron registros para el usuario: " + idUsuario);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<RegistroContacto> getRegistrosByAsistente(int idAsistente) {
+        try {
+            return jdbcTemplate.query(GET_REGISTROS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron registros para el asistente: " + idAsistente);
+            return new ArrayList<>();
+        }
     }
 
     public List<RegistroContacto> getRegistros() {

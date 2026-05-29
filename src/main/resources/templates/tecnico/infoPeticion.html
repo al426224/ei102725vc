@@ -101,6 +101,9 @@
                 <span class="info-label">Disponibilidad:</span>
                 <span th:text="${asistenteElegido.disponibilidad}"></span>
             </div>
+            <div th:if="${contrato != null}" class="mt-3">
+                <a th:href="@{/registroContacto/pdf/{id}(id=${contrato.idReg})}" class="btn btn-primary">Descargar PDF del contrato</a>
+            </div>
         </th:block>
 
 <div class="tecnico-action-buttons" th:if="${asistenteElegido == null and peticion.estado == 'en_revision'}">

@@ -2,9 +2,11 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
+import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
+import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.services.MatchingService;
 import es.uji.ei1027.SgOVI.validator.AsistentePersonalSignupValidator;
@@ -22,6 +24,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/asistentePersonal")
@@ -30,13 +34,17 @@ public class AsistentePersonalController {
     private final AsistentePersonalDao asistentePersonalDao;
     private final SeleccionDao seleccionDao;
     private final PeticionAPRDao peticionAPRDao;
+    private final RegistroContactoDao registroContactoDao;
     private final MatchingService matchingService;
 
     @Autowired
-    public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao, SeleccionDao seleccionDao, PeticionAPRDao peticionAPRDao, MatchingService matchingService) {
+    public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao, SeleccionDao seleccionDao,
+                                       PeticionAPRDao peticionAPRDao, RegistroContactoDao registroContactoDao,
+                                       MatchingService matchingService) {
         this.asistentePersonalDao = asistentePersonalDao;
         this.seleccionDao = seleccionDao;
         this.peticionAPRDao = peticionAPRDao;
+        this.registroContactoDao = registroContactoDao;
         this.matchingService = matchingService;
     }
 
@@ -85,6 +93,70 @@ public class AsistentePersonalController {
         model.addAttribute("enContacto", enContacto);
         model.addAttribute("aceptadas", aceptadas);
         return "asistentePersonal/home";
+    }
+
+    @RequestMapping(value = "/contratos")
+    public String contratos(HttpSession session, Model model) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        Integer idAsistente = (Integer) session.getAttribute("userId");
+        if (idAsistente == null) {
+            return "redirect:/login";
+        }
+
+        List<RegistroContacto> contratos = registroContactoDao.getRegistrosByAsistente(idAsistente);
+
+        List<Integer> idsSeleccion = contratos.stream()
+                .map(RegistroContacto::getIdSeleccion).distinct().collect(Collectors.toList());
+        List<Seleccion> selecciones = idsSeleccion.isEmpty()
+                ? new ArrayList<>() : seleccionDao.getSelecciones(idsSeleccion);
+        Map<Integer, Seleccion> seleccionMap = selecciones.stream()
+                .collect(Collectors.toMap(Seleccion::getIdSeleccion, s -> s));
+
+        List<Integer> idsSolicitud = selecciones.stream()
+                .map(Seleccion::getIdSolicitud).distinct().collect(Collectors.toList());
+        Map<Integer, PeticionAPR> peticionMap = idsSolicitud.stream()
+                .collect(Collectors.toMap(id -> id, id -> peticionAPRDao.getPeticionWithUser(id)));
+
+        List<ContratoInfo> contratosActivos = new ArrayList<>();
+        List<ContratoInfo> contratosFinalizados = new ArrayList<>();
+        for (RegistroContacto c : contratos) {
+            String nombreUsuario = "";
+            Seleccion s = seleccionMap.get(c.getIdSeleccion());
+            if (s != null) {
+                PeticionAPR p = peticionMap.get(s.getIdSolicitud());
+                if (p != null && p.getNombreUsuario() != null) {
+                    nombreUsuario = p.getNombreUsuario();
+                }
+            }
+            ContratoInfo info = new ContratoInfo(c, nombreUsuario);
+            if ("finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
+                contratosFinalizados.add(info);
+            } else {
+                contratosActivos.add(info);
+            }
+        }
+
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(idAsistente);
+        model.addAttribute("asistente", asistente);
+        model.addAttribute("contratosActivos", contratosActivos);
+        model.addAttribute("contratosFinalizados", contratosFinalizados);
+        return "asistentePersonal/contratos";
+    }
+
+    public static class ContratoInfo {
+        private final RegistroContacto contrato;
+        private final String nombreSolicitante;
+
+        public ContratoInfo(RegistroContacto contrato, String nombreSolicitante) {
+            this.contrato = contrato;
+            this.nombreSolicitante = nombreSolicitante;
+        }
+
+        public RegistroContacto getContrato() { return contrato; }
+        public String getNombreSolicitante() { return nombreSolicitante; }
     }
 
     public static class PropuestaInfo {
@@ -318,6 +390,10 @@ public class AsistentePersonalController {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
             return "redirect:/login";
+        }
+        Integer idAsistente = (Integer) session.getAttribute("userId");
+        if (idAsistente != null) {
+            model.addAttribute("asistente", asistentePersonalDao.getAsistente(idAsistente));
         }
         model.addAttribute("tipo", "asistentePersonal");
         return "mensajes/mensajes";
