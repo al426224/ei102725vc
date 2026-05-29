@@ -47,7 +47,7 @@
 
         <div class="section-row">
             <span class="info-label">Puntuación de compatibilidad:</span>
-            <span class="status-badge" th:classappend="${seleccion.puntuacionMatch >= 60 ? 'aprobada' : (seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${seleccion.puntuacionMatch} + ' pts'"></span>
+            <span class="status-badge" th:classappend="${seleccion.puntuacionMatch >= 80 ? 'mejor-opcion' : (seleccion.puntuacionMatch >= 60 ? 'aprobada' : (seleccion.puntuacionMatch >= 40 ? 'en_revision' : 'cancelada'))}" th:text="${seleccion.puntuacionMatch} + ' pts'"></span>
         </div>
 
         <div class="section-row">

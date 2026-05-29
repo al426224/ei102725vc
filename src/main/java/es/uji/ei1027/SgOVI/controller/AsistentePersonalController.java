@@ -75,23 +75,37 @@ public class AsistentePersonalController {
         for (Seleccion s : selecciones) {
             PeticionAPR p = peticionAPRDao.getPeticion(s.getIdSolicitud());
             if (p != null) {
+                MatchingService.CandidatoSugerido cs = new MatchingService.CandidatoSugerido();
+                cs.setAsistente(asistente);
+                int puntuacion = matchingService.calcularPuntuacion(p, asistente, cs);
+                if (s.getPuntuacionMatch() == null || s.getPuntuacionMatch() != puntuacion) {
+                    s.setPuntuacionMatch(puntuacion);
+                    seleccionDao.updatePuntuacionMatch(s.getIdSeleccion(), puntuacion);
+                }
                 propuestas.add(new PropuestaInfo(s, p));
             }
         }
 
         int propuestasRecibidas = propuestas.size();
-        int enContacto = 0, aceptadas = 0;
+        int enContacto = 0;
         for (PropuestaInfo p : propuestas) {
-            String estado = p.seleccion.getEstadoSeleccion();
-            if ("contactado".equals(estado)) enContacto++;
-            else if ("aceptada".equals(estado)) aceptadas++;
+            if ("contactado".equals(p.seleccion.getEstadoSeleccion())) enContacto++;
+        }
+        List<RegistroContacto> contratos = registroContactoDao.getContratosAbiertosByAsistente(idAsistente);
+        int contratosAbiertos = 0;
+        List<Integer> idsDistintos = new ArrayList<>();
+        for (RegistroContacto c : contratos) {
+            if (!idsDistintos.contains(c.getIdSeleccion())) {
+                idsDistintos.add(c.getIdSeleccion());
+                contratosAbiertos++;
+            }
         }
 
         model.addAttribute("asistente", asistente);
         model.addAttribute("propuestas", propuestas);
         model.addAttribute("propuestasRecibidas", propuestasRecibidas);
         model.addAttribute("enContacto", enContacto);
-        model.addAttribute("aceptadas", aceptadas);
+        model.addAttribute("contratosAbiertos", contratosAbiertos);
         return "asistentePersonal/home";
     }
 

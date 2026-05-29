@@ -31,6 +31,7 @@ public class RegistroContactoDao {
     private static final String GET_REGISTROS = "SELECT * FROM " + TABLE_NAME;
     private static final String GET_REGISTROS_BY_USUARIO = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE p.id_usuario = ? ORDER BY rc.fecha_inicio DESC";
     private static final String GET_REGISTROS_BY_ASISTENTE = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion WHERE s.id_asistente = ? ORDER BY rc.fecha_inicio DESC";
+    private static final String GET_CONTRATOS_ABIERTOS_BY_ASISTENTE = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion WHERE s.id_asistente = ? AND (rc.resultado IS NULL OR (rc.resultado != 'finalizado' AND rc.resultado != 'cancelado')) ORDER BY rc.fecha_inicio DESC";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -97,6 +98,15 @@ public class RegistroContactoDao {
             return jdbcTemplate.query(GET_REGISTROS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron registros para el asistente: " + idAsistente);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<RegistroContacto> getContratosAbiertosByAsistente(int idAsistente) {
+        try {
+            return jdbcTemplate.query(GET_CONTRATOS_ABIERTOS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
+        } catch (EmptyResultDataAccessException e) {
+            logger.warning("No se encontraron contratos abiertos para el asistente: " + idAsistente);
             return new ArrayList<>();
         }
     }

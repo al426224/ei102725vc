@@ -36,8 +36,8 @@
             <p th:text="${enContacto}">0</p>
         </div>
         <div class="stat-card">
-            <h3>Aceptadas</h3>
-            <p th:text="${aceptadas}">0</p>
+            <h3>Contratos Abiertos</h3>
+            <p th:text="${contratosAbiertos}">0</p>
         </div>
     </section>
 
@@ -64,7 +64,7 @@
                     <td th:text="${p.peticion.fechaInicioPrevista != null} ? ${#temporals.format(p.peticion.fechaInicioPrevista, 'dd/MM/yyyy')} : '-'"></td>
                     <td th:text="${p.peticion.tipoTareas} ?: '-'"></td>
                     <td>
-                        <span class="status-badge" th:classappend="${p.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (p.seleccion.puntuacionMatch >= 30 ? 'en_revision' : 'cancelada')}" th:text="${p.seleccion.puntuacionMatch} + ' pts'"></span>
+                        <span class="status-badge" th:classappend="${p.seleccion.puntuacionMatch >= 80 ? 'mejor-opcion' : (p.seleccion.puntuacionMatch >= 60 ? 'aprobada' : (p.seleccion.puntuacionMatch >= 40 ? 'en_revision' : 'cancelada'))}" th:text="${p.seleccion.puntuacionMatch} + ' pts'"></span>
                     </td>
                     <td>
                         <span class="status-badge" th:classappend="${p.seleccion.estadoSeleccion == 'propuesta' ? 'pendiente' : (p.seleccion.estadoSeleccion == 'contactado' ? 'en_revision' : (p.seleccion.estadoSeleccion == 'aceptada' ? 'aprobada' : 'cancelada'))}" th:text="${p.seleccion.estadoSeleccion}"></span>
