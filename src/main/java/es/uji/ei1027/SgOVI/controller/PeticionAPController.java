@@ -372,27 +372,27 @@ public class PeticionAPController {
             return "peticionAP/contrato-form";
         }
 
-        if (archivo != null && !archivo.isEmpty()) {
-            PdfFileValidator pdfValidator = new PdfFileValidator();
-            BeanPropertyBindingResult fileErrors = new BeanPropertyBindingResult(archivo, "archivo");
-            pdfValidator.validate(archivo, fileErrors);
-            if (fileErrors.hasErrors()) {
-                String errorMsg = fileErrors.getGlobalError() != null ?
-                                  fileErrors.getGlobalError().getDefaultMessage() :
-                                  "El archivo no es valido";
-                redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
-                return "redirect:/peticionAP/candidatos/" + id + "/contrato";
-            }
+        if (archivo == null || archivo.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "El archivo PDF del contrato es obligatorio");
+            return "redirect:/peticionAP/candidatos/" + id + "/contrato";
+        }
+
+        PdfFileValidator pdfValidator = new PdfFileValidator();
+        BeanPropertyBindingResult fileErrors = new BeanPropertyBindingResult(archivo, "archivo");
+        pdfValidator.validate(archivo, fileErrors);
+        if (fileErrors.hasErrors()) {
+            String errorMsg = fileErrors.getGlobalError() != null ?
+                              fileErrors.getGlobalError().getDefaultMessage() :
+                              "El archivo no es valido";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
+            return "redirect:/peticionAP/candidatos/" + id + "/contrato";
         }
 
         try {
             int idReg = registroContactoDao.addRegistro(registroContacto);
-
-            if (archivo != null && !archivo.isEmpty()) {
-                String ruta = contratoPdfService.guardarContrato(archivo, idReg);
-                registroContacto.setRutaPdf(ruta);
-                registroContactoDao.updateRegistro(registroContacto);
-            }
+            String ruta = contratoPdfService.guardarContrato(archivo, idReg);
+            registroContacto.setRutaPdf(ruta);
+            registroContactoDao.updateRegistro(registroContacto);
 
             peticion.setEstado("cerrada_contrato");
             peticionAPRDao.updatePeticion(peticion);
