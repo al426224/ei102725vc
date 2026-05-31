@@ -39,9 +39,13 @@
 
             <div class="info-group">
                 <span class="info-label">Proyecto de Vida</span>
-                <p class="info-value info-texto-libre" th:text="${usuario.proyectoVida}">
-                    Descripción detallada del proyecto de vida independiente...
-                </p>
+                <div th:if="${usuario.proyectoVida != null}" class="mb-2">
+                    <a th:href="@{${usuario.proyectoVida}}" target="_blank" class="btn btn-sm btn-primary">Ver PDF</a>
+                    <a th:href="@{${usuario.proyectoVida}}" download class="btn btn-sm btn-outline">Descargar PDF</a>
+                </div>
+                <div th:if="${usuario.proyectoVida == null}">
+                    <p class="text-muted">No hay proyecto de vida subido.</p>
+                </div>
             </div>
         </div>
 
