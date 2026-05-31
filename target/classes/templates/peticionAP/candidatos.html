@@ -30,7 +30,8 @@
         </div>
     </div>
 
-    <p class="mb-3">Selecciona al candidato que prefieras. Despues podras formalizar el contrato con los datos del acuerdo.</p>
+    <p class="mb-3">Selecciona al candidato que prefieras. Después podrás formalizar el contrato con los datos del acuerdo.</p>
+    <p class="mb-3" style="font-size: 0.95rem; color: #4a4a4a;">* La sección de <strong>Puntuación</strong> indica la compatibilidad con tu solicitud según criterios como municipio, horario y preferencias.</p>
 
     <div th:if="${#lists.isEmpty(candidatos)}" class="empty-state">
         No hay candidatos sugeridos para esta solicitud.
@@ -47,9 +48,10 @@
                                 <th scope="col">Municipio</th>
                                 <th scope="col">Edad</th>
                                 <th scope="col">Disponibilidad</th>
-                                <th scope="col">Formacion</th>
-                                <th scope="col">Puntuacion</th>
-                                <th scope="col">Acciones</th>
+                                <th scope="col">Formación</th>
+                                <th scope="col">Puntuación*</th>
+                                <th scope="col">Perfil</th>
+                                <th scope="col">Mensaje</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,6 +70,9 @@
                                 </td>
                                 <td>
                                     <a th:href="@{/peticionAP/candidato/{idAsistente}/detalle(idAsistente=${c.asistente.idAsistente},idSolicitud=${peticion.idSolicitud})}" class="link-detail">Ver perfil</a>
+                                </td>
+                                <td>
+                                    <a th:href="@{/usuarioOVI/mensajes(idSeleccion=${c.seleccion.idSeleccion})}" class="link-detail">Enviar mensaje</a>
                                 </td>
                             </tr>
                         </tbody>

@@ -29,7 +29,6 @@ import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/asistentePersonal")
@@ -129,17 +128,29 @@ public class AsistentePersonalController {
 
         List<RegistroContacto> contratos = registroContactoDao.getRegistrosByAsistente(idAsistente);
 
-        List<Integer> idsSeleccion = contratos.stream()
-                .map(RegistroContacto::getIdSeleccion).distinct().collect(Collectors.toList());
+        List<Integer> idsSeleccion = new ArrayList<>();
+        for (RegistroContacto c : contratos) {
+            if (!idsSeleccion.contains(c.getIdSeleccion())) {
+                idsSeleccion.add(c.getIdSeleccion());
+            }
+        }
         List<Seleccion> selecciones = idsSeleccion.isEmpty()
                 ? new ArrayList<>() : seleccionDao.getSelecciones(idsSeleccion);
-        Map<Integer, Seleccion> seleccionMap = selecciones.stream()
-                .collect(Collectors.toMap(Seleccion::getIdSeleccion, s -> s));
+        Map<Integer, Seleccion> seleccionMap = new java.util.HashMap<>();
+        for (Seleccion s : selecciones) {
+            seleccionMap.put(s.getIdSeleccion(), s);
+        }
 
-        List<Integer> idsSolicitud = selecciones.stream()
-                .map(Seleccion::getIdSolicitud).distinct().collect(Collectors.toList());
-        Map<Integer, PeticionAPR> peticionMap = idsSolicitud.stream()
-                .collect(Collectors.toMap(id -> id, id -> peticionAPRDao.getPeticionWithUser(id)));
+        List<Integer> idsSolicitud = new ArrayList<>();
+        for (Seleccion s : selecciones) {
+            if (!idsSolicitud.contains(s.getIdSolicitud())) {
+                idsSolicitud.add(s.getIdSolicitud());
+            }
+        }
+        Map<Integer, PeticionAPR> peticionMap = new java.util.HashMap<>();
+        for (Integer idSolicitud : idsSolicitud) {
+            peticionMap.put(idSolicitud, peticionAPRDao.getPeticionWithUser(idSolicitud));
+        }
 
         List<ContratoInfo> contratosActivos = new ArrayList<>();
         List<ContratoInfo> contratosFinalizados = new ArrayList<>();
@@ -193,16 +204,19 @@ public class AsistentePersonalController {
     public static class ChatInfo {
         private final Seleccion seleccion;
         private final PeticionAPR peticion;
+        private final String tipoTareas;
         private final ComunicacionUsuarioOVIPAP ultimoMensaje;
 
-        public ChatInfo(Seleccion seleccion, PeticionAPR peticion, ComunicacionUsuarioOVIPAP ultimoMensaje) {
+        public ChatInfo(Seleccion seleccion, PeticionAPR peticion, String tipoTareas, ComunicacionUsuarioOVIPAP ultimoMensaje) {
             this.seleccion = seleccion;
             this.peticion = peticion;
+            this.tipoTareas = tipoTareas;
             this.ultimoMensaje = ultimoMensaje;
         }
 
         public Seleccion getSeleccion() { return seleccion; }
         public PeticionAPR getPeticion() { return peticion; }
+        public String getTipoTareas() { return tipoTareas; }
         public ComunicacionUsuarioOVIPAP getUltimoMensaje() { return ultimoMensaje; }
     }
 
@@ -445,8 +459,11 @@ public class AsistentePersonalController {
         for (Seleccion s : selecciones) {
             PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(s.getIdSolicitud());
             if (peticion != null) {
+                String tipoTareas = peticion.getTipoTareas();
                 ComunicacionUsuarioOVIPAP ultimo = comunicacionDao.getUltimaComunicacionBySeleccion(s.getIdSeleccion());
-                chats.add(new ChatInfo(s, peticion, ultimo));
+                if (ultimo != null) {
+                    chats.add(new ChatInfo(s, peticion, tipoTareas, ultimo));
+                }
             }
         }
 
@@ -455,7 +472,8 @@ public class AsistentePersonalController {
             chats.removeIf(c -> {
                 String nombre = c.getPeticion() != null && c.getPeticion().getNombreUsuario() != null
                         ? c.getPeticion().getNombreUsuario().toLowerCase() : "";
-                return !nombre.contains(busqueda);
+                String tipoTareas = c.getTipoTareas() != null ? c.getTipoTareas().toLowerCase() : "";
+                return !nombre.contains(busqueda) && !tipoTareas.contains(busqueda);
             });
         }
 
@@ -484,11 +502,13 @@ public class AsistentePersonalController {
 
         List<ComunicacionUsuarioOVIPAP> mensajes = new ArrayList<>();
         String chatActivoNombre = "";
+        String chatActivoTipoTareas = "";
         if (idSeleccionActiva != null) {
             mensajes = comunicacionDao.getComunicacionesBySeleccion(idSeleccionActiva);
             for (ChatInfo c : chats) {
                 if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva && c.getPeticion() != null) {
                     chatActivoNombre = c.getPeticion().getNombreUsuario();
+                    chatActivoTipoTareas = c.getTipoTareas() != null ? c.getTipoTareas() : "";
                     break;
                 }
             }
@@ -500,6 +520,7 @@ public class AsistentePersonalController {
         model.addAttribute("mensajes", mensajes);
         model.addAttribute("idSeleccionActiva", idSeleccionActiva);
         model.addAttribute("chatActivoNombre", chatActivoNombre);
+        model.addAttribute("chatActivoTipoTareas", chatActivoTipoTareas);
         model.addAttribute("q", q);
         model.addAttribute("ownEmisor", "asistentePersonal");
         return "mensajes/mensajes";
@@ -529,6 +550,11 @@ public class AsistentePersonalController {
 
         if (!permitido) {
             redirectAttributes.addFlashAttribute("errorMessage", "No tienes acceso a esta conversación.");
+            return "redirect:/asistentePersonal/mensajes";
+        }
+
+        if (comunicacionDao.getUltimaComunicacionBySeleccion(idSeleccion) == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Solo el usuario OVI puede iniciar la conversación.");
             return "redirect:/asistentePersonal/mensajes";
         }
 

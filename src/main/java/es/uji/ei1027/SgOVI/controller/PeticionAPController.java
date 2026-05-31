@@ -178,6 +178,7 @@ public class PeticionAPController {
         model.addAttribute("peticionAP", peticion);
         model.addAttribute("usuario", usuario);
         model.addAttribute("asistenteElegido", asistenteElegido);
+        model.addAttribute("idSeleccionChat", aceptada != null ? aceptada.getIdSeleccion() : null);
         model.addAttribute("contrato", contrato);
         model.addAttribute("tieneCandidatos", !propuestas.isEmpty());
         model.addAttribute("estadoLabels", Map.of(

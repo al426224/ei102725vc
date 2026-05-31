@@ -803,7 +803,18 @@ body.sidebar-layout .sidebar-layout {
 .messages-chat-preview {
     display: block;
     font-size: 0.85rem;
-    color: var(--gris-texto);
+    color: #5a5a5a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.messages-chat-topic {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--rosa-acento);
+    margin-bottom: 0.15rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -878,7 +889,7 @@ body.sidebar-layout .sidebar-layout {
 .message-meta {
     margin-top: 0.35rem;
     font-size: 0.75rem;
-    color: #6d6d6d;
+    color: #1c1c1c;
 }
 
 .messages-compose {

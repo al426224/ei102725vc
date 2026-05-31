@@ -78,16 +78,19 @@ public class UsuarioOVIController {
     public static class ChatInfo {
         private final Seleccion seleccion;
         private final AsistentePersonal asistente;
+        private final String tipoTareas;
         private final ComunicacionUsuarioOVIPAP ultimoMensaje;
 
-        public ChatInfo(Seleccion seleccion, AsistentePersonal asistente, ComunicacionUsuarioOVIPAP ultimoMensaje) {
+        public ChatInfo(Seleccion seleccion, AsistentePersonal asistente, String tipoTareas, ComunicacionUsuarioOVIPAP ultimoMensaje) {
             this.seleccion = seleccion;
             this.asistente = asistente;
+            this.tipoTareas = tipoTareas;
             this.ultimoMensaje = ultimoMensaje;
         }
 
         public Seleccion getSeleccion() { return seleccion; }
         public AsistentePersonal getAsistente() { return asistente; }
+        public String getTipoTareas() { return tipoTareas; }
         public ComunicacionUsuarioOVIPAP getUltimoMensaje() { return ultimoMensaje; }
     }
 
@@ -215,8 +218,12 @@ public class UsuarioOVIController {
         for (Seleccion s : selecciones) {
             AsistentePersonal asistente = asistentePersonalDao.getAsistente(s.getIdAsistente());
             if (asistente != null) {
+                PeticionAPR peticion = peticionAPRDao.getPeticion(s.getIdSolicitud());
+                String tipoTareas = peticion != null ? peticion.getTipoTareas() : "";
                 ComunicacionUsuarioOVIPAP ultimo = comunicacionDao.getUltimaComunicacionBySeleccion(s.getIdSeleccion());
-                chats.add(new ChatInfo(s, asistente, ultimo));
+                if (ultimo != null) {
+                    chats.add(new ChatInfo(s, asistente, tipoTareas, ultimo));
+                }
             }
         }
 
@@ -225,7 +232,8 @@ public class UsuarioOVIController {
             chats.removeIf(c -> {
                 String nombre = c.getAsistente() != null && c.getAsistente().getNombre() != null
                         ? c.getAsistente().getNombre().toLowerCase() : "";
-                return !nombre.contains(busqueda);
+                String tipoTareas = c.getTipoTareas() != null ? c.getTipoTareas().toLowerCase() : "";
+                return !nombre.contains(busqueda) && !tipoTareas.contains(busqueda);
             });
         }
 
@@ -239,27 +247,44 @@ public class UsuarioOVIController {
         });
 
         Integer idSeleccionActiva = idSeleccion;
-        boolean chatExiste = false;
+        boolean seleccionPermitida = false;
         if (idSeleccionActiva != null) {
-            for (ChatInfo c : chats) {
-                if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva) {
-                    chatExiste = true;
+            for (Seleccion s : selecciones) {
+                if (s.getIdSeleccion() == idSeleccionActiva) {
+                    seleccionPermitida = true;
                     break;
                 }
             }
         }
-        if (idSeleccionActiva == null || !chatExiste) {
+        if (idSeleccionActiva == null || !seleccionPermitida) {
             idSeleccionActiva = chats.isEmpty() ? null : chats.get(0).getSeleccion().getIdSeleccion();
         }
 
         List<ComunicacionUsuarioOVIPAP> mensajes = new ArrayList<>();
         String chatActivoNombre = "";
+        String chatActivoTipoTareas = "";
         if (idSeleccionActiva != null) {
             mensajes = comunicacionDao.getComunicacionesBySeleccion(idSeleccionActiva);
             for (ChatInfo c : chats) {
                 if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva && c.getAsistente() != null) {
                     chatActivoNombre = c.getAsistente().getNombre();
+                    chatActivoTipoTareas = c.getTipoTareas() != null ? c.getTipoTareas() : "";
                     break;
+                }
+            }
+            if (chatActivoNombre.isEmpty()) {
+                for (Seleccion s : selecciones) {
+                    if (s.getIdSeleccion() == idSeleccionActiva) {
+                        AsistentePersonal asistente = asistentePersonalDao.getAsistente(s.getIdAsistente());
+                        PeticionAPR peticion = peticionAPRDao.getPeticion(s.getIdSolicitud());
+                        if (asistente != null && asistente.getNombre() != null) {
+                            chatActivoNombre = asistente.getNombre();
+                        }
+                        if (peticion != null && peticion.getTipoTareas() != null) {
+                            chatActivoTipoTareas = peticion.getTipoTareas();
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -270,6 +295,7 @@ public class UsuarioOVIController {
         model.addAttribute("mensajes", mensajes);
         model.addAttribute("idSeleccionActiva", idSeleccionActiva);
         model.addAttribute("chatActivoNombre", chatActivoNombre);
+        model.addAttribute("chatActivoTipoTareas", chatActivoTipoTareas);
         model.addAttribute("q", q);
         model.addAttribute("ownEmisor", "usuarioOVI");
         return "mensajes/mensajes";

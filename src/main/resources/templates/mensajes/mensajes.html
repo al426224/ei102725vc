@@ -22,10 +22,12 @@
     <div class="messages-layout">
         <aside class="messages-sidebar">
             <form method="get" th:if="${tipo == 'asistentePersonal'}" th:action="@{/asistentePersonal/mensajes}" class="messages-search">
-                <input type="text" class="form-control" name="q" th:value="${q}" placeholder="Buscar chat por nombre">
+                <label for="buscarChatAsistente" class="visually-hidden">Buscar chat por nombre</label>
+                <input id="buscarChatAsistente" type="text" class="form-control" name="q" th:value="${q}" placeholder="Buscar por nombre o tipo de tarea">
             </form>
             <form method="get" th:if="${tipo != 'asistentePersonal'}" th:action="@{/usuarioOVI/mensajes}" class="messages-search">
-                <input type="text" class="form-control" name="q" th:value="${q}" placeholder="Buscar chat por nombre">
+                <label for="buscarChatUsuario" class="visually-hidden">Buscar chat por nombre</label>
+                <input id="buscarChatUsuario" type="text" class="form-control" name="q" th:value="${q}" placeholder="Buscar por nombre o tipo de tarea">
             </form>
 
             <ul class="messages-chat-list" th:if="${not #lists.isEmpty(chats)}">
@@ -34,6 +36,7 @@
                        th:classappend="${idSeleccionActiva == chat.seleccion.idSeleccion} ? ' messages-chat-item-active'"
                        th:href="@{/asistentePersonal/mensajes(idSeleccion=${chat.seleccion.idSeleccion},q=${q})}">
                         <span class="messages-chat-name" th:text="${chat.peticion.nombreUsuario}">Nombre</span>
+                        <span class="messages-chat-topic" th:text="${chat.tipoTareas != null && !chat.tipoTareas.isEmpty() ? chat.tipoTareas : 'Sin tipo de tarea'}">Tipo de tarea</span>
                         <span class="messages-chat-preview"
                               th:text="${chat.ultimoMensaje != null ? chat.ultimoMensaje.mensaje : 'Sin mensajes todavía'}">Sin mensajes todavía</span>
                     </a>
@@ -41,6 +44,7 @@
                        th:classappend="${idSeleccionActiva == chat.seleccion.idSeleccion} ? ' messages-chat-item-active'"
                        th:href="@{/usuarioOVI/mensajes(idSeleccion=${chat.seleccion.idSeleccion},q=${q})}">
                         <span class="messages-chat-name" th:text="${chat.asistente.nombre}">Nombre</span>
+                        <span class="messages-chat-topic" th:text="${chat.tipoTareas != null && !chat.tipoTareas.isEmpty() ? chat.tipoTareas : 'Sin tipo de tarea'}">Tipo de tarea</span>
                         <span class="messages-chat-preview"
                               th:text="${chat.ultimoMensaje != null ? chat.ultimoMensaje.mensaje : 'Sin mensajes todavía'}">Sin mensajes todavía</span>
                     </a>
@@ -55,6 +59,8 @@
         <section class="messages-main">
             <div class="messages-thread-card" th:if="${idSeleccionActiva != null}">
                 <h2 class="messages-thread-title" th:text="${chatActivoNombre != null && !chatActivoNombre.isEmpty() ? chatActivoNombre : 'Chat'}">Chat</h2>
+                <div class="message-meta" th:if="${chatActivoTipoTareas != null && !chatActivoTipoTareas.isEmpty()}"
+                     th:text="${'Tipo de tarea: ' + chatActivoTipoTareas}">Tipo de tarea</div>
             </div>
 
             <div class="messages-thread" th:if="${idSeleccionActiva != null}">
@@ -78,7 +84,8 @@
                   method="post"
                   th:action="@{/asistentePersonal/mensajes/enviar}">
                 <input type="hidden" name="idSeleccion" th:value="${idSeleccionActiva}">
-                <textarea name="mensaje" class="form-control messages-compose-input" maxlength="200" required placeholder="Escribe tu mensaje..."></textarea>
+                <label for="mensajeAsistente" class="visually-hidden">Escribe tu mensaje</label>
+                <textarea id="mensajeAsistente" name="mensaje" class="form-control messages-compose-input" maxlength="200" required placeholder="Escribe tu mensaje..."></textarea>
                 <div class="messages-compose-actions">
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </div>
@@ -89,7 +96,8 @@
                   method="post"
                   th:action="@{/usuarioOVI/mensajes/enviar}">
                 <input type="hidden" name="idSeleccion" th:value="${idSeleccionActiva}">
-                <textarea name="mensaje" class="form-control messages-compose-input" maxlength="200" required placeholder="Escribe tu mensaje..."></textarea>
+                <label for="mensajeUsuario" class="visually-hidden">Escribe tu mensaje</label>
+                <textarea id="mensajeUsuario" name="mensaje" class="form-control messages-compose-input" maxlength="200" required placeholder="Escribe tu mensaje..."></textarea>
                 <div class="messages-compose-actions">
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </div>
