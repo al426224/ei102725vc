@@ -12,8 +12,94 @@
 <div th:replace="${tipo == 'asistentePersonal'} ? ~{fragments/sidebar-asistente :: sidebar(activePage='mensajes')} : ~{fragments/sidebar :: sidebar(activePage='mensajes')}"></div>
 
 <main class="main-content">
-    <h1 class="page-title">Mensajes</h1>
-    <div class="empty-state">No tienes mensajes.</div>
+    <header class="page-header">
+        <h1 class="page-title" style="margin-bottom: 0;">Mensajes</h1>
+    </header>
+
+    <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+
+    <div class="messages-layout">
+        <aside class="messages-sidebar">
+            <form method="get" th:if="${tipo == 'asistentePersonal'}" th:action="@{/asistentePersonal/mensajes}" class="messages-search">
+                <input type="text" class="form-control" name="q" th:value="${q}" placeholder="Buscar chat por nombre">
+            </form>
+            <form method="get" th:if="${tipo != 'asistentePersonal'}" th:action="@{/usuarioOVI/mensajes}" class="messages-search">
+                <input type="text" class="form-control" name="q" th:value="${q}" placeholder="Buscar chat por nombre">
+            </form>
+
+            <ul class="messages-chat-list" th:if="${not #lists.isEmpty(chats)}">
+                <li th:each="chat : ${chats}">
+                    <a th:if="${tipo == 'asistentePersonal'}" class="messages-chat-item"
+                       th:classappend="${idSeleccionActiva == chat.seleccion.idSeleccion} ? ' messages-chat-item-active'"
+                       th:href="@{/asistentePersonal/mensajes(idSeleccion=${chat.seleccion.idSeleccion},q=${q})}">
+                        <span class="messages-chat-name" th:text="${chat.peticion.nombreUsuario}">Nombre</span>
+                        <span class="messages-chat-preview"
+                              th:text="${chat.ultimoMensaje != null ? chat.ultimoMensaje.mensaje : 'Sin mensajes todavía'}">Sin mensajes todavía</span>
+                    </a>
+                    <a th:if="${tipo != 'asistentePersonal'}" class="messages-chat-item"
+                       th:classappend="${idSeleccionActiva == chat.seleccion.idSeleccion} ? ' messages-chat-item-active'"
+                       th:href="@{/usuarioOVI/mensajes(idSeleccion=${chat.seleccion.idSeleccion},q=${q})}">
+                        <span class="messages-chat-name" th:text="${chat.asistente.nombre}">Nombre</span>
+                        <span class="messages-chat-preview"
+                              th:text="${chat.ultimoMensaje != null ? chat.ultimoMensaje.mensaje : 'Sin mensajes todavía'}">Sin mensajes todavía</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="empty-state" th:if="${#lists.isEmpty(chats)}">
+                No tienes chats activos.
+            </div>
+        </aside>
+
+        <section class="messages-main">
+            <div class="messages-thread-card" th:if="${idSeleccionActiva != null}">
+                <h2 class="messages-thread-title" th:text="${chatActivoNombre != null && !chatActivoNombre.isEmpty() ? chatActivoNombre : 'Chat'}">Chat</h2>
+            </div>
+
+            <div class="messages-thread" th:if="${idSeleccionActiva != null}">
+                <div class="empty-state" th:if="${#lists.isEmpty(mensajes)}">
+                    Todavía no hay mensajes en esta conversación.
+                </div>
+
+                <div th:each="m : ${mensajes}" class="message-row"
+                     th:classappend="${m.emisor == ownEmisor} ? ' message-row-sent' : ' message-row-received'">
+                    <div class="message-bubble"
+                         th:classappend="${m.emisor == ownEmisor} ? ' message-bubble-sent' : ' message-bubble-received'">
+                        <div th:text="${m.mensaje}">Mensaje</div>
+                        <div class="message-meta"
+                             th:text="${m.hora != null ? #temporals.format(m.hora, 'dd/MM/yyyy HH:mm') : '-'}">Hora</div>
+                    </div>
+                </div>
+            </div>
+
+            <form class="messages-compose"
+                  th:if="${idSeleccionActiva != null && tipo == 'asistentePersonal'}"
+                  method="post"
+                  th:action="@{/asistentePersonal/mensajes/enviar}">
+                <input type="hidden" name="idSeleccion" th:value="${idSeleccionActiva}">
+                <textarea name="mensaje" class="form-control messages-compose-input" maxlength="200" required placeholder="Escribe tu mensaje..."></textarea>
+                <div class="messages-compose-actions">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+
+            <form class="messages-compose"
+                  th:if="${idSeleccionActiva != null && tipo != 'asistentePersonal'}"
+                  method="post"
+                  th:action="@{/usuarioOVI/mensajes/enviar}">
+                <input type="hidden" name="idSeleccion" th:value="${idSeleccionActiva}">
+                <textarea name="mensaje" class="form-control messages-compose-input" maxlength="200" required placeholder="Escribe tu mensaje..."></textarea>
+                <div class="messages-compose-actions">
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+
+            <div class="empty-state" th:if="${idSeleccionActiva == null}">
+                Selecciona un chat para comenzar la conversación.
+            </div>
+        </section>
+    </div>
 </main>
 
 </body>

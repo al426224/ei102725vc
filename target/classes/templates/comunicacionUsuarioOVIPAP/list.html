@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicaciones - SgOVI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" th:href="@{/css/usuario.css}">
+</head>
+<body class="sidebar-layout">
+
+<div th:replace="~{fragments/sidebar-tecnico :: sidebar(activePage='dashboard')}"></div>
+
+<main class="main-content">
+    <header class="page-header">
+        <h1 class="page-title" style="margin-bottom: 0;">Comunicaciones</h1>
+        <a th:href="@{/comunicacionUsuarioOVIPAP/add}" class="btn btn-primary">Nueva comunicación</a>
+    </header>
+
+    <div class="table-container">
+        <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID Selección</th>
+                <th>Emisor</th>
+                <th>Mensaje</th>
+                <th>Hora</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(comunicaciones)}">
+                <td colspan="6" class="empty-state">No hay comunicaciones registradas.</td>
+            </tr>
+            <tr th:each="c : ${comunicaciones}">
+                <td th:text="${c.idComu}">1</td>
+                <td th:text="${c.idSeleccion}">1</td>
+                <td th:text="${c.emisor}">usuarioOVI</td>
+                <td th:text="${c.mensaje}">Mensaje</td>
+                <td th:text="${c.hora != null ? #temporals.format(c.hora, 'dd/MM/yyyy HH:mm') : '-'}">-</td>
+                <td>
+                    <a th:href="@{/comunicacionUsuarioOVIPAP/update/{id}(id=${c.idComu})}" class="link-detail">Editar</a>
+                    <span> · </span>
+                    <a th:href="@{/comunicacionUsuarioOVIPAP/delete/{id}(id=${c.idComu})}" class="link-detail">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

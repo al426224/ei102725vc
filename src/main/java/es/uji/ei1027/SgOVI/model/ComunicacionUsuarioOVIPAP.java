@@ -9,18 +9,16 @@ public class ComunicacionUsuarioOVIPAP {
     private String emisor;
     private String mensaje;
     private LocalDateTime hora;
-    private String medio;
 
     public ComunicacionUsuarioOVIPAP() {}
 
-    public ComunicacionUsuarioOVIPAP(int idComu, int idSeleccion, String emisor, 
-                                    String mensaje, LocalDateTime hora, String medio) {
+    public ComunicacionUsuarioOVIPAP(int idComu, int idSeleccion, String emisor,
+                                     String mensaje, LocalDateTime hora) {
         this.idComu = idComu;
         this.idSeleccion = idSeleccion;
         this.emisor = emisor;
         this.mensaje = mensaje;
         this.hora = hora;
-        this.medio = medio;
     }
 
     public int getIdComu() {
@@ -63,14 +61,6 @@ public class ComunicacionUsuarioOVIPAP {
         this.hora = hora;
     }
 
-    public String getMedio() {
-        return medio;
-    }
-
-    public void setMedio(String medio) {
-        this.medio = medio;
-    }
-
     @Override
     public String toString() {
         return "ComunicacionUsuarioOVIPAP{" +
@@ -79,7 +69,6 @@ public class ComunicacionUsuarioOVIPAP {
                 ", emisor='" + emisor + '\'' +
                 ", mensaje='" + mensaje + '\'' +
                 ", hora=" + hora +
-                ", medio='" + medio + '\'' +
                 '}';
     }
 }

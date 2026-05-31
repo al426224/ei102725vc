@@ -1,20 +1,24 @@
 package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
+import es.uji.ei1027.SgOVI.dao.ComunicacionUsuarioOVIPAPDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
 import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
+import es.uji.ei1027.SgOVI.model.ComunicacionUsuarioOVIPAP;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.services.MatchingService;
+import es.uji.ei1027.SgOVI.validator.ComunicacionUsuarioOVIPAPValidator;
 import es.uji.ei1027.SgOVI.validator.AsistentePersonalSignupValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -36,16 +40,19 @@ public class AsistentePersonalController {
     private final PeticionAPRDao peticionAPRDao;
     private final RegistroContactoDao registroContactoDao;
     private final MatchingService matchingService;
+    private final ComunicacionUsuarioOVIPAPDao comunicacionDao;
 
     @Autowired
     public AsistentePersonalController(AsistentePersonalDao asistentePersonalDao, SeleccionDao seleccionDao,
                                        PeticionAPRDao peticionAPRDao, RegistroContactoDao registroContactoDao,
-                                       MatchingService matchingService) {
+                                       MatchingService matchingService,
+                                       ComunicacionUsuarioOVIPAPDao comunicacionDao) {
         this.asistentePersonalDao = asistentePersonalDao;
         this.seleccionDao = seleccionDao;
         this.peticionAPRDao = peticionAPRDao;
         this.registroContactoDao = registroContactoDao;
         this.matchingService = matchingService;
+        this.comunicacionDao = comunicacionDao;
     }
 
     @InitBinder
@@ -181,6 +188,22 @@ public class AsistentePersonalController {
             this.seleccion = seleccion;
             this.peticion = peticion;
         }
+    }
+
+    public static class ChatInfo {
+        private final Seleccion seleccion;
+        private final PeticionAPR peticion;
+        private final ComunicacionUsuarioOVIPAP ultimoMensaje;
+
+        public ChatInfo(Seleccion seleccion, PeticionAPR peticion, ComunicacionUsuarioOVIPAP ultimoMensaje) {
+            this.seleccion = seleccion;
+            this.peticion = peticion;
+            this.ultimoMensaje = ultimoMensaje;
+        }
+
+        public Seleccion getSeleccion() { return seleccion; }
+        public PeticionAPR getPeticion() { return peticion; }
+        public ComunicacionUsuarioOVIPAP getUltimoMensaje() { return ultimoMensaje; }
     }
 
     @RequestMapping(value = "/perfil/{id}")
@@ -400,16 +423,130 @@ public class AsistentePersonalController {
     }
 
     @RequestMapping(value = "/mensajes")
-    public String mensajes(HttpSession session, Model model) {
+    public String mensajes(@RequestParam(value = "idSeleccion", required = false) Integer idSeleccion,
+                           @RequestParam(value = "q", required = false) String q,
+                           HttpSession session, Model model) {
         Object tipo = session.getAttribute("tipo");
         if (tipo == null || !"asistente".equals(tipo)) {
             return "redirect:/login";
         }
         Integer idAsistente = (Integer) session.getAttribute("userId");
-        if (idAsistente != null) {
-            model.addAttribute("asistente", asistentePersonalDao.getAsistente(idAsistente));
+        if (idAsistente == null) {
+            return "redirect:/login";
         }
+
+        AsistentePersonal asistente = asistentePersonalDao.getAsistente(idAsistente);
+        if (asistente == null) {
+            return "redirect:/login";
+        }
+
+        List<Seleccion> selecciones = seleccionDao.getSeleccionesChatByAsistente(idAsistente);
+        List<ChatInfo> chats = new ArrayList<>();
+        for (Seleccion s : selecciones) {
+            PeticionAPR peticion = peticionAPRDao.getPeticionWithUser(s.getIdSolicitud());
+            if (peticion != null) {
+                ComunicacionUsuarioOVIPAP ultimo = comunicacionDao.getUltimaComunicacionBySeleccion(s.getIdSeleccion());
+                chats.add(new ChatInfo(s, peticion, ultimo));
+            }
+        }
+
+        if (q != null && !q.trim().isEmpty()) {
+            String busqueda = q.trim().toLowerCase();
+            chats.removeIf(c -> {
+                String nombre = c.getPeticion() != null && c.getPeticion().getNombreUsuario() != null
+                        ? c.getPeticion().getNombreUsuario().toLowerCase() : "";
+                return !nombre.contains(busqueda);
+            });
+        }
+
+        chats.sort((a, b) -> {
+            if (a.getUltimoMensaje() == null && b.getUltimoMensaje() == null) {
+                return Integer.compare(b.getSeleccion().getIdSeleccion(), a.getSeleccion().getIdSeleccion());
+            }
+            if (a.getUltimoMensaje() == null) return 1;
+            if (b.getUltimoMensaje() == null) return -1;
+            return b.getUltimoMensaje().getHora().compareTo(a.getUltimoMensaje().getHora());
+        });
+
+        Integer idSeleccionActiva = idSeleccion;
+        boolean chatExiste = false;
+        if (idSeleccionActiva != null) {
+            for (ChatInfo c : chats) {
+                if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva) {
+                    chatExiste = true;
+                    break;
+                }
+            }
+        }
+        if (idSeleccionActiva == null || !chatExiste) {
+            idSeleccionActiva = chats.isEmpty() ? null : chats.get(0).getSeleccion().getIdSeleccion();
+        }
+
+        List<ComunicacionUsuarioOVIPAP> mensajes = new ArrayList<>();
+        String chatActivoNombre = "";
+        if (idSeleccionActiva != null) {
+            mensajes = comunicacionDao.getComunicacionesBySeleccion(idSeleccionActiva);
+            for (ChatInfo c : chats) {
+                if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva && c.getPeticion() != null) {
+                    chatActivoNombre = c.getPeticion().getNombreUsuario();
+                    break;
+                }
+            }
+        }
+
+        model.addAttribute("asistente", asistente);
         model.addAttribute("tipo", "asistentePersonal");
+        model.addAttribute("chats", chats);
+        model.addAttribute("mensajes", mensajes);
+        model.addAttribute("idSeleccionActiva", idSeleccionActiva);
+        model.addAttribute("chatActivoNombre", chatActivoNombre);
+        model.addAttribute("q", q);
+        model.addAttribute("ownEmisor", "asistentePersonal");
         return "mensajes/mensajes";
+    }
+
+    @RequestMapping(value = "/mensajes/enviar", method = RequestMethod.POST)
+    public String enviarMensaje(@RequestParam("idSeleccion") int idSeleccion,
+                                @RequestParam("mensaje") String mensaje,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        Object tipo = session.getAttribute("tipo");
+        if (tipo == null || !"asistente".equals(tipo)) {
+            return "redirect:/login";
+        }
+        Integer idAsistente = (Integer) session.getAttribute("userId");
+        if (idAsistente == null) {
+            return "redirect:/login";
+        }
+
+        boolean permitido = false;
+        for (Seleccion s : seleccionDao.getSeleccionesChatByAsistente(idAsistente)) {
+            if (s.getIdSeleccion() == idSeleccion) {
+                permitido = true;
+                break;
+            }
+        }
+
+        if (!permitido) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No tienes acceso a esta conversación.");
+            return "redirect:/asistentePersonal/mensajes";
+        }
+
+        ComunicacionUsuarioOVIPAP comunicacion = new ComunicacionUsuarioOVIPAP();
+        comunicacion.setIdSeleccion(idSeleccion);
+        comunicacion.setEmisor("asistentePersonal");
+        comunicacion.setMensaje(mensaje);
+
+        ComunicacionUsuarioOVIPAPValidator validator = new ComunicacionUsuarioOVIPAPValidator();
+        BindingResult bindingResult = new BeanPropertyBindingResult(comunicacion, "comunicacion");
+        validator.validate(comunicacion, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/asistentePersonal/mensajes?idSeleccion=" + idSeleccion;
+        }
+
+        comunicacionDao.addComunicacion(comunicacion);
+        return "redirect:/asistentePersonal/mensajes?idSeleccion=" + idSeleccion;
     }
 }

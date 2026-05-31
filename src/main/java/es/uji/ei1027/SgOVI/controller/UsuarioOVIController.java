@@ -1,21 +1,25 @@
 package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.AsistentePersonalDao;
+import es.uji.ei1027.SgOVI.dao.ComunicacionUsuarioOVIPAPDao;
 import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
 import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
+import es.uji.ei1027.SgOVI.model.ComunicacionUsuarioOVIPAP;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.validator.ComunicacionUsuarioOVIPAPValidator;
 import es.uji.ei1027.SgOVI.validator.UsuarioOVIEditarPerfilValidator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -38,18 +42,21 @@ public class UsuarioOVIController {
     private final RegistroContactoDao registroContactoDao;
     private final SeleccionDao seleccionDao;
     private final AsistentePersonalDao asistentePersonalDao;
+    private final ComunicacionUsuarioOVIPAPDao comunicacionDao;
     private final Logger logger = Logger.getLogger(UsuarioOVIController.class.getName());
 
     @Autowired
     public UsuarioOVIController(UsuarioOVIDao usuarioOVIDao, PeticionAPRDao peticionAPRDao,
                                 RegistroContactoDao registroContactoDao,
                                 SeleccionDao seleccionDao,
-                                AsistentePersonalDao asistentePersonalDao) {
+                                AsistentePersonalDao asistentePersonalDao,
+                                ComunicacionUsuarioOVIPAPDao comunicacionDao) {
         this.usuarioOVIDao = usuarioOVIDao;
         this.peticionAPRDao = peticionAPRDao;
         this.registroContactoDao = registroContactoDao;
         this.seleccionDao = seleccionDao;
         this.asistentePersonalDao = asistentePersonalDao;
+        this.comunicacionDao = comunicacionDao;
     }
 
     public static class ContratoInfo {
@@ -66,6 +73,22 @@ public class UsuarioOVIController {
         public RegistroContacto getContrato() { return contrato; }
         public String getNombreAsistente() { return nombreAsistente; }
         public String getEmailAsistente() { return emailAsistente; }
+    }
+
+    public static class ChatInfo {
+        private final Seleccion seleccion;
+        private final AsistentePersonal asistente;
+        private final ComunicacionUsuarioOVIPAP ultimoMensaje;
+
+        public ChatInfo(Seleccion seleccion, AsistentePersonal asistente, ComunicacionUsuarioOVIPAP ultimoMensaje) {
+            this.seleccion = seleccion;
+            this.asistente = asistente;
+            this.ultimoMensaje = ultimoMensaje;
+        }
+
+        public Seleccion getSeleccion() { return seleccion; }
+        public AsistentePersonal getAsistente() { return asistente; }
+        public ComunicacionUsuarioOVIPAP getUltimoMensaje() { return ultimoMensaje; }
     }
 
     @InitBinder
@@ -179,14 +202,118 @@ public class UsuarioOVIController {
     }
 
     @RequestMapping(value = "/mensajes")
-    public String mensajes(HttpSession session, Model model) {
+    public String mensajes(@RequestParam(value = "idSeleccion", required = false) Integer idSeleccion,
+                           @RequestParam(value = "q", required = false) String q,
+                           HttpSession session, Model model) {
         UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
         if (usuario == null) {
             return "redirect:/login";
         }
+
+        List<Seleccion> selecciones = seleccionDao.getSeleccionesChatByUsuario(usuario.getIdUsuario());
+        List<ChatInfo> chats = new ArrayList<>();
+        for (Seleccion s : selecciones) {
+            AsistentePersonal asistente = asistentePersonalDao.getAsistente(s.getIdAsistente());
+            if (asistente != null) {
+                ComunicacionUsuarioOVIPAP ultimo = comunicacionDao.getUltimaComunicacionBySeleccion(s.getIdSeleccion());
+                chats.add(new ChatInfo(s, asistente, ultimo));
+            }
+        }
+
+        if (q != null && !q.trim().isEmpty()) {
+            String busqueda = q.trim().toLowerCase();
+            chats.removeIf(c -> {
+                String nombre = c.getAsistente() != null && c.getAsistente().getNombre() != null
+                        ? c.getAsistente().getNombre().toLowerCase() : "";
+                return !nombre.contains(busqueda);
+            });
+        }
+
+        chats.sort((a, b) -> {
+            if (a.getUltimoMensaje() == null && b.getUltimoMensaje() == null) {
+                return Integer.compare(b.getSeleccion().getIdSeleccion(), a.getSeleccion().getIdSeleccion());
+            }
+            if (a.getUltimoMensaje() == null) return 1;
+            if (b.getUltimoMensaje() == null) return -1;
+            return b.getUltimoMensaje().getHora().compareTo(a.getUltimoMensaje().getHora());
+        });
+
+        Integer idSeleccionActiva = idSeleccion;
+        boolean chatExiste = false;
+        if (idSeleccionActiva != null) {
+            for (ChatInfo c : chats) {
+                if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva) {
+                    chatExiste = true;
+                    break;
+                }
+            }
+        }
+        if (idSeleccionActiva == null || !chatExiste) {
+            idSeleccionActiva = chats.isEmpty() ? null : chats.get(0).getSeleccion().getIdSeleccion();
+        }
+
+        List<ComunicacionUsuarioOVIPAP> mensajes = new ArrayList<>();
+        String chatActivoNombre = "";
+        if (idSeleccionActiva != null) {
+            mensajes = comunicacionDao.getComunicacionesBySeleccion(idSeleccionActiva);
+            for (ChatInfo c : chats) {
+                if (c.getSeleccion().getIdSeleccion() == idSeleccionActiva && c.getAsistente() != null) {
+                    chatActivoNombre = c.getAsistente().getNombre();
+                    break;
+                }
+            }
+        }
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("tipo", "usuarioOVI");
+        model.addAttribute("chats", chats);
+        model.addAttribute("mensajes", mensajes);
+        model.addAttribute("idSeleccionActiva", idSeleccionActiva);
+        model.addAttribute("chatActivoNombre", chatActivoNombre);
+        model.addAttribute("q", q);
+        model.addAttribute("ownEmisor", "usuarioOVI");
         return "mensajes/mensajes";
+    }
+
+    @RequestMapping(value = "/mensajes/enviar", method = RequestMethod.POST)
+    public String enviarMensaje(@RequestParam("idSeleccion") int idSeleccion,
+                                @RequestParam("mensaje") String mensaje,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+        UsuarioOVI usuario = (UsuarioOVI) session.getAttribute("usuario");
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        boolean permitido = false;
+        for (Seleccion s : seleccionDao.getSeleccionesChatByUsuario(usuario.getIdUsuario())) {
+            if (s.getIdSeleccion() == idSeleccion) {
+                permitido = true;
+                break;
+            }
+        }
+
+        if (!permitido) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No tienes acceso a esta conversación.");
+            return "redirect:/usuarioOVI/mensajes";
+        }
+
+        ComunicacionUsuarioOVIPAP comunicacion = new ComunicacionUsuarioOVIPAP();
+        comunicacion.setIdSeleccion(idSeleccion);
+        comunicacion.setEmisor("usuarioOVI");
+        comunicacion.setMensaje(mensaje);
+
+        ComunicacionUsuarioOVIPAPValidator validator = new ComunicacionUsuarioOVIPAPValidator();
+        BindingResult bindingResult = new BeanPropertyBindingResult(comunicacion, "comunicacion");
+        validator.validate(comunicacion, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", bindingResult.getAllErrors().get(0).getDefaultMessage());
+            return "redirect:/usuarioOVI/mensajes?idSeleccion=" + idSeleccion;
+        }
+
+        comunicacionDao.addComunicacion(comunicacion);
+        return "redirect:/usuarioOVI/mensajes?idSeleccion=" + idSeleccion;
     }
 
     @RequestMapping(value = "/contratos")

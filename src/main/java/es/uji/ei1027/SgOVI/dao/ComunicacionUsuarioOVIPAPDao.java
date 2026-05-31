@@ -21,12 +21,12 @@ public class ComunicacionUsuarioOVIPAPDao {
     private static final String TABLE_NAME = "comunicacionusuarioovipap";
     
     private static final String GET_COMUNICACION_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_comu = ?";
-    private static final String GET_COMUNICACIONES_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ?";
+    private static final String GET_COMUNICACIONES_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ? ORDER BY hora ASC, id_comu ASC";
     private static final String GET_COMUNICACIONES_BY_EMISOR = "SELECT * FROM " + TABLE_NAME + " WHERE emisor = ?";
-    private static final String GET_COMUNICACIONES_BY_MEDIO = "SELECT * FROM " + TABLE_NAME + " WHERE medio = ?";
-    private static final String ADD_COMUNICACION = "INSERT INTO " + TABLE_NAME + " (id_seleccion, emisor, mensaje, medio) VALUES (?, ?, ?, ?)";
+    private static final String GET_ULTIMA_COMUNICACION_BY_SELECCION = "SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion = ? ORDER BY hora DESC, id_comu DESC LIMIT 1";
+    private static final String ADD_COMUNICACION = "INSERT INTO " + TABLE_NAME + " (id_seleccion, emisor, mensaje) VALUES (?, ?, ?)";
     private static final String DELETE_COMUNICACION = "DELETE FROM " + TABLE_NAME + " WHERE id_comu = ?";
-    private static final String UPDATE_COMUNICACION = "UPDATE " + TABLE_NAME + " SET id_seleccion = ?, emisor = ?, mensaje = ?, medio = ? WHERE id_comu = ?";
+    private static final String UPDATE_COMUNICACION = "UPDATE " + TABLE_NAME + " SET id_seleccion = ?, emisor = ?, mensaje = ? WHERE id_comu = ?";
     private static final String GET_COMUNICACIONES = "SELECT * FROM " + TABLE_NAME;
 
     @Autowired
@@ -61,23 +61,14 @@ public class ComunicacionUsuarioOVIPAPDao {
         }
     }
 
-    public List<ComunicacionUsuarioOVIPAP> getComunicacionesByMedio(String medio) {
-        try {
-            return jdbcTemplate.query(GET_COMUNICACIONES_BY_MEDIO, new ComunicacionUsuarioOVIPAPRowMapper(), medio);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron comunicaciones por medio: " + medio);
-            return new ArrayList<>();
-        }
-    }
-
     public void addComunicacion(ComunicacionUsuarioOVIPAP comunicacion) {
-        jdbcTemplate.update(ADD_COMUNICACION, comunicacion.getIdSeleccion(), comunicacion.getEmisor(), 
-                comunicacion.getMensaje(), comunicacion.getMedio());
+        jdbcTemplate.update(ADD_COMUNICACION, comunicacion.getIdSeleccion(), comunicacion.getEmisor(),
+                comunicacion.getMensaje());
     }
 
     public void updateComunicacion(ComunicacionUsuarioOVIPAP comunicacion) {
-        jdbcTemplate.update(UPDATE_COMUNICACION, comunicacion.getIdSeleccion(), comunicacion.getEmisor(), 
-                comunicacion.getMensaje(), comunicacion.getMedio(), comunicacion.getIdComu());
+        jdbcTemplate.update(UPDATE_COMUNICACION, comunicacion.getIdSeleccion(), comunicacion.getEmisor(),
+                comunicacion.getMensaje(), comunicacion.getIdComu());
     }
 
     public void deleteComunicacion(int id) {
@@ -90,6 +81,15 @@ public class ComunicacionUsuarioOVIPAPDao {
         } catch (EmptyResultDataAccessException e) {
             logger.warning("No se encontraron comunicaciones.");
             return new ArrayList<>();
+        }
+    }
+
+    public ComunicacionUsuarioOVIPAP getUltimaComunicacionBySeleccion(int idSeleccion) {
+        try {
+            return jdbcTemplate.queryForObject(GET_ULTIMA_COMUNICACION_BY_SELECCION,
+                    new ComunicacionUsuarioOVIPAPRowMapper(), idSeleccion);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 public class ComunicacionUsuarioOVIPAPRowMapper implements RowMapper<ComunicacionUsuarioOVIPAP> {
 
@@ -17,7 +16,6 @@ public class ComunicacionUsuarioOVIPAPRowMapper implements RowMapper<Comunicacio
         comu.setEmisor(rs.getString("emisor"));
         comu.setMensaje(rs.getString("mensaje"));
         comu.setHora(rs.getTimestamp("hora").toLocalDateTime());
-        comu.setMedio(rs.getString("medio"));
         return comu;
     }
 }
