@@ -24,7 +24,7 @@ public class AsistentePersonalDao {
     private static final String GET_ASSISTENT_BY_ID = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ?";
     private static final String GET_ASSISTENT_BY_EMAIL = "SELECT * FROM " + TABLE_NAME + " WHERE email = ?";
     private static final String GET_ASSISTENTS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = ?";
-    private static final String GET_ASSISTENTS_COMPATIBLES = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = 'aceptado'";
+    private static final String GET_ASSISTENTS_COMPATIBLES = "SELECT * FROM " + TABLE_NAME + " WHERE estado_validacion = 'Aceptado'";
     private static final String ADD_ASSISTENT = "INSERT INTO " + TABLE_NAME + " (nombre, email, contrasena, fecha_nacimiento, estado_validacion, formacion_previa, disponibilidad, municipio) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_ASSISTENT = "DELETE FROM " + TABLE_NAME + " WHERE id_asistente = ?";
     private static final String UPDATE_ASSISTENT = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, fecha_nacimiento = ?, estado_validacion = ?, formacion_previa = ?, disponibilidad = ?, municipio = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_asistente = ?";
