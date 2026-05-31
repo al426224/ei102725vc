@@ -33,6 +33,7 @@ public class RegistroContactoDao {
     private static final String GET_REGISTROS_BY_USUARIO = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE p.id_usuario = ? ORDER BY rc.fecha_inicio DESC";
     private static final String GET_REGISTROS_BY_ASISTENTE = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion WHERE s.id_asistente = ? ORDER BY rc.fecha_inicio DESC";
     private static final String GET_CONTRATOS_ABIERTOS_BY_ASISTENTE = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion WHERE s.id_asistente = ? AND (rc.resultado IS NULL OR (rc.resultado != 'finalizado' AND rc.resultado != 'cancelado')) ORDER BY rc.fecha_inicio DESC";
+    private static final String GET_CONTRATOS_VENCIDOS = "SELECT * FROM " + TABLE_NAME + " WHERE resultado = 'En curso' AND fecha_fin < CURRENT_DATE";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -100,5 +101,9 @@ public class RegistroContactoDao {
 
     public List<RegistroContacto> getRegistros() {
         return jdbcTemplate.query(GET_REGISTROS, new RegistroContactoRowMapper());
+    }
+
+    public List<RegistroContacto> getContratosVencidos() {
+        return jdbcTemplate.query(GET_CONTRATOS_VENCIDOS, new RegistroContactoRowMapper());
     }
 }

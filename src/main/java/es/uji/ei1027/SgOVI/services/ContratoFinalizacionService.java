@@ -9,8 +9,8 @@ import es.uji.ei1027.SgOVI.model.Seleccion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -31,29 +31,33 @@ public class ContratoFinalizacionService {
         this.peticionAPRDao = peticionAPRDao;
     }
 
-    @Scheduled(cron = "0 0 6 * * *")
+    @Transactional
+    @Scheduled(cron = "0 0 6 * * *",  zone = "Europe/Madrid")
     public void finalizarContratosVencidos() {
-        List<RegistroContacto> activos = registroContactoDao.getRegistrosByResultado("En curso");
-        LocalDate hoy = LocalDate.now();
+        List<RegistroContacto> vencidos = registroContactoDao.getContratosVencidos();
 
-        for (RegistroContacto rc : activos) {
-            if (rc.getFechaFin() != null && rc.getFechaFin().isBefore(hoy)) {
-                rc.setResultado("finalizado");
-                registroContactoDao.updateRegistro(rc);
+        logger.info("Contratos vencidos encontrados: " + vencidos.size());
 
-                try {
-                    Seleccion sel = seleccionDao.getSeleccion(rc.getIdSeleccion());
-                    if (sel != null) {
-                        PeticionAPR peticion = peticionAPRDao.getPeticion(sel.getIdSolicitud());
-                        if (peticion != null && "cerrada_contrato".equals(peticion.getEstado())) {
-                            peticion.setEstado("cerrada_contrato_finalizado");
-                            peticionAPRDao.updatePeticion(peticion);
-                        }
+        for (RegistroContacto rc : vencidos) {
+            rc.setResultado("Finalizado");
+            registroContactoDao.updateRegistro(rc);
+
+            try {
+                Seleccion sel = seleccionDao.getSeleccion(rc.getIdSeleccion());
+                if (sel != null) {
+                    PeticionAPR peticion = peticionAPRDao.getPeticion(sel.getIdSolicitud());
+                    if (peticion != null && "cerrada_contrato".equals(peticion.getEstado())) {
+                        peticion.setEstado("cerrada_contrato_finalizado");
+                        peticionAPRDao.updatePeticion(peticion);
                     }
-                } catch (Exception e) {
-                    logger.warning("Error al finalizar peticion para contrato " + rc.getIdReg() + ": " + e.getMessage());
                 }
+            } catch (Exception e) {
+                logger.warning("Error al finalizar peticion para contrato " + rc.getIdReg() + ": " + e.getMessage());
             }
         }
+    }
+
+    public int contarVencidos() {
+        return registroContactoDao.getContratosVencidos().size();
     }
 }

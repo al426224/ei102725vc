@@ -61,13 +61,13 @@ public class LoginController {
 
         UsuarioOVI uovi = usuarioOVIDao.getUsuarioByEmail(authenticatedUser.getUsername());
         if (uovi != null) {
-            if ("aceptado".equals(uovi.getEstado())) {
+            if ("Aceptado".equals(uovi.getEstado())) {
                 session.setAttribute("usuario", uovi);
                 session.setAttribute("tipo", "usuarioOVI");
                 session.setAttribute("rol", Rol.USUARIOOVI);
                 return "redirect:/usuarioOVI/homeUsuarioOVI";
             }
-            if ("rechazado".equals(uovi.getEstado())) {
+            if ("Rechazado".equals(uovi.getEstado())) {
                 session.invalidate();
                 bindingResult.rejectValue("password", "CuentaRechazada",
                         "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");
@@ -81,14 +81,14 @@ public class LoginController {
 
         AsistentePersonal asistente = asistentePersonalDao.getAsistenteByEmail(authenticatedUser.getUsername());
         if (asistente != null) {
-            if ("aceptado".equals(asistente.getEstadoValidacion())) {
+            if ("Aceptado".equals(asistente.getEstadoValidacion())) {
                 session.setAttribute("usuario", asistente);
                 session.setAttribute("userId", asistente.getIdAsistente());
                 session.setAttribute("tipo", "asistente");
                 session.setAttribute("rol", Rol.ASISTENTE);
                 return "redirect:/asistentePersonal/home";
             }
-            if ("rechazado".equals(asistente.getEstadoValidacion())) {
+            if ("Rechazado".equals(asistente.getEstadoValidacion())) {
                 session.invalidate();
                 bindingResult.rejectValue("password", "CuentaRechazada",
                         "Tu cuenta ha sido rechazada. No cumples con los requerimientos del sistema.");

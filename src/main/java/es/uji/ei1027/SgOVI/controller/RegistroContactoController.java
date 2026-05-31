@@ -185,7 +185,7 @@ public class RegistroContactoController {
     public String finalizeRegistro(@PathVariable int id, RedirectAttributes redirectAttributes) {
         RegistroContacto registro = registroContactoDao.getRegistro(id);
         if (registro != null) {
-            registro.setResultado("finalizado");
+            registro.setResultado("Finalizado");
             registro.setFechaFin(LocalDate.now());
             registroContactoDao.updateRegistro(registro);
             redirectAttributes.addFlashAttribute("successMessage", "Registro finalizado correctamente");

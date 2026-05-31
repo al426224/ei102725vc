@@ -164,7 +164,7 @@ public class AsistentePersonalController {
                 }
             }
             ContratoInfo info = new ContratoInfo(c, nombreUsuario);
-            if ("finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
+            if ("Finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
                 contratosFinalizados.add(info);
             } else {
                 contratosActivos.add(info);
@@ -317,7 +317,7 @@ public class AsistentePersonalController {
         }
 
         if (asistente.getEstadoValidacion() == null || asistente.getEstadoValidacion().trim().isEmpty()) {
-            asistente.setEstadoValidacion("pendiente");
+            asistente.setEstadoValidacion("Pendiente");
         }
 
         asistentePersonalDao.addAsistente(asistente);
@@ -340,7 +340,7 @@ public class AsistentePersonalController {
         if (asistente == null) {
             return "redirect:/asistentePersonal/home";
         }
-        if (!"aceptado".equals(asistente.getEstadoValidacion())) {
+        if (!"Aceptado".equals(asistente.getEstadoValidacion())) {
             return "redirect:/asistentePersonal/perfil/" + id;
         }
 
@@ -422,7 +422,7 @@ public class AsistentePersonalController {
     public String rejectAsistente(@PathVariable int id, RedirectAttributes redirectAttributes) {
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
-            asistente.setEstadoValidacion("rechazado");
+            asistente.setEstadoValidacion("Rechazado");
             asistentePersonalDao.updateAsistente(asistente);
             redirectAttributes.addFlashAttribute("successMessage", "Asistente rechazado correctamente");
         }

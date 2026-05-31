@@ -439,14 +439,15 @@ body.sidebar-layout .sidebar-layout {
     font-size: 0.8rem;
 }
 
-.status-badge.pendiente { color: #856404; background: #fff3cd; }
+.status-badge.pendiente, .status-badge.Pendiente { color: #856404; background: #fff3cd; }
 .status-badge.aprobado, .status-badge.aprobada { color: #155724; background: #d4edda; }
 .status-badge.mejor-opcion { color: #0c5460; background: #d1ecf1; }
-.status-badge.rechazado, .status-badge.rechazada { color: #721c24; background: #f8d7da; }
+.status-badge.rechazado, .status-badge.rechazada, .status-badge.Rechazado { color: #721c24; background: #f8d7da; }
 .status-badge.cancelada { color: #383d41; background: #e2e3e5; }
 .status-badge.en_revision { color: #856404; background: #fff3cd; }
 .status-badge.cerrada_contrato, .status-badge.cerrada_contrato_finalizado, .status-badge.finalizada { color: #0c5460; background: #d1ecf1; }
-.status-badge.aceptado { color: #155724; background: #d4edda; }
+.status-badge.aceptado, .status-badge.Aceptado { color: #155724; background: #d4edda; }
+.status-badge.Finalizado { color: #0c5460; background: #d1ecf1; }
 .status-badge.bloqueado { color: #721c24; background: #f8d7da; }
 .status-badge.validado { color: #155724; background: #d4edda; }
 

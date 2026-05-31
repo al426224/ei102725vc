@@ -32,9 +32,9 @@
                 <label for="estado">Estado:</label>
                 <select id="estado" name="estado" class="form-control">
                     <option value="" th:selected="${estadoSeleccionado == '' or estadoSeleccionado == null}">Todos</option>
-                    <option value="pendiente" th:selected="${estadoSeleccionado == 'pendiente'}">Pendiente</option>
+                    <option value="Pendiente" th:selected="${estadoSeleccionado == 'Pendiente'}">Pendiente</option>
                     <option value="validado" th:selected="${estadoSeleccionado == 'validado'}">Validado</option>
-                    <option value="rechazado" th:selected="${estadoSeleccionado == 'rechazado'}">Rechazado</option>
+                    <option value="Rechazado" th:selected="${estadoSeleccionado == 'Rechazado'}">Rechazado</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-secondary">Filtrar</button>

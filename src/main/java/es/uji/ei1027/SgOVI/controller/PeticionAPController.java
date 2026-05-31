@@ -455,7 +455,7 @@ public class PeticionAPController {
         Object usuario = session.getAttribute("usuario");
         if ("usuarioOVI".equals(tipo) && usuario instanceof UsuarioOVI) {
             UsuarioOVI uovi = (UsuarioOVI) usuario;
-            if ("aceptado".equals(uovi.getEstado())) {
+            if ("Aceptado".equals(uovi.getEstado())) {
                 return uovi;
             }
         }

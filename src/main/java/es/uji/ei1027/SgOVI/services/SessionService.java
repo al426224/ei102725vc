@@ -48,7 +48,7 @@ public class SessionService {
         Object usuario = session.getAttribute("usuario");
         if (usuario instanceof UsuarioOVI) {
             UsuarioOVI uovi = (UsuarioOVI) usuario;
-            if (!"aceptado".equals(uovi.getEstado())) {
+            if (!"Aceptado".equals(uovi.getEstado())) {
                 return "redirect:/login";
             }
         } else {
@@ -83,7 +83,7 @@ public class SessionService {
         Object usuario = session.getAttribute("usuario");
         if ("usuarioOVI".equals(tipo) && usuario instanceof UsuarioOVI) {
             UsuarioOVI uovi = (UsuarioOVI) usuario;
-            if ("aceptado".equals(uovi.getEstado())) {
+            if ("Aceptado".equals(uovi.getEstado())) {
                 return uovi;
             }
         }

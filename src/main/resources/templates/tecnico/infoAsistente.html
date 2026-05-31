@@ -46,11 +46,11 @@
                 </p>
             </div>
 
-            <div class="info-group" th:if="${asistente.estadoValidacion == 'rechazado'}">
+            <div class="info-group" th:if="${asistente.estadoValidacion == 'Rechazado'}">
                 <span class="info-label">Motivo del rechazo</span>
                 <span class="info-value" th:text="${asistente.motivoRechazo} ?: '-'"></span>
             </div>
-            <div class="info-group" th:if="${asistente.estadoValidacion == 'rechazado' and asistente.fechaRevision != null}">
+            <div class="info-group" th:if="${asistente.estadoValidacion == 'Rechazado' and asistente.fechaRevision != null}">
                 <span class="info-label">Fecha de revision</span>
                 <span class="info-value" th:text="${#temporals.format(asistente.fechaRevision, 'dd/MM/yyyy')}"></span>
             </div>
@@ -60,11 +60,11 @@
             <div class="avatar-placeholder" th:text="${asistente.nombre.substring(0,1)}">A</div>
             <p class="perfil-rol">Asistente personal</p>
 
-            <div th:if="${asistente.estadoValidacion == 'pendiente'}" class="mb-2">
+            <div th:if="${asistente.estadoValidacion == 'Pendiente'}" class="mb-2">
                 <label for="aprobarAsistenteToggle" class="btn btn-primary btn-full">Aprobar Asistente</label>
             </div>
 
-            <div th:if="${asistente.estadoValidacion == 'pendiente'}" class="mb-2">
+            <div th:if="${asistente.estadoValidacion == 'Pendiente'}" class="mb-2">
                 <label for="rechazarAsistenteToggle" class="btn btn-outline btn-full">Rechazar Asistente</label>
             </div>
 
@@ -79,8 +79,8 @@
     </div>
 </main>
 
-<input th:if="${asistente.estadoValidacion == 'pendiente'}" type="checkbox" id="aprobarAsistenteToggle" class="notice-toggle">
-<div th:if="${asistente.estadoValidacion == 'pendiente'}" class="window-notice">
+<input th:if="${asistente.estadoValidacion == 'Pendiente'}" type="checkbox" id="aprobarAsistenteToggle" class="notice-toggle">
+<div th:if="${asistente.estadoValidacion == 'Pendiente'}" class="window-notice">
     <div class="content">
         <div class="content-text">¿Estas seguro de que quieres aprobar este asistente?<br>Este cambio no se puede deshacer.</div>
         <div class="content-buttons">
@@ -92,8 +92,8 @@
     </div>
 </div>
 
-<input th:if="${asistente.estadoValidacion == 'pendiente'}" type="checkbox" id="rechazarAsistenteToggle" class="notice-toggle">
-<div th:if="${asistente.estadoValidacion == 'pendiente'}" class="window-notice">
+<input th:if="${asistente.estadoValidacion == 'Pendiente'}" type="checkbox" id="rechazarAsistenteToggle" class="notice-toggle">
+<div th:if="${asistente.estadoValidacion == 'Pendiente'}" class="window-notice">
     <div class="content">
         <div class="content-text">Confirma el rechazo del asistente e introduce el motivo.</div>
         <div class="content-buttons" style="display:block;">

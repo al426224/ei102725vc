@@ -75,7 +75,7 @@ public class SignupController {
 
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
         asistente.setContrasena(passwordEncryptor.encryptPassword(asistente.getContrasena()));
-        asistente.setEstadoValidacion("pendiente");
+        asistente.setEstadoValidacion("Pendiente");
         asistentePersonalDao.addAsistente(asistente);
         return "redirect:/login?registered";
     }
@@ -111,7 +111,7 @@ public class SignupController {
         }
 
         usuarioOVI.setFechaRegistro(LocalDate.now());
-        usuarioOVI.setEstado("pendiente");
+        usuarioOVI.setEstado("Pendiente");
 
         BasicPasswordEncryptor passwordEncryptor = new BasicPasswordEncryptor();
         usuarioOVI.setContrasena(passwordEncryptor.encryptPassword(usuarioOVI.getContrasena()));

@@ -373,7 +373,7 @@ public class UsuarioOVIController {
                 }
             }
             ContratoInfo info = new ContratoInfo(c, nombreAsistente, emailAsistente);
-            if ("finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
+            if ("Finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
                 contratosFinalizados.add(info);
             } else {
                 contratosActivos.add(info);

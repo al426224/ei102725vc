@@ -12,9 +12,11 @@ import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.TecnicoOVI;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.services.ContratoFinalizacionService;
 import es.uji.ei1027.SgOVI.services.EdadCompatibilidadService;
 import es.uji.ei1027.SgOVI.services.EmailService;
 import es.uji.ei1027.SgOVI.services.MatchingService;
+
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,7 @@ public class TecnicoController {
     private final EdadCompatibilidadService edadCompatibilidadService;
     private final EmailService emailService;
     private final RegistroContactoDao registroContactoDao;
+    private final ContratoFinalizacionService contratoFinalizacionService;
 
     @Autowired
     public TecnicoController(TecnicoOVIDao tecnicoOVIDao, UsuarioOVIDao usuarioOVIDao,
@@ -49,7 +52,8 @@ public class TecnicoController {
                                SeleccionDao seleccionDao, MatchingService matchingService,
                                EdadCompatibilidadService edadCompatibilidadService,
                                EmailService emailService,
-                               RegistroContactoDao registroContactoDao) {
+                                RegistroContactoDao registroContactoDao,
+                                ContratoFinalizacionService contratoFinalizacionService) {
         this.tecnicoOVIDao = tecnicoOVIDao;
         this.usuarioOVIDao = usuarioOVIDao;
         this.asistentePersonalDao = asistentePersonalDao;
@@ -59,6 +63,7 @@ public class TecnicoController {
         this.edadCompatibilidadService = edadCompatibilidadService;
         this.emailService = emailService;
         this.registroContactoDao = registroContactoDao;
+        this.contratoFinalizacionService = contratoFinalizacionService;
     }
 
     @RequestMapping(value = "/home")
@@ -98,7 +103,7 @@ public class TecnicoController {
         List<RegistroContacto> contratosActivos = new ArrayList<>();
         List<RegistroContacto> contratosFinalizados = new ArrayList<>();
         for (RegistroContacto c : contratos) {
-            if ("finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
+            if ("Finalizado".equals(c.getResultado()) || "cancelado".equals(c.getResultado())) {
                 contratosFinalizados.add(c);
             } else {
                 contratosActivos.add(c);
@@ -120,7 +125,7 @@ public class TecnicoController {
 
         UsuarioOVI usuario = usuarioOVIDao.getUsuario(id);
         if (usuario != null) {
-            usuario.setEstado("aceptado");
+            usuario.setEstado("Aceptado");
             usuarioOVIDao.updateUsuario(usuario);
             emailService.sendEmail(usuario.getEmail(), "Solicitud aprobada",
                     "Hola " + usuario.getNombre() + ",\n\nSu solicitud ha sido aprobada.\n\nUn cordial saludo,\nEl equipo de SgOVI");
@@ -141,7 +146,7 @@ public class TecnicoController {
 
         UsuarioOVI usuario = usuarioOVIDao.getUsuario(id);
         if (usuario != null) {
-            usuario.setEstado("rechazado");
+            usuario.setEstado("Rechazado");
             usuario.setMotivoRechazo(observaciones);
             usuario.setFechaRevision(java.time.LocalDate.now());
             usuarioOVIDao.updateUsuario(usuario);
@@ -231,7 +236,7 @@ public class TecnicoController {
 
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
-            asistente.setEstadoValidacion("aceptado");
+            asistente.setEstadoValidacion("Aceptado");
             asistentePersonalDao.updateAsistente(asistente);
             emailService.sendEmail(asistente.getEmail(), "Validacion aprobada",
                     "Hola " + asistente.getNombre() + ",\n\nSu validacion como asistente personal ha sido aprobada.\n\nUn cordial saludo,\nEl equipo de SgOVI");
@@ -252,7 +257,7 @@ public class TecnicoController {
 
         AsistentePersonal asistente = asistentePersonalDao.getAsistente(id);
         if (asistente != null) {
-            asistente.setEstadoValidacion("rechazado");
+            asistente.setEstadoValidacion("Rechazado");
             asistente.setMotivoRechazo(observaciones);
             asistente.setFechaRevision(java.time.LocalDate.now());
             asistentePersonalDao.updateAsistente(asistente);
@@ -458,6 +463,23 @@ public class TecnicoController {
         }
 
         return "redirect:/tecnico/peticion/" + id;
+    }
+
+    @RequestMapping(value = "/contratos/finalizar-vencidos")
+    public String finalizarContratosVencidos(HttpSession session, RedirectAttributes redirectAttributes) {
+        Object tipo = session.getAttribute("tipo");
+        if (!"tecnico".equals(tipo)) {
+            return "redirect:/login";
+        }
+        try {
+            contratoFinalizacionService.finalizarContratosVencidos();
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Contratos vencidos finalizados correctamente");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Error al finalizar contratos: " + e.getMessage());
+        }
+        return "redirect:/tecnico/home";
     }
 
 }

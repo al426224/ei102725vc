@@ -62,7 +62,7 @@
             <p class="perfil-nombre" th:text="${asistente.nombre}">Nombre</p>
             <p class="perfil-rol">Asistente personal</p>
 
-            <a th:if="${asistente.estadoValidacion == 'aceptado'}" th:href="@{/asistentePersonal/update/{id}(id=${asistente.idAsistente})}" class="btn btn-primary">Editar</a>
+            <a th:if="${asistente.estadoValidacion == 'Aceptado'}" th:href="@{/asistentePersonal/update/{id}(id=${asistente.idAsistente})}" class="btn btn-primary">Editar</a>
         </div>
     </div>
 

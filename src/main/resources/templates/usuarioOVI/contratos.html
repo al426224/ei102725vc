@@ -21,7 +21,7 @@
     </th:block>
 
     <div th:each="c : ${contratosActivos}" class="detail-card mb-4">
-        <th:block th:with="resultadoClase=${c.contrato.resultado == 'En curso' ? 'aprobada' : (c.contrato.resultado == 'finalizado' ? 'finalizada' : 'cancelada')}">
+        <th:block th:with="resultadoClase=${c.contrato.resultado == 'En curso' ? 'aprobada' : (c.contrato.resultado == 'Finalizado' ? 'finalizada' : 'cancelada')}">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <h4 style="margin: 0;" th:text="${c.nombreAsistente}"></h4>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -56,7 +56,7 @@
     </th:block>
 
     <div th:each="c : ${contratosFinalizados}" class="detail-card mb-4">
-        <th:block th:with="resultadoClase=${c.contrato.resultado == 'En curso' ? 'aprobada' : (c.contrato.resultado == 'finalizado' ? 'finalizada' : 'cancelada')}">
+        <th:block th:with="resultadoClase=${c.contrato.resultado == 'En curso' ? 'aprobada' : (c.contrato.resultado == 'Finalizado' ? 'finalizada' : 'cancelada')}">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <h4 style="margin: 0;" th:text="${c.nombreAsistente}"></h4>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
