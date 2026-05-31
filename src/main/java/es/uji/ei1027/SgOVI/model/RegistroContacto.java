@@ -12,13 +12,12 @@ public class RegistroContacto {
     private String resultado;
     private LocalDate fechaFin;
     private String rutaPdf;
-    private byte[] pdfData;
 
     public RegistroContacto() {}
 
     public RegistroContacto(int idReg, int idSeleccion, String tipoContrato, 
                           LocalDate fechaInicio, String observaciones, String resultado, LocalDate fechaFin,
-                          String rutaPdf, byte[] pdfData) {
+                          String rutaPdf) {
         this.idReg = idReg;
         this.idSeleccion = idSeleccion;
         this.tipoContrato = tipoContrato;
@@ -27,7 +26,6 @@ public class RegistroContacto {
         this.resultado = resultado;
         this.fechaFin = fechaFin;
         this.rutaPdf = rutaPdf;
-        this.pdfData = pdfData;
     }
 
     public int getIdReg() {
@@ -92,14 +90,6 @@ public class RegistroContacto {
 
     public void setRutaPdf(String rutaPdf) {
         this.rutaPdf = rutaPdf;
-    }
-
-    public byte[] getPdfData() {
-        return pdfData;
-    }
-
-    public void setPdfData(byte[] pdfData) {
-        this.pdfData = pdfData;
     }
 
     @Override

@@ -19,7 +19,6 @@ public class RegistroContactoRowMapper implements RowMapper<RegistroContacto> {
         registro.setResultado(rs.getString("resultado"));
         registro.setFechaFin(rs.getDate("fecha_fin") != null ? rs.getDate("fecha_fin").toLocalDate() : null);
         registro.setRutaPdf(rs.getString("ruta_pdf"));
-        registro.setPdfData(rs.getBytes("pdf_data"));
         return registro;
     }
 }

@@ -57,7 +57,7 @@
                 <div style="display: flex; align-items: center; gap: 0.5rem;">
                     <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf,application/pdf">
                     <th:block th:if="${registroContacto.rutaPdf != null}">
-                        <a th:href="@{/registroContacto/pdf/{id}(id=${registroContacto.idReg})}" class="btn btn-sm btn-primary">Descargar</a>
+                        <a th:href="@{/uploads/{ruta}(ruta=${registroContacto.rutaPdf})}" class="btn btn-sm btn-primary">Ver PDF</a>
                     </th:block>
                 </div>
                 <div th:if="${registroContacto.rutaPdf != null}" style="margin-top:0.25rem;">
@@ -65,7 +65,7 @@
                     <small class="text-muted"> &mdash; Selecciona un nuevo archivo para reemplazarlo.</small>
                 </div>
                 <div th:if="${registroContacto.rutaPdf == null}" style="margin-top:0.25rem;">
-                    <small class="text-muted">No hay archivo PDF adjunto. Selecciona un archivo para adjuntarlo.</small>
+                    <small class="text-muted">No hay PDF subido.</small>
                 </div>
             </div>
 

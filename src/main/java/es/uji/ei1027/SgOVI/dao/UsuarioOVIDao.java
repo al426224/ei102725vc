@@ -28,6 +28,7 @@ public class UsuarioOVIDao {
     private static final String UPDATE_USUARIO = "UPDATE " + TABLE_NAME + " SET nombre = ?, email = ?, contrasena = ?, telefono = ?, consentimiento_lopd = ?, dni = ?, fecha_nacimiento = ?, proyecto_vida = ?, estado = ?, motivo_rechazo = ?, fecha_revision = ? WHERE id_usuario = ?";
     private static final String GET_USUARIOS = "SELECT * FROM " + TABLE_NAME;
     private static final String GET_USUARIOS_BY_ESTADO = "SELECT * FROM " + TABLE_NAME + " WHERE estado = ?";
+    private static final String UPDATE_PROYECTO_VIDA = "UPDATE " + TABLE_NAME + " SET proyecto_vida = ? WHERE id_usuario = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -89,6 +90,10 @@ public class UsuarioOVIDao {
             return getUsuarios();
         }
         return jdbcTemplate.query(GET_USUARIOS_BY_ESTADO, new UsuarioOVIRowMapper(), estado);
+    }
+
+    public void actualizarProyectoVida(int idUsuario, String rutaPdf) {
+        jdbcTemplate.update(UPDATE_PROYECTO_VIDA, rutaPdf, idUsuario);
     }
 
     public UsuarioOVI auth(String email, String password) {

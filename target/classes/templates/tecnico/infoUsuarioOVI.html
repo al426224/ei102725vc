@@ -14,6 +14,9 @@
         <div class="profile-details">
             <h1 class="page-title">Detalle del Usuario OVI</h1>
 
+            <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+
             <div class="info-group">
                 <span class="info-label">Nombre Completo</span>
                 <span class="info-value" th:text="${usuario.nombre}">Nombre</span>
@@ -45,10 +48,14 @@
             </div>
 
             <div class="info-group">
-                <span class="info-label">Proyecto de Vida</span>
-                <p class="info-value info-texto-libre" th:text="${usuario.proyectoVida}">
-                    Proyecto de vida...
-                </p>
+                <span class="info-label">Proyecto de Vida (PDF)</span>
+                <div th:if="${usuario.proyectoVida != null}" class="mb-2">
+                    <a th:href="@{${usuario.proyectoVida}}" target="_blank" class="btn btn-sm btn-primary">Ver PDF</a>
+                    <a th:href="@{${usuario.proyectoVida}}" download class="btn btn-sm btn-outline">Descargar PDF</a>
+                </div>
+                <div th:if="${usuario.proyectoVida == null}">
+                    <p class="text-muted">No hay proyecto de vida subido.</p>
+                </div>
             </div>
 
             <div class="info-group" th:if="${usuario.estado == 'rechazado'}">
@@ -71,7 +78,7 @@
                             <strong th:if="${c.fechaFin != null}">Fin:</strong> <span th:if="${c.fechaFin != null}" th:text="${#temporals.format(c.fechaFin, 'dd/MM/yyyy')}"></span><br>
                             <strong>Estado:</strong> <span class="badge bg-success">Activo</span>
                         </div>
-                        <a th:href="@{/registroContacto/pdf/{id}(id=${c.idReg})}" class="btn btn-primary btn-sm">Descargar PDF</a>
+                        <a th:if="${c.rutaPdf != null}" th:href="@{/uploads/{ruta}(ruta=${c.rutaPdf})}" class="btn btn-primary btn-sm">Ver PDF</a>
                     </div>
                 </div>
 
@@ -85,7 +92,7 @@
                             <strong th:if="${c.fechaFin != null}">Fin:</strong> <span th:if="${c.fechaFin != null}" th:text="${#temporals.format(c.fechaFin, 'dd/MM/yyyy')}"></span><br>
                             <strong>Resultado:</strong> <span th:text="${c.resultado}" class="badge bg-secondary"></span>
                         </div>
-                        <a th:href="@{/registroContacto/pdf/{id}(id=${c.idReg})}" class="btn btn-primary btn-sm">Descargar PDF</a>
+                        <a th:if="${c.rutaPdf != null}" th:href="@{/uploads/{ruta}(ruta=${c.rutaPdf})}" class="btn btn-primary btn-sm">Ver PDF</a>
                     </div>
                 </div>
             </div>

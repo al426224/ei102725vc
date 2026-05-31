@@ -24,7 +24,7 @@
     </div>
 
     <div class="lado-derecho">
-        <form th:action="@{/signup/registerUsuarioOVI}" method="POST" class="formulario" th:object="${usuarioOVI}">
+        <form th:action="@{/signup/registerUsuarioOVI}" method="POST" enctype="multipart/form-data" class="formulario" th:object="${usuarioOVI}">
 
             <p class="campos-obligatorios"><abbr title="campo obligatorio">*</abbr> Campos obligatorios</p>
 
@@ -66,8 +66,9 @@
             </div>
 
             <div class="campos">
-                <label for="proyectoVida">Proyecto de Vida</label>
-                <textarea id="proyectoVida" th:field="*{proyectoVida}" class="form-control" rows="3" placeholder="Describe brevemente tus objetivos de vida independiente..." maxlength="1000"></textarea>
+                <label for="proyectoVida">Proyecto de Vida (PDF)</label>
+                <input type="file" id="archivo" name="archivo" accept=".pdf" class="form-control">
+                <div class="error" th:if="${archivoError}" th:text="${archivoError}"></div>
             </div>
 
             <div class="campos campos-checkbox">

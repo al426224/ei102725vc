@@ -97,8 +97,8 @@
                 <div th:if="${contrato == null}" class="mt-3">
                     <a th:href="@{/peticionAP/candidatos/{id}/contrato(id=${peticionAP.idSolicitud})}" class="btn btn-primary">Formalizar Contrato</a>
                 </div>
-                <div th:if="${contrato != null}" class="mt-3">
-                    <a th:href="@{/registroContacto/pdf/{id}(id=${contrato.idReg})}" class="btn btn-primary">Descargar PDF del contrato</a>
+                <div th:if="${contrato != null and contrato.rutaPdf != null}" class="mt-3">
+                    <a th:href="@{/uploads/{ruta}(ruta=${contrato.rutaPdf})}" class="btn btn-primary">Ver PDF del contrato</a>
                 </div>
             </th:block>
 

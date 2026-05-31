@@ -2,14 +2,16 @@ package es.uji.ei1027.SgOVI.controller;
 
 import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.model.RegistroContacto;
+import es.uji.ei1027.SgOVI.services.ContratoPdfService;
+import es.uji.ei1027.SgOVI.validator.PdfFileValidator;
 import es.uji.ei1027.SgOVI.validator.RegistroContactoValidator;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.logging.Logger;
@@ -27,11 +28,13 @@ import java.util.logging.Logger;
 public class RegistroContactoController {
 
     private final RegistroContactoDao registroContactoDao;
+    private final ContratoPdfService contratoPdfService;
     private final Logger logger = Logger.getLogger(RegistroContactoController.class.getName());
 
     @Autowired
-    public RegistroContactoController(RegistroContactoDao registroContactoDao) {
+    public RegistroContactoController(RegistroContactoDao registroContactoDao, ContratoPdfService contratoPdfService) {
         this.registroContactoDao = registroContactoDao;
+        this.contratoPdfService = contratoPdfService;
     }
 
     @InitBinder
@@ -103,19 +106,26 @@ public class RegistroContactoController {
                                    RedirectAttributes redirectAttributes) {
         RegistroContacto existing = registroContactoDao.getRegistro(registro.getIdReg());
 
-        if (archivo == null || archivo.isEmpty()) {
-            if (existing != null) {
-                registro.setPdfData(existing.getPdfData());
-                registro.setRutaPdf(existing.getRutaPdf());
+        if (archivo != null && !archivo.isEmpty()) {
+            PdfFileValidator pdfValidator = new PdfFileValidator();
+            BeanPropertyBindingResult fileErrors = new BeanPropertyBindingResult(archivo, "archivo");
+            pdfValidator.validate(archivo, fileErrors);
+            if (fileErrors.hasErrors()) {
+                String errorMsg = fileErrors.getGlobalError() != null ?
+                                  fileErrors.getGlobalError().getDefaultMessage() :
+                                  "El archivo no es valido";
+                redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
+                return "redirect:/registroContacto/update/" + registro.getIdReg();
             }
-        } else {
             try {
-                registro.setPdfData(archivo.getBytes());
-                registro.setRutaPdf(archivo.getOriginalFilename());
+                String ruta = contratoPdfService.guardarContrato(archivo, registro.getIdReg());
+                registro.setRutaPdf(ruta);
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Error al procesar el archivo: " + e.getMessage());
                 return "redirect:/registroContacto/update/" + registro.getIdReg();
             }
+        } else if (existing != null) {
+            registro.setRutaPdf(existing.getRutaPdf());
         }
 
         if (existing != null) {
@@ -195,35 +205,4 @@ public class RegistroContactoController {
         return "redirect:/registroContacto/list";
     }
 
-    @RequestMapping(value = "/pdf/{idRegistro}")
-    public void downloadPdf(@PathVariable int idRegistro, HttpSession session, HttpServletResponse response) {
-        if (session.getAttribute("usuario") == null || session.getAttribute("tipo") == null) {
-            try { response.sendError(HttpServletResponse.SC_UNAUTHORIZED); } catch (Exception ignored) {}
-            return;
-        }
-        try {
-            RegistroContacto contrato = registroContactoDao.getRegistro(idRegistro);
-            if (contrato == null || contrato.getPdfData() == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
-
-            byte[] pdfBytes = contrato.getPdfData();
-            String filename = contrato.getRutaPdf() != null ? contrato.getRutaPdf() : "contrato_" + idRegistro + ".pdf";
-
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
-            response.setContentLength(pdfBytes.length);
-
-            try (OutputStream os = response.getOutputStream()) {
-                os.write(pdfBytes);
-                os.flush();
-            }
-        } catch (Exception e) {
-            logger.severe("Error al descargar PDF: " + e.getMessage());
-            try {
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            } catch (Exception ignored) {}
-        }
-    }
 }

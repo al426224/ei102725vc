@@ -41,10 +41,6 @@ public class RegistroContactoValidator implements Validator {
             errors.rejectValue("fechaFin", "formato", "La fecha de fin debe ser posterior a la fecha de inicio.");
         }
 
-        if (registro.getPdfData() == null || registro.getPdfData().length == 0) {
-            errors.rejectValue("pdfData", "obligatorio", "El archivo PDF del contrato es obligatorio.");
-        }
-
         if (registro.getObservaciones() != null && registro.getObservaciones().length() > 200) {
             errors.rejectValue("observaciones", "longitud", "Las observaciones no pueden superar los 200 caracteres.");
         }

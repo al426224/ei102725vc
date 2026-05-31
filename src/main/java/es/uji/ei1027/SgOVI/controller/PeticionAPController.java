@@ -5,12 +5,14 @@ import es.uji.ei1027.SgOVI.dao.PeticionAPRDao;
 import es.uji.ei1027.SgOVI.dao.RegistroContactoDao;
 import es.uji.ei1027.SgOVI.dao.SeleccionDao;
 import es.uji.ei1027.SgOVI.dao.UsuarioOVIDao;
+import es.uji.ei1027.SgOVI.services.ContratoPdfService;
 import es.uji.ei1027.SgOVI.services.EdadCompatibilidadService;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.PeticionAPR;
 import es.uji.ei1027.SgOVI.model.RegistroContacto;
 import es.uji.ei1027.SgOVI.model.Seleccion;
 import es.uji.ei1027.SgOVI.model.UsuarioOVI;
+import es.uji.ei1027.SgOVI.validator.PdfFileValidator;
 import es.uji.ei1027.SgOVI.validator.PeticionAPRSignupValidator;
 import es.uji.ei1027.SgOVI.validator.RegistroContactoValidator;
 
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 @Controller
 @RequestMapping("/peticionAP")
@@ -41,6 +44,7 @@ public class PeticionAPController {
     private final EdadCompatibilidadService edadCompatibilidadService;
     private final RegistroContactoDao registroContactoDao;
     private final UsuarioOVIDao usuarioOVIDao;
+    private final ContratoPdfService contratoPdfService;
     private final PeticionAPRSignupValidator validator = new PeticionAPRSignupValidator();
     private final RegistroContactoValidator registroContactoValidator = new RegistroContactoValidator();
 
@@ -49,13 +53,15 @@ public class PeticionAPController {
                                 AsistentePersonalDao asistentePersonalDao,
                                 EdadCompatibilidadService edadCompatibilidadService,
                                 RegistroContactoDao registroContactoDao,
-                                UsuarioOVIDao usuarioOVIDao) {
+                                UsuarioOVIDao usuarioOVIDao,
+                                ContratoPdfService contratoPdfService) {
         this.peticionAPRDao = peticionAPRDao;
         this.seleccionDao = seleccionDao;
         this.asistentePersonalDao = asistentePersonalDao;
         this.edadCompatibilidadService = edadCompatibilidadService;
         this.registroContactoDao = registroContactoDao;
         this.usuarioOVIDao = usuarioOVIDao;
+        this.contratoPdfService = contratoPdfService;
     }
 
     @InitBinder
@@ -354,15 +360,6 @@ public class PeticionAPController {
         }
 
         registroContacto.setResultado("En curso");
-        try {
-            if (!archivo.isEmpty()) {
-                registroContacto.setPdfData(archivo.getBytes());
-                registroContacto.setRutaPdf(archivo.getOriginalFilename());
-            }
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error al procesar el archivo: " + e.getMessage());
-            return "redirect:/peticionAP/candidatos/" + id + "/contrato";
-        }
 
         registroContactoValidator.validate(registroContacto, bindingResult);
 
@@ -375,8 +372,27 @@ public class PeticionAPController {
             return "peticionAP/contrato-form";
         }
 
+        if (archivo != null && !archivo.isEmpty()) {
+            PdfFileValidator pdfValidator = new PdfFileValidator();
+            BeanPropertyBindingResult fileErrors = new BeanPropertyBindingResult(archivo, "archivo");
+            pdfValidator.validate(archivo, fileErrors);
+            if (fileErrors.hasErrors()) {
+                String errorMsg = fileErrors.getGlobalError() != null ?
+                                  fileErrors.getGlobalError().getDefaultMessage() :
+                                  "El archivo no es valido";
+                redirectAttributes.addFlashAttribute("errorMessage", errorMsg);
+                return "redirect:/peticionAP/candidatos/" + id + "/contrato";
+            }
+        }
+
         try {
-            registroContactoDao.addRegistro(registroContacto);
+            int idReg = registroContactoDao.addRegistro(registroContacto);
+
+            if (archivo != null && !archivo.isEmpty()) {
+                String ruta = contratoPdfService.guardarContrato(archivo, idReg);
+                registroContacto.setRutaPdf(ruta);
+                registroContactoDao.updateRegistro(registroContacto);
+            }
 
             peticion.setEstado("cerrada_contrato");
             peticionAPRDao.updatePeticion(peticion);

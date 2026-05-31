@@ -162,6 +162,16 @@ header {
     align-items: center;
     justify-content: center;
     padding: 40px;
+    overflow-y: auto;
+}
+
+.campos-fila {
+    display: flex;
+    gap: 1rem;
+}
+
+.campos-fila .campos {
+    flex: 1;
 }
 
 .formulario {
@@ -203,6 +213,12 @@ header {
 .campos input::placeholder,
 .campos textarea::placeholder {
     color: var(--gris-claro);
+}
+
+/* File input (más compacto) */
+.campos input[type="file"] {
+    padding: 10px 15px;
+    font-size: 15px;
 }
 
 /* Error */
