@@ -1219,7 +1219,8 @@ body.index-layout {
 #nuevaSolicitudToggle:checked + .window-notice,
 #guardarCandidatosToggle:checked + .window-notice,
 #confirmarSeleccionToggle:checked + .window-notice,
-#crearContratoToggle:checked + .window-notice {
+#crearContratoToggle:checked + .window-notice,
+#updateContratoToggle:checked + .window-notice {
     display: flex;
 }
 

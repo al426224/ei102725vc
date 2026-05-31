@@ -32,7 +32,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="tipoContrato" class="form-label">Tipo de contrato <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="text" id="tipoContrato" class="form-control" th:field="*{tipoContrato}" placeholder="Ej: Servicio de Asistencia Personal" maxlength="200">
+                    <input type="text" id="tipoContrato" class="form-control" th:field="*{tipoContrato}" placeholder="Ej: Servicio de Asistencia Personal" maxlength="20">
                     <span th:if="${#fields.hasErrors('tipoContrato')}" th:errors="*{tipoContrato}" class="field-error"></span>
                 </div>
             </div>
@@ -40,34 +40,45 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="fechaInicio" class="form-label">Fecha de inicio <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="date" id="fechaInicio" class="form-control" th:field="*{fechaInicio}">
+                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control"
+                           th:value="${registroContacto.fechaInicio}">
                     <span th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}" class="field-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="fechaFin" class="form-label">Fecha de fin <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="date" id="fechaFin" class="form-control" th:field="*{fechaFin}">
+                    <input type="date" id="fechaFin" name="fechaFin" class="form-control"
+                           th:value="${registroContacto.fechaFin}">
                     <span th:if="${#fields.hasErrors('fechaFin')}" th:errors="*{fechaFin}" class="field-error"></span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="archivo" class="form-label">Archivo PDF del contrato</label>
-                <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf,application/pdf">
-                <small class="text-muted">Deja este campo vacio si no quieres cambiar el PDF actual.</small>
-                <div th:if="${registroContacto.rutaPdf != null}" class="mt-1">
-                    <small>PDF actual: <a th:href="@{/registroContacto/pdf/{id}(id=${registroContacto.idReg})}" th:text="${registroContacto.rutaPdf}"></a></small>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf,application/pdf">
+                    <th:block th:if="${registroContacto.rutaPdf != null}">
+                        <a th:href="@{/registroContacto/pdf/{id}(id=${registroContacto.idReg})}" class="btn btn-sm btn-primary">Descargar</a>
+                    </th:block>
+                </div>
+                <div th:if="${registroContacto.rutaPdf != null}" style="margin-top:0.25rem;">
+                    <small><strong>Archivo actual:</strong> <span th:text="${registroContacto.rutaPdf}"></span></small>
+                    <small class="text-muted"> &mdash; Selecciona un nuevo archivo para reemplazarlo.</small>
+                </div>
+                <div th:if="${registroContacto.rutaPdf == null}" style="margin-top:0.25rem;">
+                    <small class="text-muted">No hay archivo PDF adjunto. Selecciona un archivo para adjuntarlo.</small>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="observaciones" class="form-label">Observaciones</label>
-                <textarea id="observaciones" class="form-control" th:field="*{observaciones}" placeholder="Opcional: anota cualquier detalle relevante" rows="3" maxlength="500"></textarea>
+                <textarea id="observaciones" class="form-control" th:field="*{observaciones}" placeholder="Opcional: anota cualquier detalle relevante" rows="3" maxlength="200"></textarea>
                 <span th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}" class="field-error"></span>
             </div>
 
             <div class="form-actions">
                 <label for="updateContratoToggle" class="btn btn-primary">Guardar Cambios</label>
-                <a th:href="@{/registroContacto/list}" class="btn btn-outline">Cancelar</a>
+                <a th:if="${session.tipo == 'asistente'}" th:href="@{/asistentePersonal/contratos}" class="btn btn-outline">Cancelar</a>
+                <a th:if="${session.tipo != 'asistente'}" th:href="@{/usuarioOVI/contratos}" class="btn btn-outline">Cancelar</a>
             </div>
 
             <input type="checkbox" id="updateContratoToggle" class="notice-toggle">

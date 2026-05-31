@@ -27,8 +27,8 @@ public class RegistroContactoValidator implements Validator {
 
         if (registro.getTipoContrato() == null || registro.getTipoContrato().trim().isEmpty()) {
             errors.rejectValue("tipoContrato", "obligatorio", "El tipo de contrato es obligatorio.");
-        } else if (registro.getTipoContrato().length() > 200) {
-            errors.rejectValue("tipoContrato", "longitud", "El tipo de contrato no puede superar los 200 caracteres.");
+        } else if (registro.getTipoContrato().length() > 20) {
+            errors.rejectValue("tipoContrato", "longitud", "El tipo de contrato no puede superar los 20 caracteres.");
         }
 
         if (registro.getFechaInicio() == null) {
@@ -45,8 +45,8 @@ public class RegistroContactoValidator implements Validator {
             errors.rejectValue("pdfData", "obligatorio", "El archivo PDF del contrato es obligatorio.");
         }
 
-        if (registro.getObservaciones() != null && registro.getObservaciones().length() > 500) {
-            errors.rejectValue("observaciones", "longitud", "Las observaciones no pueden superar los 500 caracteres.");
+        if (registro.getObservaciones() != null && registro.getObservaciones().length() > 200) {
+            errors.rejectValue("observaciones", "longitud", "Las observaciones no pueden superar los 200 caracteres.");
         }
     }
 }

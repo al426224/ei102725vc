@@ -27,6 +27,7 @@
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <span class="status-badge" th:classappend="${resultadoClase}" th:text="${c.contrato.resultado}"></span>
                     <a th:href="@{/registroContacto/pdf/{id}(id=${c.contrato.idReg})}" class="btn btn-sm btn-primary">Descargar PDF</a>
+                    <a th:href="@{/registroContacto/update/{id}(id=${c.contrato.idReg})}" class="btn btn-sm btn-outline">Editar</a>
                 </div>
             </div>
         </th:block>

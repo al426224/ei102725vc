@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.OutputStream;
@@ -77,15 +78,55 @@ public class RegistroContactoController {
     }
 
     @RequestMapping(value = "/update/{id}")
-    public String updateRegistroForm(Model model, @PathVariable int id) {
+    public String updateRegistroForm(@PathVariable int id, HttpSession session, Model model) {
         model.addAttribute("registroContacto", registroContactoDao.getRegistro(id));
+
+        Object tipo = session.getAttribute("tipo");
+        Object usuario = session.getAttribute("usuario");
+        if (tipo == null || usuario == null) {
+            return "redirect:/login";
+        }
+
+        if ("asistente".equals(tipo)) {
+            model.addAttribute("asistente", usuario);
+        } else {
+            model.addAttribute("usuario", usuario);
+        }
         return "registroContacto/update";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String updateRegistro(@ModelAttribute("registroContacto") @Validated RegistroContacto registro,
                                    BindingResult bindingResult, Model model,
+                                   @RequestParam("archivo") MultipartFile archivo,
+                                   HttpSession session,
                                    RedirectAttributes redirectAttributes) {
+        RegistroContacto existing = registroContactoDao.getRegistro(registro.getIdReg());
+
+        if (archivo == null || archivo.isEmpty()) {
+            if (existing != null) {
+                registro.setPdfData(existing.getPdfData());
+                registro.setRutaPdf(existing.getRutaPdf());
+            }
+        } else {
+            try {
+                registro.setPdfData(archivo.getBytes());
+                registro.setRutaPdf(archivo.getOriginalFilename());
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error al procesar el archivo: " + e.getMessage());
+                return "redirect:/registroContacto/update/" + registro.getIdReg();
+            }
+        }
+
+        if (existing != null) {
+            if (registro.getFechaInicio() == null) {
+                registro.setFechaInicio(existing.getFechaInicio());
+            }
+            if (registro.getFechaFin() == null) {
+                registro.setFechaFin(existing.getFechaFin());
+            }
+        }
+
         RegistroContactoValidator validator = new RegistroContactoValidator();
         validator.validate(registro, bindingResult);
 
@@ -95,15 +136,25 @@ public class RegistroContactoController {
         }
 
         registroContactoDao.updateRegistro(registro);
-        redirectAttributes.addFlashAttribute("successMessage", "Registro actualizado correctamente");
-        return "redirect:/registroContacto/list";
+        redirectAttributes.addFlashAttribute("successMessage", "Contrato actualizado correctamente");
+
+        Object tipo = session.getAttribute("tipo");
+        if ("asistente".equals(tipo)) {
+            return "redirect:/asistentePersonal/contratos";
+        }
+        return "redirect:/usuarioOVI/contratos";
     }
 
     @RequestMapping(value = "/delete/{id}")
-    public String deleteRegistro(@PathVariable int id, RedirectAttributes redirectAttributes) {
+    public String deleteRegistro(@PathVariable int id, HttpSession session, RedirectAttributes redirectAttributes) {
         registroContactoDao.deleteRegistro(id);
         redirectAttributes.addFlashAttribute("successMessage", "Registro eliminado correctamente");
-        return "redirect:/registroContacto/list";
+
+        Object tipo = session.getAttribute("tipo");
+        if ("asistente".equals(tipo)) {
+            return "redirect:/asistentePersonal/contratos";
+        }
+        return "redirect:/usuarioOVI/contratos";
     }
 
     @RequestMapping(value = "/bySeleccion/{idSeleccion}")

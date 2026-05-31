@@ -27,7 +27,7 @@ public class RegistroContactoDao {
     private static final String GET_REGISTROS_BY_RESULTADO = "SELECT * FROM " + TABLE_NAME + " WHERE resultado = ?";
     private static final String ADD_REGISTRO = "INSERT INTO " + TABLE_NAME + " (id_seleccion, tipo_contrato, observaciones, resultado, fecha_inicio, fecha_fin, ruta_pdf, pdf_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String DELETE_REGISTRO = "DELETE FROM " + TABLE_NAME + " WHERE id_reg = ?";
-    private static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_fin = ?, ruta_pdf = ?, pdf_data = ? WHERE id_reg = ?";
+    private static final String UPDATE_REGISTRO = "UPDATE " + TABLE_NAME + " SET tipo_contrato = ?, observaciones = ?, resultado = ?, fecha_inicio = ?, fecha_fin = ?, ruta_pdf = ?, pdf_data = ? WHERE id_reg = ?";
     private static final String GET_REGISTROS = "SELECT * FROM " + TABLE_NAME;
     private static final String GET_REGISTROS_BY_USUARIO = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE p.id_usuario = ? ORDER BY rc.fecha_inicio DESC";
     private static final String GET_REGISTROS_BY_ASISTENTE = "SELECT rc.* FROM " + TABLE_NAME + " rc JOIN seleccion s ON rc.id_seleccion = s.id_seleccion WHERE s.id_asistente = ? ORDER BY rc.fecha_inicio DESC";
@@ -74,7 +74,8 @@ public class RegistroContactoDao {
 
     public void updateRegistro(RegistroContacto registro) {
         jdbcTemplate.update(UPDATE_REGISTRO, registro.getTipoContrato(), 
-                registro.getObservaciones(), registro.getResultado(), registro.getFechaFin(),
+                registro.getObservaciones(), registro.getResultado(), registro.getFechaInicio(),
+                registro.getFechaFin(),
                 registro.getRutaPdf(),
                 new SqlParameterValue(Types.BINARY, registro.getPdfData()),
                 registro.getIdReg());

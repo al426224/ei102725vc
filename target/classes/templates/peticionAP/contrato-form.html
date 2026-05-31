@@ -33,7 +33,7 @@
             <div class="form-row">
                 <div class="form-group">
                     <label for="tipoContrato" class="form-label">Tipo de contrato <abbr title="campo obligatorio">*</abbr></label>
-                    <input type="text" id="tipoContrato" class="form-control" th:field="*{tipoContrato}" placeholder="Ej: Servicio de Asistencia Personal" maxlength="200">
+                    <input type="text" id="tipoContrato" class="form-control" th:field="*{tipoContrato}" placeholder="Ej: Servicio de Asistencia Personal" maxlength="20">
                     <span th:if="${#fields.hasErrors('tipoContrato')}" th:errors="*{tipoContrato}" class="field-error"></span>
                 </div>
             </div>
@@ -59,7 +59,7 @@
 
             <div class="form-group">
                 <label for="observaciones" class="form-label">Observaciones</label>
-                <textarea id="observaciones" class="form-control" th:field="*{observaciones}" placeholder="Opcional: anota cualquier detalle relevante" rows="3" maxlength="500"></textarea>
+                <textarea id="observaciones" class="form-control" th:field="*{observaciones}" placeholder="Opcional: anota cualquier detalle relevante" rows="3" maxlength="200"></textarea>
                 <span th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}" class="field-error"></span>
             </div>
 
