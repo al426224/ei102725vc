@@ -115,7 +115,7 @@
     <div class="content">
         <div class="content-text">¿Estas seguro de que quieres aprobar este usuario?<br>Este cambio no se puede deshacer.</div>
         <div class="content-buttons">
-            <button type="button" class="btn btn-outline" onclick="document.getElementById('aprobarUsuarioToggle').checked = false">Volver</button>
+            <label for="aprobarUsuarioToggle" class="btn btn-outline">Volver</label>
             <form th:action="@{/tecnico/usuario/approve/{id}(id=${usuario.idUsuario})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-primary">Si, aprobar</button>
             </form>
@@ -131,15 +131,12 @@
             <form th:action="@{/tecnico/usuario/reject/{id}(id=${usuario.idUsuario})}" method="post">
                 <textarea name="observaciones" class="tecnico-observaciones" rows="5" placeholder="Escribe aqui el motivo del rechazo..." required maxlength="500"></textarea>
                 <div class="mt-3 d-flex justify-content-center gap-3">
-                    <button type="button" class="btn btn-outline" onclick="document.getElementById('rechazarUsuarioToggle').checked = false">Volver</button>
+                    <label for="rechazarUsuarioToggle" class="btn btn-outline">Volver</label>
                     <button type="submit" class="btn btn-primary">Confirmar rechazo</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<footer>
-    <p>&copy; 2026 SgOVI - Oficina per la Vida Independent de Castelló</p>
-</footer>
 </body>
 </html>
