@@ -61,7 +61,7 @@
                 <tr th:each="a : ${asistentes}">
                     <td th:text="${a.nombre}"></td>
                     <td th:text="${a.email}"></td>
-                    <td th:text="${a.fechaNacimiento != null ? (#temporals.format(a.fechaNacimiento, 'dd/MM/yyyy') + ' (' + T(java.time.Period).between(a.fechaNacimiento, T(java.time.LocalDate).now()).getYears() + ' años)') : '-'}"></td>
+                    <td th:text="${a.fechaNacimiento != null ? #temporals.format(a.fechaNacimiento, 'dd/MM/yyyy') : '-'}"></td>
                     <td th:text="${a.municipio} ?: '-'"></td>
                     <td th:text="${a.disponibilidad}"></td>
                     <td>

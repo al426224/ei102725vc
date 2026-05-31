@@ -53,7 +53,7 @@
                     <div class="error" th:if="${#fields.hasErrors('dni')}" th:errors="*{dni}"></div>
                 </div>
                 <div class="campos">
-                    <label for="fechaNacimiento">Fecha de Nacimiento <abbr title="campo obligatorio">*</abbr></label>
+                    <label for="fechaNacimiento">Fecha Nacimiento <abbr title="campo obligatorio">*</abbr></label>
                     <input type="date" id="fechaNacimiento" th:field="*{fechaNacimiento}" class="form-control">
                     <div class="error" th:if="${#fields.hasErrors('fechaNacimiento')}" th:errors="*{fechaNacimiento}"></div>
                 </div>
@@ -66,8 +66,9 @@
             </div>
 
             <div class="campos">
-                <label for="proyectoVida">Proyecto de Vida (PDF)</label>
-                <input type="file" id="archivo" name="archivo" accept=".pdf" class="form-control">
+                <label for="archivo" class="form-label">Proyecto de Vida (PDF)</label>
+                <input type="file" id="archivo" name="archivo" class="form-control" accept=".pdf,application/pdf">
+                <small class="text-muted">Selecciona el documento PDF de tu proyecto de vida</small>
                 <div class="error" th:if="${archivoError}" th:text="${archivoError}"></div>
             </div>
 
