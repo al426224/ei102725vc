@@ -15,14 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/seleccion")
 public class SeleccionController {
 
     private final SeleccionDao seleccionDao;
-    private final Logger logger = Logger.getLogger(SeleccionController.class.getName());
 
     @Autowired
     public SeleccionController(SeleccionDao seleccionDao) {

@@ -16,14 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/formador")
 public class FormadorController {
 
     private final FormadorDao formadorDao;
-    private final Logger logger = Logger.getLogger(FormadorController.class.getName());
 
     @Autowired
     public FormadorController(FormadorDao formadorDao) {
@@ -34,10 +32,6 @@ public class FormadorController {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
-    }
-
-    private String getRedirectUrl(String redirectUrl, String defaultUrl) {
-        return (redirectUrl != null) ? "redirect:" + redirectUrl : "redirect:" + defaultUrl;
     }
 
     @RequestMapping(value = "/list")

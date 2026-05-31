@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -82,24 +81,14 @@ public class UsuarioOVIDao {
     }
 
     public List<UsuarioOVI> getUsuarios() {
-        try {
-            return jdbcTemplate.query(GET_USUARIOS, new UsuarioOVIRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron usuarios.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_USUARIOS, new UsuarioOVIRowMapper());
     }
 
     public List<UsuarioOVI> getUsuariosByEstado(String estado) {
         if (estado == null || estado.isEmpty()) {
             return getUsuarios();
         }
-        try {
-            return jdbcTemplate.query(GET_USUARIOS_BY_ESTADO, new UsuarioOVIRowMapper(), estado);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron usuarios con estado: " + estado);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_USUARIOS_BY_ESTADO, new UsuarioOVIRowMapper(), estado);
     }
 
     public UsuarioOVI auth(String email, String password) {

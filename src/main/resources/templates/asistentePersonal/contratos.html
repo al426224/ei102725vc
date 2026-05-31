@@ -27,7 +27,6 @@
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
                     <span class="status-badge" th:classappend="${resultadoClase}" th:text="${c.contrato.resultado}"></span>
                     <a th:href="@{/registroContacto/pdf/{id}(id=${c.contrato.idReg})}" class="btn btn-sm btn-primary">Descargar PDF</a>
-                    <a th:href="@{/registroContacto/update/{id}(id=${c.contrato.idReg})}" class="btn btn-sm btn-outline">Editar</a>
                 </div>
             </div>
         </th:block>
@@ -83,8 +82,9 @@
         </div>
     </div>
 
-    <a th:href="@{/asistentePersonal/home}" class="back-link">Volver al inicio</a>
+    <footer>
+        <p>&copy; 2026 SgOVI - Oficina per la Vida Independent de Castelló</p>
+    </footer>
 </main>
-
 </body>
 </html>

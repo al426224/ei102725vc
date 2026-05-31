@@ -33,10 +33,10 @@ public class SeleccionDao {
     private static final String EXISTS_SELECCION = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'propuesta'";
     private static final String GET_SELECCION_ACEPTADA = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND estado_seleccion = 'aceptada' LIMIT 1";
     private static final String GET_SELECCION_BY_SOLICITUD_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_solicitud = ? AND id_asistente = ? LIMIT 1";
-    private static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM seleccion s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
-    private static final String GET_SELECCIONES_CHAT_BY_USUARIO = "SELECT s.* FROM seleccion s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE p.id_usuario = ? AND s.estado_seleccion != 'rechazada' ORDER BY s.id_seleccion DESC";
+    private static final String GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA = "SELECT s.* FROM " + TABLE_NAME + " s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE s.id_asistente = ? AND s.estado_seleccion != 'rechazada' AND p.estado = 'aprobada' ORDER BY s.estado_seleccion, s.puntuacion_match DESC";
+    private static final String GET_SELECCIONES_CHAT_BY_USUARIO = "SELECT s.* FROM " + TABLE_NAME + " s JOIN peticionapr p ON s.id_solicitud = p.id_solicitud WHERE p.id_usuario = ? AND s.estado_seleccion != 'rechazada' ORDER BY s.id_seleccion DESC";
     private static final String GET_SELECCIONES_CHAT_BY_ASISTENTE = "SELECT * FROM " + TABLE_NAME + " WHERE id_asistente = ? AND estado_seleccion != 'rechazada' ORDER BY id_seleccion DESC";
-    private static final String UPDATE_PUNTUACION_MATCH = "UPDATE seleccion SET puntuacion_match = ? WHERE id_seleccion = ?";
+    private static final String UPDATE_PUNTUACION_MATCH = "UPDATE " + TABLE_NAME + " SET puntuacion_match = ? WHERE id_seleccion = ?";
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
@@ -47,16 +47,12 @@ public class SeleccionDao {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
-        StringBuilder sql = new StringBuilder("SELECT * FROM seleccion WHERE id_seleccion IN (");
+        StringBuilder sql = new StringBuilder("SELECT * FROM " + TABLE_NAME + " WHERE id_seleccion IN (");
         for (int i = 0; i < ids.size(); i++) {
             sql.append(i > 0 ? ",?" : "?");
         }
         sql.append(")");
-        try {
-            return jdbcTemplate.query(sql.toString(), new SeleccionRowMapper(), ids.toArray());
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(sql.toString(), new SeleccionRowMapper(), ids.toArray());
     }
 
     public Seleccion getSeleccion(int id) {
@@ -69,30 +65,15 @@ public class SeleccionDao {
     }
 
     public List<Seleccion> getSeleccionesBySolicitud(int idSolicitud) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_BY_SOLICITUD, new SeleccionRowMapper(), idSolicitud);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron selecciones para la solicitud: " + idSolicitud);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_BY_SOLICITUD, new SeleccionRowMapper(), idSolicitud);
     }
 
     public List<Seleccion> getSeleccionesByAsistente(int idAsistente) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE, new SeleccionRowMapper(), idAsistente);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron selecciones para el asistente: " + idAsistente);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE, new SeleccionRowMapper(), idAsistente);
     }
 
     public List<Seleccion> getSeleccionesByEstado(String estado) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_BY_ESTADO, new SeleccionRowMapper(), estado);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron selecciones con estado: " + estado);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_BY_ESTADO, new SeleccionRowMapper(), estado);
     }
 
     public void addSeleccion(Seleccion seleccion) {
@@ -110,20 +91,11 @@ public class SeleccionDao {
     }
 
     public List<Seleccion> getSelecciones() {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES, new SeleccionRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron selecciones.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES, new SeleccionRowMapper());
     }
 
     public List<Seleccion> getSeleccionesBySolicitudAndEstado(int idSolicitud, String estado) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_BY_SOLICITUD_ESTADO, new SeleccionRowMapper(), idSolicitud, estado);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_BY_SOLICITUD_ESTADO, new SeleccionRowMapper(), idSolicitud, estado);
     }
 
     public boolean hasPropuestasForSolicitud(int idSolicitud) {
@@ -139,11 +111,7 @@ public class SeleccionDao {
     }
 
     public List<Seleccion> getSeleccionesByAsistenteNoRechazada(int idAsistente) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA, new SeleccionRowMapper(), idAsistente);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_BY_ASISTENTE_NO_RECHAZADA, new SeleccionRowMapper(), idAsistente);
     }
 
     public Seleccion getSeleccionAceptadaPorSolicitud(int idSolicitud) {
@@ -167,18 +135,10 @@ public class SeleccionDao {
     }
 
     public List<Seleccion> getSeleccionesChatByUsuario(int idUsuario) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_CHAT_BY_USUARIO, new SeleccionRowMapper(), idUsuario);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_CHAT_BY_USUARIO, new SeleccionRowMapper(), idUsuario);
     }
 
     public List<Seleccion> getSeleccionesChatByAsistente(int idAsistente) {
-        try {
-            return jdbcTemplate.query(GET_SELECCIONES_CHAT_BY_ASISTENTE, new SeleccionRowMapper(), idAsistente);
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_SELECCIONES_CHAT_BY_ASISTENTE, new SeleccionRowMapper(), idAsistente);
     }
 }

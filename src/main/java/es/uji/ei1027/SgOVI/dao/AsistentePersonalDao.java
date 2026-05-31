@@ -44,11 +44,7 @@ public class AsistentePersonalDao {
             sql.append(i > 0 ? ",?" : "?");
         }
         sql.append(")");
-        try {
-            return jdbcTemplate.query(sql.toString(), new AsistentePersonalRowMapper(), ids.toArray());
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(sql.toString(), new AsistentePersonalRowMapper(), ids.toArray());
     }
 
     public AsistentePersonal getAsistente(int id) {
@@ -73,12 +69,7 @@ public class AsistentePersonalDao {
         if (estadoValidacion == null || estadoValidacion.isEmpty()) {
             return getAsistentes();
         }
-        try {
-            return jdbcTemplate.query(GET_ASSISTENTS_BY_ESTADO, new AsistentePersonalRowMapper(), estadoValidacion);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron asistentes con estado: " + estadoValidacion);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ASSISTENTS_BY_ESTADO, new AsistentePersonalRowMapper(), estadoValidacion);
     }
 
 public void addAsistente(AsistentePersonal asistente) {
@@ -99,22 +90,12 @@ public void addAsistente(AsistentePersonal asistente) {
         jdbcTemplate.update(DELETE_ASSISTENT, id);
     }
 
-public List<AsistentePersonal> getAsistentes() {
-        try {
-            return jdbcTemplate.query(GET_ASSISTANTS, new AsistentePersonalRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron asistentes.");
-            return new ArrayList<>();
-        }
+    public List<AsistentePersonal> getAsistentes() {
+        return jdbcTemplate.query(GET_ASSISTANTS, new AsistentePersonalRowMapper());
     }
 
     public List<AsistentePersonal> getCandidatosCompatibles() {
-        try {
-            return jdbcTemplate.query(GET_ASSISTENTS_COMPATIBLES, new AsistentePersonalRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron candidatos compatibles");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ASSISTENTS_COMPATIBLES, new AsistentePersonalRowMapper());
     }
 
 public AsistentePersonal auth(String email, String password) {

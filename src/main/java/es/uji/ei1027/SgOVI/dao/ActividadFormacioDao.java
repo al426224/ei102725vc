@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -42,21 +41,11 @@ public class ActividadFormacioDao {
     }
 
     public List<ActividadFormacion> getActividadesByFormador(int idFormador) {
-        try {
-            return jdbcTemplate.query(GET_ACTIVIDADES_BY_FORMADOR, new ActividadFormacionRowMapper(), idFormador);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron actividades para el formador: " + idFormador);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ACTIVIDADES_BY_FORMADOR, new ActividadFormacionRowMapper(), idFormador);
     }
 
     public List<ActividadFormacion> getActividadesByTipo(String tipoEvento) {
-        try {
-            return jdbcTemplate.query(GET_ACTIVIDADES_BY_TIPO, new ActividadFormacionRowMapper(), tipoEvento);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron actividades de tipo: " + tipoEvento);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ACTIVIDADES_BY_TIPO, new ActividadFormacionRowMapper(), tipoEvento);
     }
 
     public void addActividad(ActividadFormacion actividad) {
@@ -74,11 +63,6 @@ public class ActividadFormacioDao {
     }
 
     public List<ActividadFormacion> getActividades() {
-        try {
-            return jdbcTemplate.query(GET_ACTIVIDADES, new ActividadFormacionRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron actividades.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ACTIVIDADES, new ActividadFormacionRowMapper());
     }
 }

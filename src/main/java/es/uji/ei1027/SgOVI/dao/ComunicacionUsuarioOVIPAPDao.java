@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -44,21 +43,11 @@ public class ComunicacionUsuarioOVIPAPDao {
     }
 
     public List<ComunicacionUsuarioOVIPAP> getComunicacionesBySeleccion(int idSeleccion) {
-        try {
-            return jdbcTemplate.query(GET_COMUNICACIONES_BY_SELECCION, new ComunicacionUsuarioOVIPAPRowMapper(), idSeleccion);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron comunicaciones para la selección: " + idSeleccion);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_COMUNICACIONES_BY_SELECCION, new ComunicacionUsuarioOVIPAPRowMapper(), idSeleccion);
     }
 
     public List<ComunicacionUsuarioOVIPAP> getComunicacionesByEmisor(String emisor) {
-        try {
-            return jdbcTemplate.query(GET_COMUNICACIONES_BY_EMISOR, new ComunicacionUsuarioOVIPAPRowMapper(), emisor);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron comunicaciones del emisor: " + emisor);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_COMUNICACIONES_BY_EMISOR, new ComunicacionUsuarioOVIPAPRowMapper(), emisor);
     }
 
     public void addComunicacion(ComunicacionUsuarioOVIPAP comunicacion) {
@@ -76,12 +65,7 @@ public class ComunicacionUsuarioOVIPAPDao {
     }
 
     public List<ComunicacionUsuarioOVIPAP> getComunicaciones() {
-        try {
-            return jdbcTemplate.query(GET_COMUNICACIONES, new ComunicacionUsuarioOVIPAPRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron comunicaciones.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_COMUNICACIONES, new ComunicacionUsuarioOVIPAPRowMapper());
     }
 
     public ComunicacionUsuarioOVIPAP getUltimaComunicacionBySeleccion(int idSeleccion) {

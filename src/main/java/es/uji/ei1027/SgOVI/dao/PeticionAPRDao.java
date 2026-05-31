@@ -46,12 +46,7 @@ public class PeticionAPRDao {
     }
 
     public List<PeticionAPR> getPeticionesByUsuario(int idUsuario) {
-        try {
-            return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO, new PeticionAPRRowMapper(), idUsuario);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron peticiones para el usuario: " + idUsuario);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO, new PeticionAPRRowMapper(), idUsuario);
     }
 
     public List<PeticionAPR> getPeticionesByUsuarioFiltrado(int idUsuario, String estado, String ordenar) {
@@ -70,20 +65,11 @@ public class PeticionAPRDao {
             sql += " ORDER BY p.id_solicitud DESC";
         }
 
-        try {
-            return jdbcTemplate.query(sql, new PeticionAPRRowMapper(), params.toArray());
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(sql, new PeticionAPRRowMapper(), params.toArray());
     }
 
     public List<PeticionAPR> getPeticionesByEstado(String estado) {
-        try {
-            return jdbcTemplate.query(GET_PETICIONES_BY_ESTADO, new PeticionAPRRowMapper(), estado);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron peticiones con estado: " + estado);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_PETICIONES_BY_ESTADO, new PeticionAPRRowMapper(), estado);
     }
 
     public void addPeticion(PeticionAPR peticion) {
@@ -134,21 +120,11 @@ public class PeticionAPRDao {
     }
 
     public List<PeticionAPR> getPeticiones() {
-        try {
-            return jdbcTemplate.query(GET_PETICIONES, new PeticionAPRRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron peticiones.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_PETICIONES, new PeticionAPRRowMapper());
     }
 
     public List<PeticionAPR> getPeticionesByUsuarioAndEstado(int idUsuario, String estado) {
-        try {
-            return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO_AND_ESTADO, new PeticionAPRRowMapper(), idUsuario, estado);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron peticiones para el usuario con estado: " + estado);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_PETICIONES_BY_USUARIO_AND_ESTADO, new PeticionAPRRowMapper(), idUsuario, estado);
     }
 
     public List<PeticionAPR> getPeticionesByEstadoFiltrado(String estado, String nombre) {
@@ -172,10 +148,6 @@ public class PeticionAPRDao {
 
         sql += " ORDER BY p.id_solicitud DESC";
 
-        try {
-            return jdbcTemplate.query(sql, new PeticionAPRRowMapper(), params.toArray());
-        } catch (EmptyResultDataAccessException e) {
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(sql, new PeticionAPRRowMapper(), params.toArray());
     }
 }

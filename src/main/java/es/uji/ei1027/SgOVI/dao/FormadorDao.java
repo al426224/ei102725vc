@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -53,12 +52,7 @@ public class FormadorDao {
     }
 
     public List<Formador> getFormadoresByEspecialidad(String especialidad) {
-        try {
-            return jdbcTemplate.query(GET_FORMADORES_BY_ESPECIALIDAD, new FormadorRowMapper(), especialidad);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron formadores con especialidad: " + especialidad);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_FORMADORES_BY_ESPECIALIDAD, new FormadorRowMapper(), especialidad);
     }
 
     public void addFormador(Formador formador) {
@@ -78,12 +72,7 @@ public class FormadorDao {
     }
 
     public List<Formador> getFormadores() {
-        try {
-            return jdbcTemplate.query(GET_FORMADORES, new FormadorRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron formadores.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_FORMADORES, new FormadorRowMapper());
     }
 
     public Formador auth(String email, String password) {

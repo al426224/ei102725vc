@@ -30,7 +30,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Controller
@@ -43,7 +42,6 @@ public class UsuarioOVIController {
     private final SeleccionDao seleccionDao;
     private final AsistentePersonalDao asistentePersonalDao;
     private final ComunicacionUsuarioOVIPAPDao comunicacionDao;
-    private final Logger logger = Logger.getLogger(UsuarioOVIController.class.getName());
 
     @Autowired
     public UsuarioOVIController(UsuarioOVIDao usuarioOVIDao, PeticionAPRDao peticionAPRDao,
@@ -98,10 +96,6 @@ public class UsuarioOVIController {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
         binder.registerCustomEditor(Integer.class, new CustomNumberEditor(Integer.class, true));
-    }
-
-    private String getRedirectUrl(String redirectUrl, String defaultUrl) {
-        return (redirectUrl != null) ? "redirect:" + redirectUrl : "redirect:" + defaultUrl;
     }
 
     @RequestMapping(value = "/list")

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -48,21 +47,11 @@ public class RegistroContactoDao {
     }
 
     public List<RegistroContacto> getRegistrosBySeleccion(int idSeleccion) {
-        try {
-            return jdbcTemplate.query(GET_REGISTROS_BY_SELECCION, new RegistroContactoRowMapper(), idSeleccion);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron registros para la selección: " + idSeleccion);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_REGISTROS_BY_SELECCION, new RegistroContactoRowMapper(), idSeleccion);
     }
 
     public List<RegistroContacto> getRegistrosByResultado(String resultado) {
-        try {
-            return jdbcTemplate.query(GET_REGISTROS_BY_RESULTADO, new RegistroContactoRowMapper(), resultado);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron registros con resultado: " + resultado);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_REGISTROS_BY_RESULTADO, new RegistroContactoRowMapper(), resultado);
     }
 
     public void addRegistro(RegistroContacto registro) {
@@ -86,38 +75,18 @@ public class RegistroContactoDao {
     }
 
     public List<RegistroContacto> getRegistrosByUsuarioOVI(int idUsuario) {
-        try {
-            return jdbcTemplate.query(GET_REGISTROS_BY_USUARIO, new RegistroContactoRowMapper(), idUsuario);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron registros para el usuario: " + idUsuario);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_REGISTROS_BY_USUARIO, new RegistroContactoRowMapper(), idUsuario);
     }
 
     public List<RegistroContacto> getRegistrosByAsistente(int idAsistente) {
-        try {
-            return jdbcTemplate.query(GET_REGISTROS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron registros para el asistente: " + idAsistente);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_REGISTROS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
     }
 
     public List<RegistroContacto> getContratosAbiertosByAsistente(int idAsistente) {
-        try {
-            return jdbcTemplate.query(GET_CONTRATOS_ABIERTOS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron contratos abiertos para el asistente: " + idAsistente);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_CONTRATOS_ABIERTOS_BY_ASISTENTE, new RegistroContactoRowMapper(), idAsistente);
     }
 
     public List<RegistroContacto> getRegistros() {
-        try {
-            return jdbcTemplate.query(GET_REGISTROS, new RegistroContactoRowMapper());
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron registros.");
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_REGISTROS, new RegistroContactoRowMapper());
     }
 }

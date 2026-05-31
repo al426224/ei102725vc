@@ -5,20 +5,16 @@ import es.uji.ei1027.SgOVI.rowMapper.ActividadFormacionRowMapper;
 import es.uji.ei1027.SgOVI.model.AsistentePersonal;
 import es.uji.ei1027.SgOVI.model.ActividadFormacion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Repository
 public class AsistenciaFormacionDao {
 
     private JdbcTemplate jdbcTemplate;
-    private final Logger logger = Logger.getLogger(AsistenciaFormacionDao.class.getName());
 
     private static final String TABLE_NAME = "assistenciaformacion";
     
@@ -38,21 +34,11 @@ public class AsistenciaFormacionDao {
     }
 
     public List<AsistentePersonal> getAsistentesByActividad(int idActividad) {
-        try {
-            return jdbcTemplate.query(GET_ASISTENTES_BY_ACTIVIDAD, new AsistentePersonalRowMapper(), idActividad);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron asistentes para la actividad: " + idActividad);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ASISTENTES_BY_ACTIVIDAD, new AsistentePersonalRowMapper(), idActividad);
     }
 
     public List<ActividadFormacion> getActividadesByAsistente(int idAsistente) {
-        try {
-            return jdbcTemplate.query(GET_ACTIVIDADES_BY_ASISTENTE, new ActividadFormacionRowMapper(), idAsistente);
-        } catch (EmptyResultDataAccessException e) {
-            logger.warning("No se encontraron actividades para el asistente: " + idAsistente);
-            return new ArrayList<>();
-        }
+        return jdbcTemplate.query(GET_ACTIVIDADES_BY_ASISTENTE, new ActividadFormacionRowMapper(), idAsistente);
     }
 
     public void addAsistencia(int idActividad, int idUsuario, int idAsistente) {
