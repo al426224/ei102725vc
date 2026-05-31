@@ -20,11 +20,10 @@
 
     <div class="navg">
         <nav class="nav">
-            <ul class="ul">
+            <ul class="ul" style="display: flex; list-style: none; margin: 0; padding: 0; gap: 1rem; align-items: center;">
                 <li class="li"><a href="#inicio" class="a nav-link-item">Inicio</a></li>
                 <li class="li"><a href="#servicios" class="a nav-link-item">Servicios</a></li>
                 <li class="li" th:if="${session.usuario == null}"><a th:href="@{/login}" class="a nav-btn nav-btn-outline">Acceder</a></li>
-                <li class="li" th:if="${session.usuario == null}"><a th:href="@{/signup}" class="a nav-btn nav-btn-outline">Registro</a></li>
                 <li class="li" th:unless="${session.usuario == null}">
                     <span class="usuario-logado" th:text="${session.usuario.nombre}">Usuario</span>
                     <a th:href="@{/logout}" class="a nav-btn nav-btn-outline">Salir</a>
@@ -34,11 +33,31 @@
     </div>
 </header>
 
-<section class="hero" id="inicio">
-    <div class="slide-content">
-        <h1>Vida autonoma e independiente</h1>
-        <p class="slide-desc">Gestion integral de asistencia personal para personas con diversidad funcional en Castello.</p>
-        <a th:href="@{/login}" class="slide-cta" th:if="${session.usuario == null}">Empezar ahora</a>
+<section class="hero" id="inicio" style="padding-top: 100px;">
+    <div class="slide-content" style="display: grid; grid-template-columns: 1.2fr 0.8fr; align-items: center; gap: 40px; text-align: left; max-width: 1100px; margin: 0 auto; width: 100%;">
+
+        <div>
+            <h1 style="margin-bottom: 1rem;">Vida autonoma e independiente</h1>
+            <p class="slide-desc" style="margin-bottom: 2rem;">Gestion integral de asistencia personal para personas con diversidad funcional en Castello.</p>
+            <a th:href="@{/login}" class="slide-cta" th:if="${session.usuario == null}" style="display: inline-block;">Empezar ahora</a>
+        </div>
+
+        <div style="text-align: right; display: flex; justify-content: flex-end;">
+            <img th:src="@{/images/imagenIndice.png}" alt="Ilustración SgOVI" style="max-width: 100%; height: auto; max-height: 340px; border-radius: 14px; object-fit: contain;">
+        </div>
+
+    </div>
+</section>
+
+<section class="info-sgovi-section py-5 text-center" style="background-color: #ffffff;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <p class="fs-5 text-muted" style="line-height: 1.8; max-width: 850px; margin: 0 auto;">
+                    Desde SgOVI sabemos que en ocasiones la asistencia es necesaria, por ello queremos proporcionar una herramienta fácil de usar para todas las personas con problemas de movilidad reducida o diversidad funcional, para que las limitations les afecten lo mínimo posible.
+                </p>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -53,8 +72,8 @@
         </div>
         <div class="col-md-4 col-lg-3">
             <a th:href="@{/signup/registerAsistentePersonal}" class="acceso-card">
-                <div class="acceso-icon azul">🤲</div>
-                <span class="acceso-nombre">Asistente PAP</span>
+                <div class="acceso-icon azul">💼</div>
+                <span class="acceso-nombre">Asistente Personal</span>
             </a>
         </div>
     </div>
